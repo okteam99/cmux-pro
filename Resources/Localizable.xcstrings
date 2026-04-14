@@ -1218,6 +1218,23 @@
         }
       }
     },
+    "sidebar.button.toggleFileExplorer.label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle File Explorer"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルエクスプローラーを切り替え"
+          }
+        }
+      }
+    },
     "sidebar.help.button": {
       "extractionState": "manual",
       "localizations": {
@@ -44500,6 +44517,23 @@
         }
       }
     },
+    "menu.view.toggleFileExplorer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toggle File Explorer"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファイルエクスプローラーを切り替え"
+          }
+        }
+      }
+    },
     "menu.view.toggleSidebar": {
       "extractionState": "manual",
       "localizations": {
@@ -83929,6 +83963,91 @@
           "stringUnit": {
             "state": "translated",
             "value": "Файл недоступний"
+          }
+        }
+      }
+    },
+    "markdownViewer.diagram.close": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close diagram preview"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "図のプレビューを閉じる"
+          }
+        }
+      }
+    },
+    "markdownViewer.diagram.expand": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expand diagram"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "図を拡大"
+          }
+        }
+      }
+    },
+    "markdownViewer.diagram.resetZoom": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset zoom"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ズームをリセット"
+          }
+        }
+      }
+    },
+    "markdownViewer.diagram.zoomIn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoom in"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拡大"
+          }
+        }
+      }
+    },
+    "markdownViewer.diagram.zoomOut": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zoom out"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "縮小"
           }
         }
       }

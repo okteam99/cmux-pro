@@ -3257,6 +3257,21 @@ class GhosttyApp {
                 #endif
                 return false
             }
+            if case let .external(candidate) = target,
+               candidate.isFileURL,
+               let store = FileExplorerStoreRegistry.shared.storeContaining(path: candidate.path) {
+                #if DEBUG
+                dlog("link.openURL target=fileReveal url=\(candidate.path)")
+                #endif
+                return performOnMain {
+                    NotificationCenter.default.post(
+                        name: Notification.Name("com.cmux.revealInFileExplorer"),
+                        object: store,
+                        userInfo: ["path": candidate.path]
+                    )
+                    return true
+                }
+            }
             if !BrowserLinkOpenSettings.openTerminalLinksInCmuxBrowser() {
                 #if DEBUG
                 dlog("link.openURL cmuxBrowser=disabled, opening externally url=\(target.url)")
@@ -7407,7 +7422,26 @@ class GhosttyNSView: NSView, NSUserInterfaceValidations {
         dlog("link.wordFallback resolved=\(resolution.path) source=\(resolution.source.rawValue)")
         #endif
 
-        PreferredEditorSettings.open(URL(fileURLWithPath: resolution.path))
+        openResolvedTerminalPath(resolution.path)
+    }
+
+    /// Route a resolved filesystem path to the in-app file explorer when the path
+    /// belongs to an active workspace root, otherwise fall back to the preferred
+    /// external editor. Shared by the OPEN_URL action, word-fallback, and
+    /// command-click-release handlers.
+    private func openResolvedTerminalPath(_ path: String) {
+        if let store = FileExplorerStoreRegistry.shared.storeContaining(path: path) {
+            #if DEBUG
+            dlog("link.wordFallback target=fileReveal path=\(path)")
+            #endif
+            NotificationCenter.default.post(
+                name: Notification.Name("com.cmux.revealInFileExplorer"),
+                object: store,
+                userInfo: ["path": path]
+            )
+            return
+        }
+        PreferredEditorSettings.open(URL(fileURLWithPath: path))
     }
 
     /// Check if the word under the mouse cursor resolves to an existing file/directory
@@ -7831,7 +7865,7 @@ class GhosttyNSView: NSView, NSUserInterfaceValidations {
         )
         #endif
 
-        PreferredEditorSettings.open(URL(fileURLWithPath: resolution.path))
+        openResolvedTerminalPath(resolution.path)
         return resolution
     }
 

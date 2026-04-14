@@ -11,6 +11,7 @@
 		FE001102 /* FileExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE001002 /* FileExplorerView.swift */; };
 		FE002101 /* FileExplorerRootResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE002001 /* FileExplorerRootResolverTests.swift */; };
 		FE002102 /* FileExplorerStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE002002 /* FileExplorerStoreTests.swift */; };
+		FE002103 /* FileExplorerRevealTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE002003 /* FileExplorerRevealTests.swift */; };
 			A5001001 /* cmuxApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001011 /* cmuxApp.swift */; };
 			A5001002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001012 /* ContentView.swift */; };
 			E62155868BB29FEB5DAAAF25 /* SidebarSelectionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD52285508B1D6A9875E7B3 /* SidebarSelectionState.swift */; };
@@ -41,6 +42,11 @@
 		A5007420 /* BrowserPopupWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5007421 /* BrowserPopupWindowController.swift */; };
 		A5001420 /* MarkdownPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001418 /* MarkdownPanel.swift */; };
 		A5001421 /* MarkdownPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001419 /* MarkdownPanelView.swift */; };
+		A500F301 /* MarkdownViewerFileSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = A500F201 /* MarkdownViewerFileSource.swift */; };
+		A500F302 /* MarkdownViewerWebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A500F202 /* MarkdownViewerWebBridge.swift */; };
+		A500F303 /* MarkdownViewerWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A500F203 /* MarkdownViewerWindowController.swift */; };
+		A500F304 /* MarkdownViewerWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A500F204 /* MarkdownViewerWindowManager.swift */; };
+		A500F401 /* MarkdownViewer in Resources */ = {isa = PBXBuildFile; fileRef = A500F400 /* MarkdownViewer */; };
 		A5001290 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = A5001291 /* MarkdownUI */; };
 		A5001405 /* PanelContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001415 /* PanelContentView.swift */; };
 		A5001406 /* Workspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5001416 /* Workspace.swift */; };
@@ -213,6 +219,7 @@
 		FE001002 /* FileExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExplorerView.swift; sourceTree = "<group>"; };
 		FE002001 /* FileExplorerRootResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExplorerRootResolverTests.swift; sourceTree = "<group>"; };
 		FE002002 /* FileExplorerStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExplorerStoreTests.swift; sourceTree = "<group>"; };
+		FE002003 /* FileExplorerRevealTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExplorerRevealTests.swift; sourceTree = "<group>"; };
 			A5001000 /* cmux.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cmux.app; sourceTree = BUILT_PRODUCTS_DIR; };
 			F1000002A1B2C3D4E5F60718 /* cmuxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cmuxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 			7E7E6EF344A568AC7FEE3715 /* cmuxUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cmuxUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -249,6 +256,11 @@
 		A5001415 /* PanelContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Panels/PanelContentView.swift; sourceTree = "<group>"; };
 		A5001418 /* MarkdownPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Panels/MarkdownPanel.swift; sourceTree = "<group>"; };
 		A5001419 /* MarkdownPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Panels/MarkdownPanelView.swift; sourceTree = "<group>"; };
+		A500F201 /* MarkdownViewerFileSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerFileSource.swift; sourceTree = "<group>"; };
+		A500F202 /* MarkdownViewerWebBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerWebBridge.swift; sourceTree = "<group>"; };
+		A500F203 /* MarkdownViewerWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerWindowController.swift; sourceTree = "<group>"; };
+		A500F204 /* MarkdownViewerWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerWindowManager.swift; sourceTree = "<group>"; };
+		A500F400 /* MarkdownViewer */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MarkdownViewer; sourceTree = "<group>"; };
 		A5001416 /* Workspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workspace.swift; sourceTree = "<group>"; };
 		A5001417 /* WorkspaceContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceContentView.swift; sourceTree = "<group>"; };
 		A5001090 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -397,6 +409,7 @@
 				DA7A10CA710E000000000003 /* Localizable.xcstrings in Resources */,
 				DA7A10CA710E000000000004 /* InfoPlist.xcstrings in Resources */,
 				A5001623 /* cmux.sdef in Resources */,
+				A500F401 /* MarkdownViewer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,6 +517,10 @@
 				A5007421 /* BrowserPopupWindowController.swift */,
 				A5001418 /* MarkdownPanel.swift */,
 				A5001419 /* MarkdownPanelView.swift */,
+				A500F201 /* MarkdownViewerFileSource.swift */,
+				A500F202 /* MarkdownViewerWebBridge.swift */,
+				A500F203 /* MarkdownViewerWindowController.swift */,
+				A500F204 /* MarkdownViewerWindowManager.swift */,
 				A5001510 /* CmuxWebView.swift */,
 				A5001415 /* PanelContentView.swift */,
 				A5001211 /* UpdateController.swift */,
@@ -549,6 +566,7 @@
 				DA7A10CA710E000000000001 /* Localizable.xcstrings */,
 				DA7A10CA710E000000000002 /* InfoPlist.xcstrings */,
 				A5001622 /* cmux.sdef */,
+				A500F400 /* MarkdownViewer */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -624,6 +642,7 @@
 					C1A2B3C4D5E6F70800000002 /* CmuxConfigTests.swift */,
 					FE002001 /* FileExplorerRootResolverTests.swift */,
 					FE002002 /* FileExplorerStoreTests.swift */,
+					FE002003 /* FileExplorerRevealTests.swift */,
 				);
 				path = cmuxTests;
 				sourceTree = "<group>";
@@ -833,6 +852,10 @@
 				A5007420 /* BrowserPopupWindowController.swift in Sources */,
 				A5001420 /* MarkdownPanel.swift in Sources */,
 				A5001421 /* MarkdownPanelView.swift in Sources */,
+				A500F301 /* MarkdownViewerFileSource.swift in Sources */,
+				A500F302 /* MarkdownViewerWebBridge.swift in Sources */,
+				A500F303 /* MarkdownViewerWindowController.swift in Sources */,
+				A500F304 /* MarkdownViewerWindowManager.swift in Sources */,
 				A5001500 /* CmuxWebView.swift in Sources */,
 				A5001405 /* PanelContentView.swift in Sources */,
 				A5001201 /* UpdateController.swift in Sources */,
@@ -928,6 +951,7 @@
 					C1A2B3C4D5E6F70800000001 /* CmuxConfigTests.swift in Sources */,
 					FE002101 /* FileExplorerRootResolverTests.swift in Sources */,
 					FE002102 /* FileExplorerStoreTests.swift in Sources */,
+					FE002103 /* FileExplorerRevealTests.swift in Sources */,
 				);
 				runOnlyForDeploymentPostprocessing = 0;
 			};

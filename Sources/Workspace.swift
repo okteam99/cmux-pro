@@ -9268,6 +9268,29 @@ final class Workspace: Identifiable, ObservableObject {
         return markdownPanel
     }
 
+    /// Open a filesystem path requested from the File Explorer. Markdown files
+    /// open as a new MarkdownPanel tab in the focused pane; other files fall
+    /// back to the system default application. Returns true when a panel was
+    /// created, false when the system opener was used.
+    @discardableResult
+    func openFileFromExplorer(filePath: String) -> Bool {
+        let ext = (filePath as NSString).pathExtension.lowercased()
+        let isMarkdown = ext == "md" || ext == "markdown"
+        if isMarkdown {
+            if MarkdownViewerWindowManager.shared.isEnabled {
+                MarkdownViewerWindowManager.shared.showWindow(for: filePath)
+                return true
+            }
+            // Feature-flag off → fall back to legacy tab version.
+            if let paneId = bonsplitController.focusedPaneId ?? bonsplitController.allPaneIds.first {
+                _ = newMarkdownSurface(inPane: paneId, filePath: filePath, focus: true)
+                return true
+            }
+        }
+        NSWorkspace.shared.open(URL(fileURLWithPath: filePath))
+        return false
+    }
+
     /// Tear down all panels in this workspace, freeing their Ghostty surfaces.
     /// Called before the workspace is removed from TabManager to ensure child
     /// processes receive SIGHUP even if ARC deallocation is delayed.

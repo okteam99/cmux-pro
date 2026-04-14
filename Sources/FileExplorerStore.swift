@@ -532,6 +532,11 @@ final class FileExplorerStore: ObservableObject {
         reload()
         refreshGitStatus()
         updateDirectoryWatcher()
+        FileExplorerStoreRegistry.shared.register(self)
+    }
+
+    deinit {
+        FileExplorerStoreRegistry.shared.unregister(self)
     }
 
     func refreshGitStatus() {
@@ -662,6 +667,61 @@ final class FileExplorerStore: ObservableObject {
         reload()
     }
 
+    /// Reveal a filesystem path in the tree. Expands ancestor directories, loads
+    /// children if needed, and returns the matched node if found. Returns nil when
+    /// the path is not under `rootPath`, the provider is not a local one, or the
+    /// node cannot be located on disk.
+    @MainActor
+    func reveal(path: String) async -> FileExplorerNode? {
+        guard provider is LocalFileExplorerProvider else { return nil }
+        guard !rootPath.isEmpty else { return nil }
+        let targetStd = (path as NSString).standardizingPath
+        let rootStd = (rootPath as NSString).standardizingPath
+        guard targetStd == rootStd || targetStd.hasPrefix(rootStd + "/") else { return nil }
+        if !FileManager.default.fileExists(atPath: targetStd) { return nil }
+
+        if rootNodes.isEmpty {
+            await loadChildren(for: nil, at: rootStd, silent: true)
+        }
+        if targetStd == rootStd { return nil }
+
+        let relative = String(targetStd.dropFirst(rootStd.count + 1))
+        let components = relative.split(separator: "/").map(String.init)
+        var currentParent: FileExplorerNode? = nil
+        var currentChildren = rootNodes
+        var accumulated = rootStd
+
+        for (index, component) in components.enumerated() {
+            accumulated += "/" + component
+            guard let match = currentChildren.first(where: { $0.name == component }) else {
+                return nil
+            }
+            let isLast = index == components.count - 1
+            if match.isDirectory {
+                expandedPaths.insert(match.path)
+                if match.children == nil {
+                    await loadChildren(for: match, at: match.path, silent: true)
+                }
+                if isLast {
+                    objectWillChange.send()
+                    return match
+                }
+                guard let children = match.children else { return nil }
+                currentParent = match
+                currentChildren = children
+            } else {
+                if isLast {
+                    objectWillChange.send()
+                    return match
+                } else {
+                    return nil
+                }
+            }
+            _ = currentParent
+        }
+        return nil
+    }
+
     // MARK: - Private
 
     @MainActor
@@ -734,6 +794,61 @@ final class FileExplorerStore: ObservableObject {
         }
         prefetchWorkItems.removeAll()
         isRootLoading = false
+    }
+}
+
+// MARK: - Store Registry
+
+/// Weakly tracks active local FileExplorerStore instances so that callers outside
+/// the file explorer (e.g. the terminal link handler) can look up which store
+/// contains a given filesystem path without holding strong references.
+final class FileExplorerStoreRegistry {
+    static let shared = FileExplorerStoreRegistry()
+
+    private var stores: [WeakBox] = []
+    private let lock = NSLock()
+
+    private final class WeakBox {
+        weak var value: FileExplorerStore?
+        init(_ value: FileExplorerStore) { self.value = value }
+    }
+
+    private init() {}
+
+    func register(_ store: FileExplorerStore) {
+        lock.lock()
+        defer { lock.unlock() }
+        stores.removeAll { $0.value == nil || $0.value === store }
+        stores.append(WeakBox(store))
+    }
+
+    func unregister(_ store: FileExplorerStore) {
+        lock.lock()
+        defer { lock.unlock() }
+        stores.removeAll { $0.value == nil || $0.value === store }
+    }
+
+    /// Return the active local store whose rootPath is an ancestor of `path`.
+    /// Prefers the deepest (most specific) root when multiple workspaces overlap.
+    func storeContaining(path: String) -> FileExplorerStore? {
+        let targetStd = (path as NSString).standardizingPath
+        lock.lock()
+        let snapshot = stores.compactMap { $0.value }
+        lock.unlock()
+        var best: FileExplorerStore?
+        var bestLen = -1
+        for store in snapshot {
+            guard store.provider is LocalFileExplorerProvider else { continue }
+            let rootStd = (store.rootPath as NSString).standardizingPath
+            guard !rootStd.isEmpty else { continue }
+            if targetStd == rootStd || targetStd.hasPrefix(rootStd + "/") {
+                if rootStd.count > bestLen {
+                    best = store
+                    bestLen = rootStd.count
+                }
+            }
+        }
+        return best
     }
 }
 

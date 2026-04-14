@@ -11233,10 +11233,50 @@ private struct SidebarFooterButtons: View {
 
     var body: some View {
         HStack(spacing: 4) {
+            FileExplorerToggleButton(state: fileExplorerState)
             SidebarHelpMenuButton(onSendFeedback: onSendFeedback)
             UpdatePill(model: updateViewModel)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct FileExplorerToggleButton: View {
+    @ObservedObject var state: FileExplorerState
+    @ObservedObject private var keyboardShortcutSettingsObserver = KeyboardShortcutSettingsObserver.shared
+
+    private let buttonSize: CGFloat = 22
+    private let iconSize: CGFloat = 11
+
+    private var label: String {
+        String(localized: "sidebar.button.toggleFileExplorer.label", defaultValue: "Toggle File Explorer")
+    }
+
+    private var tooltip: String {
+        let _ = keyboardShortcutSettingsObserver.revision
+        let shortcut = KeyboardShortcutSettings.shortcut(for: .toggleFileExplorer).displayString
+        if shortcut.isEmpty {
+            return label
+        }
+        return "\(label) (\(shortcut))"
+    }
+
+    var body: some View {
+        Button {
+            state.toggle()
+        } label: {
+            Image(systemName: "sidebar.right")
+                .symbolRenderingMode(.monochrome)
+                .font(.system(size: iconSize, weight: .medium))
+                .foregroundStyle(Color(nsColor: .secondaryLabelColor))
+                .frame(width: buttonSize, height: buttonSize, alignment: .center)
+        }
+        .buttonStyle(SidebarFooterIconButtonStyle())
+        .frame(width: buttonSize, height: buttonSize, alignment: .center)
+        .accessibilityElement(children: .ignore)
+        .safeHelp(tooltip)
+        .accessibilityLabel(label)
+        .accessibilityIdentifier("SidebarFileExplorerToggleButton")
     }
 }
 

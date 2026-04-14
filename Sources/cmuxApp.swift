@@ -337,6 +337,25 @@ struct cmuxApp: App {
                     updateSocketController()
                     appDelegate.configure(tabManager: tabManager, notificationStore: notificationStore, sidebarState: sidebarState)
                     appDelegate.fileExplorerState = fileExplorerState
+                    NotificationCenter.default.addObserver(
+                        forName: Notification.Name("com.cmux.toggleFileExplorer"),
+                        object: nil,
+                        queue: .main
+                    ) { [fileExplorerState] _ in
+                        fileExplorerState.toggle()
+                    }
+                    NotificationCenter.default.addObserver(
+                        forName: Notification.Name("com.cmux.fileExplorerOpenRequest"),
+                        object: nil,
+                        queue: .main
+                    ) { [tabManager] note in
+                        guard let path = note.userInfo?["path"] as? String else { return }
+                        guard let workspace = tabManager.selectedWorkspace else {
+                            NSWorkspace.shared.open(URL(fileURLWithPath: path))
+                            return
+                        }
+                        workspace.openFileFromExplorer(filePath: path)
+                    }
                     cmuxConfigStore.wireDirectoryTracking(tabManager: tabManager)
                     cmuxConfigStore.loadAll()
                     applyAppearance()
@@ -679,6 +698,10 @@ struct cmuxApp: App {
                     if AppDelegate.shared?.toggleSidebarInActiveMainWindow() != true {
                         sidebarState.toggle()
                     }
+                }
+
+                splitCommandButton(title: String(localized: "menu.view.toggleFileExplorer", defaultValue: "Toggle File Explorer"), shortcut: menuShortcut(for: .toggleFileExplorer)) {
+                    fileExplorerState.toggle()
                 }
 
                 Divider()
