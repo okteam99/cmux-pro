@@ -2,6 +2,17 @@
 
 All notable changes to cmux are documented here.
 
+## [0.64.0] - 2026-04-15
+
+### Added
+- Reveal terminal filesystem paths in the File Explorer sidebar by clicking local file links.
+- Toggle File Explorer button in the sidebar footer and a matching View menu entry with configurable shortcut.
+- Markdown viewer window backed by a vendored WebKit bundle (marked, highlight.js, mermaid) for opening `.md` / `.markdown` files from the explorer.
+
+### Changed
+- Fork rebased on `okteam99/cmux-pro`; release workflow, Sparkle feed URL, and remote daemon asset repo now point at this fork.
+- Bump bundled `vendor/bonsplit` to pick up the file explorer split button and tab/minimal-mode interaction fixes.
+
 ## [0.63.2] - 2026-04-06
 
 ### Added
