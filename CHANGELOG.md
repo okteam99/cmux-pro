@@ -2,6 +2,11 @@
 
 All notable changes to cmux are documented here.
 
+## [0.64.2] - 2026-04-16
+
+### Changed
+- Recolor app icon chevron from blue/cyan to an orange gradient so cmux Pro is visually distinct from upstream cmux.
+
 ## [0.64.1] - 2026-04-15
 
 ### Fixed
