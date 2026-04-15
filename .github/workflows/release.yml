@@ -297,6 +297,17 @@ jobs:
           xcrun stapler validate "$APP_PATH"
           spctl -a -vv --type execute "$APP_PATH"
           rm -f "$ZIP_SUBMIT"
+          # Rename bundle dir to "cmux Pro.app" so it does not collide with
+          # the upstream cmux.app when both are installed. The code signature
+          # and stapled notarization ticket are bound to CFBundleIdentifier,
+          # not the wrapper directory name, so renaming after stapling is
+          # safe and Gatekeeper still accepts the bundle.
+          DMG_APP_PATH="$(dirname "$APP_PATH")/cmux Pro.app"
+          mv "$APP_PATH" "$DMG_APP_PATH"
+          APP_PATH="$DMG_APP_PATH"
+          /usr/bin/codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+          xcrun stapler validate "$APP_PATH"
+          spctl -a -vv --type execute "$APP_PATH"
           # create-dmg generates a styled drag-to-install DMG
           create-dmg \
             --identity="$APPLE_SIGNING_IDENTITY" \
