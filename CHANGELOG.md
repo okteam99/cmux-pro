@@ -2,6 +2,11 @@
 
 All notable changes to cmux are documented here.
 
+## [0.64.1] - 2026-04-15
+
+### Fixed
+- DMG bundle renamed to `cmux Pro.app` so it installs side-by-side with the upstream `cmux.app` instead of prompting to replace it.
+
 ## [0.64.0] - 2026-04-15
 
 ### Added
