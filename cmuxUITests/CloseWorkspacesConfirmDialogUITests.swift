@@ -7,7 +7,7 @@ final class CloseWorkspacesConfirmDialogUITests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        socketPath = "/tmp/cmux-ui-test-close-workspaces-\(UUID().uuidString).sock"
+        socketPath = "/tmp/cmuxpro-ui-test-close-workspaces-\(UUID().uuidString).sock"
         try? FileManager.default.removeItem(atPath: socketPath)
     }
 

@@ -130,8 +130,8 @@ exit 0
                 target.write_text("<!doctype html><title>fixture</title>", encoding="utf-8")
 
         env = os.environ.copy()
-        env["CMUX_SOCKET_PATH"] = "/tmp/cmux-open-wrapper-test.sock"
-        env["CMUX_BUNDLE_ID"] = "com.cmuxterm.app.debug.test"
+        env["CMUX_SOCKET_PATH"] = "/tmp/cmuxpro-open-wrapper-test.sock"
+        env["CMUX_BUNDLE_ID"] = "com.okteam99.cmuxpro.debug.test"
         env["CMUX_OPEN_WRAPPER_SYSTEM_OPEN"] = str(system_open)
         env["CMUX_OPEN_WRAPPER_DEFAULTS"] = str(defaults)
         env["FAKE_OPEN_LOG"] = str(open_log)
@@ -422,7 +422,7 @@ def test_local_html_file_routes_to_cmux(failures: list[str]) -> None:
 
 
 def test_file_url_html_routes_to_cmux(failures: list[str]) -> None:
-    url = "file:///tmp/cmux-open-wrapper-fixture.html"
+    url = "file:///tmp/cmuxpro-open-wrapper-fixture.html"
     open_log, cmux_log, code, stderr = run_wrapper(
         args=[url],
         intercept_setting="1",
@@ -434,7 +434,7 @@ def test_file_url_html_routes_to_cmux(failures: list[str]) -> None:
 
 
 def test_file_url_html_routes_to_cmux_without_python_binary(failures: list[str]) -> None:
-    url = "file:///tmp/cmux-open-wrapper-fixture.html"
+    url = "file:///tmp/cmuxpro-open-wrapper-fixture.html"
     open_log, cmux_log, code, stderr = run_wrapper(
         args=[url],
         intercept_setting="1",

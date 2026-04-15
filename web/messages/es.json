@@ -306,7 +306,7 @@
       "title": "Comandos personalizados",
       "metaTitle": "Comandos personalizados",
       "metaDescription": "Define comandos personalizados y diseños de workspace en cmux.json. Configuración por proyecto y global con monitoreo en vivo de archivos.",
-      "intro": "Define comandos personalizados y diseños de workspace añadiendo un archivo cmux.json a la raíz de tu proyecto o ~/.config/cmux/. Los comandos aparecen en la paleta de comandos.",
+      "intro": "Define comandos personalizados y diseños de workspace añadiendo un archivo cmux.json a la raíz de tu proyecto o ~/.config/cmuxpro/. Los comandos aparecen en la paleta de comandos.",
       "fileLocations": "Ubicaciones de archivos",
       "fileLocationsDesc": "cmux busca configuración en dos lugares:",
       "localConfig": "Por proyecto:",

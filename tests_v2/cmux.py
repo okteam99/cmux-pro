@@ -33,12 +33,12 @@ class cmuxError(Exception):
     """Exception raised for cmux errors."""
 
 
-_APP_SUPPORT_DIR = os.path.expanduser("~/Library/Application Support/cmux")
+_APP_SUPPORT_DIR = os.path.expanduser("~/Library/Application Support/cmuxpropro")
 _STABLE_SOCKET_PATH = os.path.join(_APP_SUPPORT_DIR, "cmux.sock")
 _LEGACY_STABLE_SOCKET_PATH = "/tmp/cmux.sock"
 _LAST_SOCKET_PATH_FILES = [
     os.path.join(_APP_SUPPORT_DIR, "last-socket-path"),
-    "/tmp/cmux-last-socket-path",
+    "/tmp/cmuxpro-last-socket-path",
 ]
 
 
@@ -68,12 +68,12 @@ def _default_socket_path() -> str:
     if last_socket and os.path.exists(last_socket):
         return last_socket
 
-    candidates = ["/tmp/cmux-debug.sock", _STABLE_SOCKET_PATH, _LEGACY_STABLE_SOCKET_PATH]
+    candidates = ["/tmp/cmuxpro-debug.sock", _STABLE_SOCKET_PATH, _LEGACY_STABLE_SOCKET_PATH]
     for path in candidates:
         if os.path.exists(path):
             return path
 
-    discovered = glob.glob("/tmp/cmux-debug-*.sock")
+    discovered = glob.glob("/tmp/cmuxpro-debug-*.sock")
     discovered.extend(glob.glob(os.path.join(_APP_SUPPORT_DIR, "cmux*.sock")))
     discovered = [path for path in discovered if os.path.exists(path)]
     if discovered:

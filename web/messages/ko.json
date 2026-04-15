@@ -306,7 +306,7 @@
       "title": "사용자 정의 명령어",
       "metaTitle": "사용자 정의 명령어",
       "metaDescription": "cmux.json에서 사용자 정의 명령어와 워크스페이스 레이아웃을 정의합니다. 실시간 파일 감시와 함께 프로젝트별 및 전역 설정을 지원합니다.",
-      "intro": "프로젝트 루트 또는 ~/.config/cmux/에 cmux.json 파일을 추가하여 사용자 정의 명령어와 워크스페이스 레이아웃을 정의합니다. 명령어는 명령어 팔레트에 표시됩니다.",
+      "intro": "프로젝트 루트 또는 ~/.config/cmuxpro/에 cmux.json 파일을 추가하여 사용자 정의 명령어와 워크스페이스 레이아웃을 정의합니다. 명령어는 명령어 팔레트에 표시됩니다.",
       "fileLocations": "파일 위치",
       "fileLocationsDesc": "cmux는 두 곳에서 설정을 찾습니다:",
       "localConfig": "프로젝트별:",

@@ -902,11 +902,11 @@ enum BrowserUserAgentSettings {
 }
 
 func normalizedBrowserHistoryNamespace(bundleIdentifier: String) -> String {
-    if bundleIdentifier.hasPrefix("com.cmuxterm.app.debug.") {
-        return "com.cmuxterm.app.debug"
+    if bundleIdentifier.hasPrefix("com.okteam99.cmuxpro.debug.") {
+        return "com.okteam99.cmuxpro.debug"
     }
-    if bundleIdentifier.hasPrefix("com.cmuxterm.app.staging.") {
-        return "com.cmuxterm.app.staging"
+    if bundleIdentifier.hasPrefix("com.okteam99.cmuxpro.staging.") {
+        return "com.okteam99.cmuxpro.staging"
     }
     return bundleIdentifier
 }

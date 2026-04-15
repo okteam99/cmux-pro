@@ -306,7 +306,7 @@
       "title": "自定义命令",
       "metaTitle": "自定义命令",
       "metaDescription": "在 cmux.json 中定义自定义命令和工作区布局。支持按项目配置和全局配置，并具有实时文件监视功能。",
-      "intro": "通过在项目根目录或 ~/.config/cmux/ 中添加 cmux.json 文件来定义自定义命令和工作区布局。命令将显示在命令面板中。",
+      "intro": "通过在项目根目录或 ~/.config/cmuxpro/ 中添加 cmux.json 文件来定义自定义命令和工作区布局。命令将显示在命令面板中。",
       "fileLocations": "文件位置",
       "fileLocationsDesc": "cmux 在两个地方查找配置：",
       "localConfig": "按项目：",

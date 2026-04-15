@@ -228,9 +228,9 @@ def main():
 
     # Try to connect to the socket
     socket_paths = [
-        os.path.expanduser("~/Library/Application Support/cmux/cmux.sock"),
+        os.path.expanduser("~/Library/Application Support/cmuxpropro/cmux.sock"),
         "/tmp/cmux.sock",
-        "/tmp/cmux-debug.sock",
+        "/tmp/cmuxpro-debug.sock",
     ]
     client = None
     for socket_path in socket_paths:

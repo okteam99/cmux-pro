@@ -303,11 +303,11 @@ jobs:
 
           prepare_variant \
             "$APP_DIR" \
-            "com.cmuxterm.app.nightly" \
+            "com.okteam99.cmuxpro.nightly" \
             "https://files.cmux.com/nightly/appcast.xml"
 
           echo "Nightly app name: cmux NIGHTLY"
-          echo "Nightly bundle ID: com.cmuxterm.app.nightly"
+          echo "Nightly bundle ID: com.okteam99.cmuxpro.nightly"
           echo "Nightly marketing version: ${NIGHTLY_MARKETING_VERSION}"
           echo "Nightly build number: ${NIGHTLY_BUILD}"
           echo "Nightly immutable DMG: ${NIGHTLY_DMG_IMMUTABLE}"
@@ -548,7 +548,7 @@ jobs:
             Automated nightly build for `${{ needs.decide.outputs.short_sha }}`.
 
             **cmux NIGHTLY** is published as a universal app:
-            - bundle ID `com.cmuxterm.app.nightly`
+            - bundle ID `com.okteam99.cmuxpro.nightly`
             - feed `appcast.xml`
             - compatibility feed `appcast-universal.xml` for older universal nightlies
 

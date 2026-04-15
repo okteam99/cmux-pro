@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from cmux import cmux, cmuxError
 
 
-SOCKET_PATH = os.environ.get("CMUX_SOCKET", "/tmp/cmux-debug.sock")
+SOCKET_PATH = os.environ.get("CMUX_SOCKET", "/tmp/cmuxpro-debug.sock")
 
 
 def _must(cond: bool, msg: str) -> None:
@@ -35,7 +35,7 @@ def _find_cli_binary() -> str:
         return fixed
 
     candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/cmux"), recursive=True)
-    candidates += glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux")
+    candidates += glob.glob("/tmp/cmuxpro-*/Build/Products/Debug/cmux")
     candidates = [p for p in candidates if os.path.isfile(p) and os.access(p, os.X_OK)]
     if not candidates:
         raise cmuxError("Could not locate cmux CLI binary; set CMUXTERM_CLI")
@@ -236,7 +236,7 @@ def main() -> int:
             _must("-o StrictHostKeyChecking=accept-new" in ssh_command, f"ssh command prefix mismatch: {ssh_command!r}")
             _must("-o ControlMaster=auto" in ssh_command, f"ssh command should opt into connection reuse: {ssh_command!r}")
             _must("-o ControlPersist=600" in ssh_command, f"ssh command should keep master alive for reuse: {ssh_command!r}")
-            _must("ControlPath=/tmp/cmux-ssh-" in ssh_command, f"ssh command should use shared control path template: {ssh_command!r}")
+            _must("ControlPath=/tmp/cmuxpro-ssh-" in ssh_command, f"ssh command should use shared control path template: {ssh_command!r}")
             _must(
                 "RemoteCommand=" not in ssh_command,
                 f"cmux ssh should keep the plain ssh_command separate from the terminal bootstrap wrapper: {ssh_command!r}",
@@ -414,7 +414,7 @@ def main() -> int:
 
             _must(bool(workspace_id_without_name), f"cmux ssh without --name should still create workspace: {payload2}")
             _must(
-                "ControlPath=/tmp/cmux-ssh-" in ssh_command_without_name,
+                "ControlPath=/tmp/cmuxpro-ssh-" in ssh_command_without_name,
                 f"cmux ssh without --name should still include control path defaults: {ssh_command_without_name!r}",
             )
             _must(
@@ -493,7 +493,7 @@ def main() -> int:
                     "--ssh-option",
                     "controlpersist=0",
                     "--ssh-option",
-                    "controlpath=/tmp/cmux-ssh-%C-custom",
+                    "controlpath=/tmp/cmuxpro-ssh-%C-custom",
                 ],
             )
             workspace_id_case_override = _append_workspace_to_cleanup(
@@ -531,7 +531,7 @@ def main() -> int:
                 f"ssh command should not force default ControlPersist when lowercase override is supplied: {ssh_command_case_override!r}",
             )
             _must(
-                "controlpath=/tmp/cmux-ssh-%c-custom" in ssh_command_case_override_lower,
+                "controlpath=/tmp/cmuxpro-ssh-%c-custom" in ssh_command_case_override_lower,
                 f"ssh command should preserve lowercase ControlPath override value: {ssh_command_case_override!r}",
             )
             _must(

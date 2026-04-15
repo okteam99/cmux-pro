@@ -91,14 +91,14 @@ final class CmuxSettingsFileStore {
         "shortcuts.bindings",
     ]
 
-    private static let releaseBundleIdentifier = "com.cmuxterm.app"
+    private static let releaseBundleIdentifier = "com.okteam99.cmuxpro"
     private static let backupsDefaultsKey = "cmux.settingsFile.backups.v1"
     fileprivate static let trustedDirectoriesBackupIdentifier = "customCommands.trustedDirectories"
     fileprivate static let socketPasswordBackupIdentifier = "automation.socketPassword"
 
     static var defaultPrimaryPath: String {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
-        return (home as NSString).appendingPathComponent(".config/cmux/settings.json")
+        return (home as NSString).appendingPathComponent(".config/cmuxpro/settings.json")
     }
 
     static var defaultFallbackPath: String? {
@@ -1272,7 +1272,7 @@ final class CmuxSettingsFileStore {
             "  // Uncomment and edit any setting to make it file-managed.",
             "  // Remove a setting to fall back to the value saved in Settings.",
             "  // cmux creates this template on launch when both settings file locations are missing.",
-            "  // ~/.config/cmux/settings.json takes precedence over the Application Support fallback.",
+            "  // ~/.config/cmuxpro/settings.json takes precedence over the Application Support fallback.",
             "",
         ]
 

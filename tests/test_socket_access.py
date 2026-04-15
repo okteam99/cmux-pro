@@ -118,8 +118,8 @@ def _find_app():
     preferred_slug = _preferred_worktree_slug()
     if preferred_slug:
         preferred_tmp = []
-        preferred_tmp.extend(glob.glob(f"/tmp/cmux-{preferred_slug}/Build/Products/Debug/cmux DEV*.app"))
-        preferred_tmp.extend(glob.glob(f"/private/tmp/cmux-{preferred_slug}/Build/Products/Debug/cmux DEV*.app"))
+        preferred_tmp.extend(glob.glob(f"/tmp/cmuxpro-{preferred_slug}/Build/Products/Debug/cmux DEV*.app"))
+        preferred_tmp.extend(glob.glob(f"/private/tmp/cmuxpro-{preferred_slug}/Build/Products/Debug/cmux DEV*.app"))
         preferred_tmp = [p for p in preferred_tmp if os.path.exists(p)]
         if preferred_tmp:
             preferred_tmp.sort(key=os.path.getmtime, reverse=True)
@@ -135,8 +135,8 @@ def _find_app():
         home, "Library/Developer/Xcode/DerivedData/*/Build/Products/Debug/cmux DEV.app"
     ))
     tmp_candidates = []
-    tmp_candidates.extend(glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux DEV*.app"))
-    tmp_candidates.extend(glob.glob("/private/tmp/cmux-*/Build/Products/Debug/cmux DEV*.app"))
+    tmp_candidates.extend(glob.glob("/tmp/cmuxpro-*/Build/Products/Debug/cmux DEV*.app"))
+    tmp_candidates.extend(glob.glob("/private/tmp/cmuxpro-*/Build/Products/Debug/cmux DEV*.app"))
 
     derived_candidates = [p for p in derived_candidates if os.path.exists(p)]
     tmp_candidates = [p for p in tmp_candidates if os.path.exists(p)]
@@ -176,8 +176,8 @@ def _find_cli(preferred_app_path: str = ""):
     candidates.extend(glob.glob(os.path.join(
         home, "Library/Developer/Xcode/DerivedData/*/Build/Products/Debug/cmux"
     )))
-    candidates.extend(glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux"))
-    candidates.extend(glob.glob("/private/tmp/cmux-*/Build/Products/Debug/cmux"))
+    candidates.extend(glob.glob("/tmp/cmuxpro-*/Build/Products/Debug/cmux"))
+    candidates.extend(glob.glob("/private/tmp/cmuxpro-*/Build/Products/Debug/cmux"))
     candidates = [p for p in candidates if os.path.exists(p) and os.access(p, os.X_OK)]
     if not candidates:
         return ""
@@ -647,7 +647,7 @@ def run_tests():
         return 1
     print(f"App: {app_path}")
 
-    socket_path = f"/tmp/cmux-test-socket-access-{os.getpid()}.sock"
+    socket_path = f"/tmp/cmuxpro-test-socket-access-{os.getpid()}.sock"
     try:
         os.unlink(socket_path)
     except OSError:

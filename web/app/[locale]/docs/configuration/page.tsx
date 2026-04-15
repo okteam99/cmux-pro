@@ -250,18 +250,18 @@ working-directory = ~/code`}</CodeBlock>
       <p>
         cmux keeps app-owned settings in a separate user file instead of mixing them into Ghostty
         config. On launch, if neither settings location exists, cmux writes a commented template to{" "}
-        <code>~/.config/cmux/settings.json</code>.
+        <code>~/.config/cmuxpro/settings.json</code>.
       </p>
       <ol>
         <li>
-          <code>~/.config/cmux/settings.json</code>
+          <code>~/.config/cmuxpro/settings.json</code>
         </li>
         <li>
-          <code>~/Library/Application Support/com.cmuxterm.app/settings.json</code>
+          <code>~/Library/Application Support/com.okteam99.cmuxpro/settings.json</code>
         </li>
       </ol>
       <Callout type="info">
-        <strong>Precedence:</strong> <code>~/.config/cmux/settings.json</code> wins over the
+        <strong>Precedence:</strong> <code>~/.config/cmuxpro/settings.json</code> wins over the
         Application Support fallback. File-managed values override the value saved in the Settings
         window. Remove a key to fall back to the Settings value again.
       </Callout>
@@ -279,7 +279,7 @@ working-directory = ~/code`}</CodeBlock>
         at <a href={schemaUrl}>{schemaUrl}</a> and the source lives at{" "}
         <a href={schemaSourceUrl}>{schemaSourceUrl}</a>.
       </p>
-      <CodeBlock title="~/.config/cmux/settings.json" lang="json">
+      <CodeBlock title="~/.config/cmuxpro/settings.json" lang="json">
         {settingsFileExample}
       </CodeBlock>
 

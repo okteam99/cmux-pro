@@ -13,9 +13,9 @@ final class BrowserPaneNavigationKeybindUITests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        dataPath = "/tmp/cmux-ui-test-goto-split-\(UUID().uuidString).json"
+        dataPath = "/tmp/cmuxpro-ui-test-goto-split-\(UUID().uuidString).json"
         try? FileManager.default.removeItem(atPath: dataPath)
-        socketPath = "/tmp/cmux-ui-test-socket-\(UUID().uuidString).sock"
+        socketPath = "/tmp/cmuxpro-ui-test-socket-\(UUID().uuidString).sock"
         try? FileManager.default.removeItem(atPath: socketPath)
     }
 

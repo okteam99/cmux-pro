@@ -1634,7 +1634,7 @@ final class WorkspaceCreationConfigSanitizationTests: XCTestCase {
         func installInjectedConfig(fontSize: Float) {
             var config = CmuxSurfaceConfigTemplate()
             config.fontSize = fontSize
-            config.workingDirectory = "/tmp/cmux-workspace-snapshot"
+            config.workingDirectory = "/tmp/cmuxpro-workspace-snapshot"
             config.command = "echo snapshot"
             config.environmentVariables = ["CMUX_INHERITED_ENV": "1"]
             injectedConfig = config
@@ -2221,7 +2221,7 @@ final class WorkspaceSplitWorkingDirectoryTests: XCTestCase {
         }
 
         let staleCurrentDirectory = workspace.currentDirectory
-        let requestedDirectory = "/tmp/cmux-requested-split-cwd-\(UUID().uuidString)"
+        let requestedDirectory = "/tmp/cmuxpro-requested-split-cwd-\(UUID().uuidString)"
         guard let sourcePanel = workspace.newTerminalSurface(
             inPane: sourcePaneId,
             focus: false,
@@ -3495,7 +3495,7 @@ final class WorkspacePanelGitBranchTests: XCTestCase {
                 relayPort: 64007,
                 relayID: String(repeating: "a", count: 16),
                 relayToken: String(repeating: "b", count: 64),
-                localSocketPath: "/tmp/cmux-debug-test.sock",
+                localSocketPath: "/tmp/cmuxpro-debug-test.sock",
                 terminalStartupCommand: "ssh cmux-macmini"
             ),
             autoConnect: false

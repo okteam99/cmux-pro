@@ -306,7 +306,7 @@
       "title": "Prilagođene komande",
       "metaTitle": "Prilagođene komande",
       "metaDescription": "Definirajte prilagođene komande i rasporede radnog prostora u cmux.json. Konfiguracija po projektu i globalna konfiguracija s praćenjem promjena datoteka.",
-      "intro": "Definirajte prilagođene komande i rasporede radnog prostora dodavanjem datoteke cmux.json u korijenski direktorij vašeg projekta ili ~/.config/cmux/. Komande se pojavljuju u paleti komandi.",
+      "intro": "Definirajte prilagođene komande i rasporede radnog prostora dodavanjem datoteke cmux.json u korijenski direktorij vašeg projekta ili ~/.config/cmuxpro/. Komande se pojavljuju u paleti komandi.",
       "fileLocations": "Lokacije datoteka",
       "fileLocationsDesc": "cmux traži konfiguraciju na dva mjesta:",
       "localConfig": "Po projektu:",

@@ -105,10 +105,10 @@ fi
 TAG_ID="$(sanitize_bundle "$TAG")"
 TAG_SLUG="$(sanitize_path "$TAG")"
 APP="$HOME/Library/Developer/Xcode/DerivedData/cmux-${TAG_SLUG}/Build/Products/Debug/cmux DEV ${TAG}.app"
-BID="com.cmuxterm.app.debug.${TAG_ID}"
-SOCK="/tmp/cmux-debug-${TAG_SLUG}.sock"
-DSOCK="$HOME/Library/Application Support/cmux/cmuxd-dev-${TAG_SLUG}.sock"
-LOG="/tmp/cmux-debug-${TAG_SLUG}.log"
+BID="com.okteam99.cmuxpro.debug.${TAG_ID}"
+SOCK="/tmp/cmuxpro-debug-${TAG_SLUG}.sock"
+DSOCK="$HOME/Library/Application Support/cmuxpro/cmuxd-dev-${TAG_SLUG}.sock"
+LOG="/tmp/cmuxpro-debug-${TAG_SLUG}.log"
 
 if [[ ! -d "$APP" ]]; then
   echo "error: tagged app not found at $APP" >&2

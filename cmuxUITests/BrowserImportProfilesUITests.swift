@@ -24,7 +24,7 @@ final class BrowserImportProfilesUITests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        capturePath = "/tmp/cmux-ui-test-browser-import-\(UUID().uuidString).json"
+        capturePath = "/tmp/cmuxpro-ui-test-browser-import-\(UUID().uuidString).json"
         try? FileManager.default.removeItem(atPath: capturePath)
     }
 

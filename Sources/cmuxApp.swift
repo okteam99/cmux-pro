@@ -3813,7 +3813,7 @@ enum AppIconSettings {
         "AppIcon",
         "AppIcon-Debug",
     ]
-    private static let dockTileIconDidChangeNotification = Notification.Name("com.cmuxterm.appIconDidChange")
+    private static let dockTileIconDidChangeNotification = Notification.Name("com.okteam99.cmuxpro.appIconDidChange")
 
     struct Environment {
         let imageForMode: (AppIconMode) -> NSImage?

@@ -306,7 +306,7 @@
       "title": "Niestandardowe polecenia",
       "metaTitle": "Niestandardowe polecenia",
       "metaDescription": "Definiuj niestandardowe polecenia i układy workspace w cmux.json. Konfiguracja per-projekt i globalna z obserwacją plików na żywo.",
-      "intro": "Definiuj niestandardowe polecenia i układy workspace, dodając plik cmux.json do katalogu głównego projektu lub ~/.config/cmux/. Polecenia pojawiają się w palecie poleceń.",
+      "intro": "Definiuj niestandardowe polecenia i układy workspace, dodając plik cmux.json do katalogu głównego projektu lub ~/.config/cmuxpro/. Polecenia pojawiają się w palecie poleceń.",
       "fileLocations": "Lokalizacje plików",
       "fileLocationsDesc": "cmux szuka konfiguracji w dwóch miejscach:",
       "localConfig": "Per projekt:",

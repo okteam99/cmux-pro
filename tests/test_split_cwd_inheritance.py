@@ -113,7 +113,7 @@ def main() -> int:
 
     socket_path = None
     if tag:
-        socket_path = f"/tmp/cmux-debug-{tag}.sock"
+        socket_path = f"/tmp/cmuxpro-debug-{tag}.sock"
     client = cmux(socket_path=socket_path)
     client.connect()
 

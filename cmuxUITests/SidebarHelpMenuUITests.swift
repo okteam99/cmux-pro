@@ -304,7 +304,7 @@ final class CommandPaletteAllSurfacesUITests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        socketPath = "/tmp/cmux-ui-test-command-palette-\(UUID().uuidString).sock"
+        socketPath = "/tmp/cmuxpro-ui-test-command-palette-\(UUID().uuidString).sock"
         try? FileManager.default.removeItem(atPath: socketPath)
     }
 
@@ -521,7 +521,7 @@ final class CommandPaletteAllSurfacesUITests: XCTestCase {
 
     func testMinimalModeToggleKeepsSettingsWindowFocused() throws {
         let app = XCUIApplication()
-        let diagnosticsPath = "/tmp/cmux-ui-test-settings-focus-\(UUID().uuidString).json"
+        let diagnosticsPath = "/tmp/cmuxpro-ui-test-settings-focus-\(UUID().uuidString).json"
         try? FileManager.default.removeItem(atPath: diagnosticsPath)
         app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launchEnvironment["CMUX_UI_TEST_MODE"] = "1"

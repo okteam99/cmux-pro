@@ -48,7 +48,7 @@ App path:
 =======================================================
 ```
 
-Never use `/tmp/cmux-<tag>/...` app links in chat output.
+Never use `/tmp/cmuxpro-<tag>/...` app links in chat output.
 
 After making code changes, always use `reload.sh --tag` to build. **Never run bare `xcodebuild` or `open` an untagged `cmux DEV.app`.** Untagged builds share the default debug socket and bundle ID with other agents, causing conflicts and stealing focus.
 
@@ -59,7 +59,7 @@ After making code changes, always use `reload.sh --tag` to build. **Never run ba
 If you only need to verify the build compiles (no launch), use a tagged derivedDataPath:
 
 ```bash
-xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux -configuration Debug -destination 'platform=macOS' -derivedDataPath /tmp/cmux-<your-tag> build
+xcodebuild -project GhosttyTabs.xcodeproj -scheme cmux -configuration Debug -destination 'platform=macOS' -derivedDataPath /tmp/cmuxpro-<your-tag> build
 ```
 
 When rebuilding GhosttyKit.xcframework, always use Release optimizations:
@@ -114,14 +114,14 @@ Before launching a new tagged run, clean up any older tags you started in this s
 All debug events (keys, mouse, focus, splits, tabs) go to a unified log in DEBUG builds:
 
 ```bash
-tail -f "$(cat /tmp/cmux-last-debug-log-path 2>/dev/null || echo /tmp/cmux-debug.log)"
+tail -f "$(cat /tmp/cmuxpro-last-debug-log-path 2>/dev/null || echo /tmp/cmuxpro-debug.log)"
 ```
 
-- Untagged Debug app: `/tmp/cmux-debug.log`
-- Tagged Debug app (`./scripts/reload.sh --tag <tag>`): `/tmp/cmux-debug-<tag>.log`
-- `reload.sh` writes the current path to `/tmp/cmux-last-debug-log-path`
-- `reload.sh` writes the selected dev CLI path to `/tmp/cmux-last-cli-path`
-- `reload.sh` updates `/tmp/cmux-cli` and `$HOME/.local/bin/cmux-dev` to that CLI
+- Untagged Debug app: `/tmp/cmuxpro-debug.log`
+- Tagged Debug app (`./scripts/reload.sh --tag <tag>`): `/tmp/cmuxpro-debug-<tag>.log`
+- `reload.sh` writes the current path to `/tmp/cmuxpro-last-debug-log-path`
+- `reload.sh` writes the selected dev CLI path to `/tmp/cmuxpro-last-cli-path`
+- `reload.sh` updates `/tmp/cmuxpro-cli` and `$HOME/.local/bin/cmux-dev` to that CLI
 
 - Implementation: `vendor/bonsplit/Sources/Bonsplit/Public/DebugEventLog.swift`
 - Free function `dlog("message")` — logs with timestamp and appends to file in real time
@@ -160,7 +160,7 @@ The app has a **Debug** menu in the macOS menu bar (only in DEBUG builds). Use i
 - **Terminal find layering contract:** `SurfaceSearchOverlay` must be mounted from `GhosttySurfaceScrollView` in `Sources/GhosttyTerminalView.swift` (AppKit portal layer), not from SwiftUI panel containers such as `Sources/Panels/TerminalPanelView.swift`. Portal-hosted terminal views can sit above SwiftUI during split/workspace churn.
 - **Submodule safety:** When modifying a submodule (ghostty, vendor/bonsplit, etc.), always push the submodule commit to its remote `main` branch BEFORE committing the updated pointer in the parent repo. Never commit on a detached HEAD or temporary branch — the commit will be orphaned and lost. Verify with: `cd <submodule> && git merge-base --is-ancestor HEAD origin/main`.
 - **All user-facing strings must be localized.** Use `String(localized: "key.name", defaultValue: "English text")` for every string shown in the UI (labels, buttons, menus, dialogs, tooltips, error messages). Keys go in `Resources/Localizable.xcstrings` with translations for all supported languages (currently English and Japanese). Never use bare string literals in SwiftUI `Text()`, `Button()`, alert titles, etc.
-- **Shortcut policy:** Every new cmux-owned keyboard shortcut must be added to `KeyboardShortcutSettings`, visible/editable in Settings, supported in `~/.config/cmux/settings.json`, and documented in the keyboard shortcut and configuration docs.
+- **Shortcut policy:** Every new cmux-owned keyboard shortcut must be added to `KeyboardShortcutSettings`, visible/editable in Settings, supported in `~/.config/cmuxpro/settings.json`, and documented in the keyboard shortcut and configuration docs.
 
 ## Test quality policy
 
@@ -193,7 +193,7 @@ The app has a **Debug** menu in the macOS menu bar (only in DEBUG builds). Use i
 
 - **E2E / UI tests:** trigger via `gh workflow run test-e2e.yml` (see cmuxterm-hq CLAUDE.md for details)
 - **Unit tests:** `xcodebuild -scheme cmux-unit` is safe (no app launch), but prefer CI
-- **Python socket tests (tests_v2/):** these connect to a running cmux instance's socket. Never launch an untagged `cmux DEV.app` to run them. If you must test locally, use a tagged build's socket (`/tmp/cmux-debug-<tag>.sock`) with `CMUX_SOCKET=/tmp/cmux-debug-<tag>.sock`
+- **Python socket tests (tests_v2/):** these connect to a running cmux instance's socket. Never launch an untagged `cmux DEV.app` to run them. If you must test locally, use a tagged build's socket (`/tmp/cmuxpro-debug-<tag>.sock`) with `CMUX_SOCKET=/tmp/cmuxpro-debug-<tag>.sock`
 - **Never `open` an untagged `cmux DEV.app`** from DerivedData. It conflicts with the user's running debug instance.
 
 ## Ghostty submodule workflow

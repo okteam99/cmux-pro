@@ -18,7 +18,7 @@ from cmux import cmux, cmuxError
 SOCKET_PATH = (
     os.environ.get("CMUX_SOCKET")
     or os.environ.get("CMUX_SOCKET_PATH")
-    or "/tmp/cmux-debug.sock"
+    or "/tmp/cmuxpro-debug.sock"
 )
 
 

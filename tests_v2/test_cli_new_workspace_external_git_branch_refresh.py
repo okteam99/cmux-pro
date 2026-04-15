@@ -20,8 +20,8 @@ from cmux import cmux, cmuxError
 def _resolve_socket_path() -> str:
     socket_path = os.environ.get("CMUX_SOCKET", "").strip()
     if not socket_path:
-        raise cmuxError("CMUX_SOCKET is required (expected /tmp/cmux-debug-<tag>.sock)")
-    if not re.fullmatch(r"/tmp/cmux-debug-[^/]+\.sock", socket_path):
+        raise cmuxError("CMUX_SOCKET is required (expected /tmp/cmuxpro-debug-<tag>.sock)")
+    if not re.fullmatch(r"/tmp/cmuxpro-debug-[^/]+\.sock", socket_path):
         raise cmuxError(f"CMUX_SOCKET must be a tagged debug socket, got: {socket_path!r}")
     return socket_path
 
@@ -47,7 +47,7 @@ def _find_cli_binary() -> str:
         os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/cmux"),
         recursive=True,
     )
-    candidates += glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux")
+    candidates += glob.glob("/tmp/cmuxpro-*/Build/Products/Debug/cmux")
     candidates = [p for p in candidates if os.path.isfile(p) and os.access(p, os.X_OK)]
     if not candidates:
         raise cmuxError("Could not locate cmux CLI binary; set CMUXTERM_CLI")

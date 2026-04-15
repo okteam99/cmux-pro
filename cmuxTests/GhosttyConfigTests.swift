@@ -80,8 +80,8 @@ final class GhosttyConfigTests: XCTestCase {
     }
 
     func testThemeSearchPathsIncludeXDGDataDirsThemes() {
-        let pathA = "/tmp/cmux-theme-a"
-        let pathB = "/tmp/cmux-theme-b"
+        let pathA = "/tmp/cmuxpro-theme-a"
+        let pathB = "/tmp/cmuxpro-theme-b"
         let paths = GhosttyConfig.themeSearchPaths(
             forThemeName: "Solarized Light",
             environment: ["XDG_DATA_DIRS": "\(pathA):\(pathB)"],
@@ -354,14 +354,14 @@ final class GhosttyConfigTests: XCTestCase {
         try withTemporaryAppSupportDirectory { appSupportDirectory in
             let releaseConfigURL = try writeAppSupportConfig(
                 appSupportDirectory: appSupportDirectory,
-                bundleIdentifier: "com.cmuxterm.app",
+                bundleIdentifier: "com.okteam99.cmuxpro",
                 filename: "config",
                 contents: "font-size = 13\n"
             )
 
             XCTAssertEqual(
                 GhosttyApp.cmuxAppSupportConfigURLs(
-                    currentBundleIdentifier: "com.cmuxterm.app.debug",
+                    currentBundleIdentifier: "com.okteam99.cmuxpro.debug",
                     appSupportDirectory: appSupportDirectory
                 ),
                 [releaseConfigURL]
@@ -373,20 +373,20 @@ final class GhosttyConfigTests: XCTestCase {
         try withTemporaryAppSupportDirectory { appSupportDirectory in
             _ = try writeAppSupportConfig(
                 appSupportDirectory: appSupportDirectory,
-                bundleIdentifier: "com.cmuxterm.app",
+                bundleIdentifier: "com.okteam99.cmuxpro",
                 filename: "config",
                 contents: "font-size = 13\n"
             )
             let currentConfigURL = try writeAppSupportConfig(
                 appSupportDirectory: appSupportDirectory,
-                bundleIdentifier: "com.cmuxterm.app.debug.issue-829",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug.issue-829",
                 filename: "config.ghostty",
                 contents: "font-size = 14\n"
             )
 
             XCTAssertEqual(
                 GhosttyApp.cmuxAppSupportConfigURLs(
-                    currentBundleIdentifier: "com.cmuxterm.app.debug.issue-829",
+                    currentBundleIdentifier: "com.okteam99.cmuxpro.debug.issue-829",
                     appSupportDirectory: appSupportDirectory
                 ),
                 [currentConfigURL]
@@ -398,7 +398,7 @@ final class GhosttyConfigTests: XCTestCase {
         try withTemporaryAppSupportDirectory { appSupportDirectory in
             _ = try writeAppSupportConfig(
                 appSupportDirectory: appSupportDirectory,
-                bundleIdentifier: "com.cmuxterm.app",
+                bundleIdentifier: "com.okteam99.cmuxpro",
                 filename: "config",
                 contents: "font-size = 13\n"
             )
@@ -416,14 +416,14 @@ final class GhosttyConfigTests: XCTestCase {
         try withTemporaryAppSupportDirectory { appSupportDirectory in
             _ = try writeAppSupportConfig(
                 appSupportDirectory: appSupportDirectory,
-                bundleIdentifier: "com.cmuxterm.app",
+                bundleIdentifier: "com.okteam99.cmuxpro",
                 filename: "config.ghostty",
                 contents: ""
             )
 
             XCTAssertTrue(
                 GhosttyApp.cmuxAppSupportConfigURLs(
-                    currentBundleIdentifier: "com.cmuxterm.app.debug",
+                    currentBundleIdentifier: "com.okteam99.cmuxpro.debug",
                     appSupportDirectory: appSupportDirectory
                 ).isEmpty
             )
@@ -876,7 +876,7 @@ final class WorkspaceRemoteDaemonManifestTests: XCTestCase {
             goArch: "arm64"
         )
 
-        XCTAssertTrue(url.path.contains("/Application Support/cmux/remote-daemons/0.62.0/linux-arm64/"))
+        XCTAssertTrue(url.path.contains("/Application Support/cmuxpro/remote-daemons/0.62.0/linux-arm64/"))
         XCTAssertEqual(url.lastPathComponent, "cmuxd-remote")
     }
 }
@@ -1050,7 +1050,7 @@ final class GhosttyTerminalStartupEnvironmentTests: XCTestCase {
     }
 
     func testMergedStartupEnvironmentAllowsSessionReplayAndInitialEnvCMUXKeys() {
-        let replayPath = "/tmp/cmux-replay-\(UUID().uuidString)"
+        let replayPath = "/tmp/cmuxpro-replay-\(UUID().uuidString)"
         let merged = TerminalSurface.mergedStartupEnvironment(
             base: [
                 "PATH": "/usr/bin",
@@ -1250,7 +1250,7 @@ final class BrowserPanelRemoteStoreTests: XCTestCase {
                 relayPort: 64001,
                 relayID: "relay-store-dest",
                 relayToken: String(repeating: "a", count: 64),
-                localSocketPath: "/tmp/cmux-store-dest.sock",
+                localSocketPath: "/tmp/cmuxpro-store-dest.sock",
                 terminalStartupCommand: "ssh cmux-macmini"
             ),
             autoConnect: false
@@ -1282,7 +1282,7 @@ final class BrowserPanelRemoteStoreTests: XCTestCase {
                 relayPort: 64002,
                 relayID: "relay-store-source",
                 relayToken: String(repeating: "b", count: 64),
-                localSocketPath: "/tmp/cmux-store-source.sock",
+                localSocketPath: "/tmp/cmuxpro-store-source.sock",
                 terminalStartupCommand: "ssh cmux-macmini"
             ),
             autoConnect: false
@@ -1319,7 +1319,7 @@ final class BrowserPanelRemoteStoreTests: XCTestCase {
             relayPort: 64000,
             relayID: "relay-test",
             relayToken: String(repeating: "a", count: 64),
-            localSocketPath: "/tmp/cmux-test.sock",
+            localSocketPath: "/tmp/cmuxpro-test.sock",
             terminalStartupCommand: "ssh cmux-macmini"
         )
 
@@ -1347,13 +1347,13 @@ final class WorkspaceRemoteConfigurationTransportKeyTests: XCTestCase {
             sshOptions: [
                 "Compression=yes",
                 "ControlMaster=auto",
-                "ControlPath=/tmp/cmux-ssh-501-64000-%C",
+                "ControlPath=/tmp/cmuxpro-ssh-501-64000-%C",
             ],
             localProxyPort: 9000,
             relayPort: 64000,
             relayID: "relay-a",
             relayToken: "token-a",
-            localSocketPath: "/tmp/cmux-a.sock",
+            localSocketPath: "/tmp/cmuxpro-a.sock",
             terminalStartupCommand: "ssh cmux-macmini"
         )
         let second = WorkspaceRemoteConfiguration(
@@ -1363,13 +1363,13 @@ final class WorkspaceRemoteConfigurationTransportKeyTests: XCTestCase {
             sshOptions: [
                 "Compression=yes",
                 "ControlMaster=auto",
-                "ControlPath=/tmp/cmux-ssh-501-64001-%C",
+                "ControlPath=/tmp/cmuxpro-ssh-501-64001-%C",
             ],
             localProxyPort: 9000,
             relayPort: 64001,
             relayID: "relay-b",
             relayToken: "token-b",
-            localSocketPath: "/tmp/cmux-b.sock",
+            localSocketPath: "/tmp/cmuxpro-b.sock",
             terminalStartupCommand: "ssh cmux-macmini"
         )
 
@@ -1380,7 +1380,7 @@ final class WorkspaceRemoteConfigurationTransportKeyTests: XCTestCase {
 final class WorkspaceRemoteSSHCleanupTests: XCTestCase {
     func testOrphanedCMUXRemoteSSHPIDsMatchesOnlyParentOneRelayAndDaemonTransports() {
         let psOutput = """
-          101 1 /usr/bin/ssh -N -T -S none -o ControlPath=/tmp/cmux-ssh-501-56080-%C -R 127.0.0.1:56080:127.0.0.1:64048 cmux-macmini
+          101 1 /usr/bin/ssh -N -T -S none -o ControlPath=/tmp/cmuxpro-ssh-501-56080-%C -R 127.0.0.1:56080:127.0.0.1:64048 cmux-macmini
           102 1 /usr/bin/ssh -T -S none -o RequestTTY=no cmux-macmini sh -c 'exec .cmux/bin/cmuxd-remote/0.63.1/darwin-arm64/cmuxd-remote serve --stdio'
           103 999 /usr/bin/ssh -N -T -S none -R 127.0.0.1:56081:127.0.0.1:64049 cmux-macmini
           104 1 /usr/bin/ssh -tt cmux-macmini
@@ -1836,9 +1836,9 @@ final class SocketControlSettingsTests: XCTestCase {
     func testStableReleaseIgnoresAmbientSocketOverrideByDefault() {
         let path = SocketControlSettings.socketPath(
             environment: [
-                "CMUX_SOCKET_PATH": "/tmp/cmux-debug-issue-153-tmux-compat.sock",
+                "CMUX_SOCKET_PATH": "/tmp/cmuxpro-debug-issue-153-tmux-compat.sock",
             ],
-            bundleIdentifier: "com.cmuxterm.app",
+            bundleIdentifier: "com.okteam99.cmuxpro",
             isDebugBuild: false,
             probeStableDefaultPathEntry: { _ in .missing }
         )
@@ -1849,58 +1849,58 @@ final class SocketControlSettingsTests: XCTestCase {
     func testNightlyReleaseUsesDedicatedDefaultAndIgnoresAmbientSocketOverride() {
         let path = SocketControlSettings.socketPath(
             environment: [
-                "CMUX_SOCKET_PATH": "/tmp/cmux-debug-issue-153-tmux-compat.sock",
+                "CMUX_SOCKET_PATH": "/tmp/cmuxpro-debug-issue-153-tmux-compat.sock",
             ],
-            bundleIdentifier: "com.cmuxterm.app.nightly",
+            bundleIdentifier: "com.okteam99.cmuxpro.nightly",
             isDebugBuild: false,
             probeStableDefaultPathEntry: { _ in .missing }
         )
 
-        XCTAssertEqual(path, "/tmp/cmux-nightly.sock")
+        XCTAssertEqual(path, "/tmp/cmuxpro-nightly.sock")
     }
 
     func testDebugBundleHonorsSocketOverrideWithoutOptInFlag() {
         let path = SocketControlSettings.socketPath(
             environment: [
-                "CMUX_SOCKET_PATH": "/tmp/cmux-debug-my-tag.sock",
+                "CMUX_SOCKET_PATH": "/tmp/cmuxpro-debug-my-tag.sock",
             ],
-            bundleIdentifier: "com.cmuxterm.app.debug.my-tag",
+            bundleIdentifier: "com.okteam99.cmuxpro.debug.my-tag",
             isDebugBuild: false
         )
 
-        XCTAssertEqual(path, "/tmp/cmux-debug-my-tag.sock")
+        XCTAssertEqual(path, "/tmp/cmuxpro-debug-my-tag.sock")
     }
 
     func testStagingBundleHonorsSocketOverrideWithoutOptInFlag() {
         let path = SocketControlSettings.socketPath(
             environment: [
-                "CMUX_SOCKET_PATH": "/tmp/cmux-staging-my-tag.sock",
+                "CMUX_SOCKET_PATH": "/tmp/cmuxpro-staging-my-tag.sock",
             ],
-            bundleIdentifier: "com.cmuxterm.app.staging.my-tag",
+            bundleIdentifier: "com.okteam99.cmuxpro.staging.my-tag",
             isDebugBuild: false
         )
 
-        XCTAssertEqual(path, "/tmp/cmux-staging-my-tag.sock")
+        XCTAssertEqual(path, "/tmp/cmuxpro-staging-my-tag.sock")
     }
 
     func testStableReleaseCanOptInToSocketOverride() {
         let path = SocketControlSettings.socketPath(
             environment: [
-                "CMUX_SOCKET_PATH": "/tmp/cmux-debug-forced.sock",
+                "CMUX_SOCKET_PATH": "/tmp/cmuxpro-debug-forced.sock",
                 "CMUX_ALLOW_SOCKET_OVERRIDE": "1",
             ],
-            bundleIdentifier: "com.cmuxterm.app",
+            bundleIdentifier: "com.okteam99.cmuxpro",
             isDebugBuild: false,
             probeStableDefaultPathEntry: { _ in .missing }
         )
 
-        XCTAssertEqual(path, "/tmp/cmux-debug-forced.sock")
+        XCTAssertEqual(path, "/tmp/cmuxpro-debug-forced.sock")
     }
 
     func testDefaultSocketPathByChannel() {
         XCTAssertEqual(
             SocketControlSettings.defaultSocketPath(
-                bundleIdentifier: "com.cmuxterm.app",
+                bundleIdentifier: "com.okteam99.cmuxpro",
                 isDebugBuild: false,
                 probeStableDefaultPathEntry: { _ in .missing }
             ),
@@ -1908,33 +1908,33 @@ final class SocketControlSettingsTests: XCTestCase {
         )
         XCTAssertEqual(
             SocketControlSettings.defaultSocketPath(
-                bundleIdentifier: "com.cmuxterm.app.nightly",
+                bundleIdentifier: "com.okteam99.cmuxpro.nightly",
                 isDebugBuild: false,
                 probeStableDefaultPathEntry: { _ in .missing }
             ),
-            "/tmp/cmux-nightly.sock"
+            "/tmp/cmuxpro-nightly.sock"
         )
         XCTAssertEqual(
             SocketControlSettings.defaultSocketPath(
-                bundleIdentifier: "com.cmuxterm.app.debug.tag",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug.tag",
                 isDebugBuild: false,
                 probeStableDefaultPathEntry: { _ in .missing }
             ),
-            "/tmp/cmux-debug.sock"
+            "/tmp/cmuxpro-debug.sock"
         )
         XCTAssertEqual(
             SocketControlSettings.defaultSocketPath(
-                bundleIdentifier: "com.cmuxterm.app.staging.tag",
+                bundleIdentifier: "com.okteam99.cmuxpro.staging.tag",
                 isDebugBuild: false,
                 probeStableDefaultPathEntry: { _ in .missing }
             ),
-            "/tmp/cmux-staging.sock"
+            "/tmp/cmuxpro-staging.sock"
         )
     }
 
     func testStableReleaseFallsBackToUserScopedSocketWhenStablePathOwnedByDifferentUser() {
         let path = SocketControlSettings.defaultSocketPath(
-            bundleIdentifier: "com.cmuxterm.app",
+            bundleIdentifier: "com.okteam99.cmuxpro",
             isDebugBuild: false,
             currentUserID: 501,
             probeStableDefaultPathEntry: { _ in .socket(ownerUserID: 0) }
@@ -1945,7 +1945,7 @@ final class SocketControlSettingsTests: XCTestCase {
 
     func testStableReleaseFallsBackToUserScopedSocketWhenStablePathIsBlockedByNonSocketEntry() {
         let path = SocketControlSettings.defaultSocketPath(
-            bundleIdentifier: "com.cmuxterm.app",
+            bundleIdentifier: "com.okteam99.cmuxpro",
             isDebugBuild: false,
             currentUserID: 501,
             probeStableDefaultPathEntry: { _ in .other(ownerUserID: 501) }
@@ -1958,7 +1958,7 @@ final class SocketControlSettingsTests: XCTestCase {
         XCTAssertTrue(
             SocketControlSettings.shouldBlockUntaggedDebugLaunch(
                 environment: [:],
-                bundleIdentifier: "com.cmuxterm.app.debug",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug",
                 isDebugBuild: true
             )
         )
@@ -1968,7 +1968,7 @@ final class SocketControlSettingsTests: XCTestCase {
         XCTAssertFalse(
             SocketControlSettings.shouldBlockUntaggedDebugLaunch(
                 environment: ["CMUX_TAG": "tests-v1"],
-                bundleIdentifier: "com.cmuxterm.app.debug",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug",
                 isDebugBuild: true
             )
         )
@@ -1978,7 +1978,7 @@ final class SocketControlSettingsTests: XCTestCase {
         XCTAssertFalse(
             SocketControlSettings.shouldBlockUntaggedDebugLaunch(
                 environment: [:],
-                bundleIdentifier: "com.cmuxterm.app.debug.tests-v1",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug.tests-v1",
                 isDebugBuild: true
             )
         )
@@ -1988,7 +1988,7 @@ final class SocketControlSettingsTests: XCTestCase {
         XCTAssertFalse(
             SocketControlSettings.shouldBlockUntaggedDebugLaunch(
                 environment: [:],
-                bundleIdentifier: "com.cmuxterm.app.debug",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug",
                 isDebugBuild: false
             )
         )
@@ -1998,7 +1998,7 @@ final class SocketControlSettingsTests: XCTestCase {
         XCTAssertFalse(
             SocketControlSettings.shouldBlockUntaggedDebugLaunch(
                 environment: ["XCTestConfigurationFilePath": "/tmp/fake.xctestconfiguration"],
-                bundleIdentifier: "com.cmuxterm.app.debug",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug",
                 isDebugBuild: true
             )
         )
@@ -2008,7 +2008,7 @@ final class SocketControlSettingsTests: XCTestCase {
         XCTAssertFalse(
             SocketControlSettings.shouldBlockUntaggedDebugLaunch(
                 environment: ["XCInjectBundle": "/tmp/fake.xctest"],
-                bundleIdentifier: "com.cmuxterm.app.debug",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug",
                 isDebugBuild: true
             )
         )
@@ -2018,7 +2018,7 @@ final class SocketControlSettingsTests: XCTestCase {
         XCTAssertFalse(
             SocketControlSettings.shouldBlockUntaggedDebugLaunch(
                 environment: ["DYLD_INSERT_LIBRARIES": "/usr/lib/libXCTestBundleInject.dylib"],
-                bundleIdentifier: "com.cmuxterm.app.debug",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug",
                 isDebugBuild: true
             )
         )
@@ -2030,7 +2030,7 @@ final class SocketControlSettingsTests: XCTestCase {
         XCTAssertFalse(
             SocketControlSettings.shouldBlockUntaggedDebugLaunch(
                 environment: ["CMUX_UI_TEST_MODE": "1"],
-                bundleIdentifier: "com.cmuxterm.app.debug",
+                bundleIdentifier: "com.okteam99.cmuxpro.debug",
                 isDebugBuild: true
             )
         )
@@ -2041,9 +2041,9 @@ final class UITestLaunchManifestTests: XCTestCase {
     func testManifestPathReadsArgumentValue() {
         XCTAssertEqual(
             UITestLaunchManifest.manifestPath(
-                from: ["cmux", "-cmuxUITestLaunchManifest", "/tmp/cmux-ui-test-launch.json"]
+                from: ["cmux", "-cmuxUITestLaunchManifest", "/tmp/cmuxpro-ui-test-launch.json"]
             ),
-            "/tmp/cmux-ui-test-launch.json"
+            "/tmp/cmuxpro-ui-test-launch.json"
         )
     }
 
@@ -2057,12 +2057,12 @@ final class UITestLaunchManifestTests: XCTestCase {
 
     func testApplyIfPresentDecodesEnvironmentPayload() {
         let payload = """
-        {"environment":{"CMUX_TAG":"ui-tests-display","CMUX_SOCKET_PATH":"/tmp/cmux-ui-tests.sock"}}
+        {"environment":{"CMUX_TAG":"ui-tests-display","CMUX_SOCKET_PATH":"/tmp/cmuxpro-ui-tests.sock"}}
         """.data(using: .utf8)!
         var applied: [String: String] = [:]
 
         UITestLaunchManifest.applyIfPresent(
-            arguments: ["cmux", UITestLaunchManifest.argumentName, "/tmp/cmux-ui-test-launch.json"],
+            arguments: ["cmux", UITestLaunchManifest.argumentName, "/tmp/cmuxpro-ui-test-launch.json"],
             loadData: { _ in payload },
             applyEnvironment: { key, value in
                 applied[key] = value
@@ -2070,7 +2070,7 @@ final class UITestLaunchManifestTests: XCTestCase {
         )
 
         XCTAssertEqual(applied["CMUX_TAG"], "ui-tests-display")
-        XCTAssertEqual(applied["CMUX_SOCKET_PATH"], "/tmp/cmux-ui-tests.sock")
+        XCTAssertEqual(applied["CMUX_SOCKET_PATH"], "/tmp/cmuxpro-ui-tests.sock")
     }
 }
 
@@ -2990,7 +2990,7 @@ final class ZshShellIntegrationHandoffTests: XCTestCase {
             command: "_cmux_preexec tmux; print -r -- READY",
             extraEnvironment: [
                 "PATH": "\(binDir.path):/usr/bin:/bin:/usr/sbin:/sbin",
-                "CMUX_SOCKET_PATH": "/tmp/cmux-current.sock",
+                "CMUX_SOCKET_PATH": "/tmp/cmuxpro-current.sock",
                 "CMUX_TAG": "feat-tmux-notification-attention-state",
                 "CMUX_WORKSPACE_ID": "11111111-1111-1111-1111-111111111111",
                 "CMUX_SURFACE_ID": "22222222-2222-2222-2222-222222222222",
@@ -3001,7 +3001,7 @@ final class ZshShellIntegrationHandoffTests: XCTestCase {
 
         let log = (try? String(contentsOf: logPath, encoding: .utf8)) ?? ""
         XCTAssertTrue(log.contains("set-environment -g CMUX_TAG feat-tmux-notification-attention-state"), log)
-        XCTAssertTrue(log.contains("set-environment -g CMUX_SOCKET_PATH /tmp/cmux-current.sock"), log)
+        XCTAssertTrue(log.contains("set-environment -g CMUX_SOCKET_PATH /tmp/cmuxpro-current.sock"), log)
         XCTAssertTrue(log.contains("set-environment -g CMUX_WORKSPACE_ID 11111111-1111-1111-1111-111111111111"), log)
         XCTAssertFalse(log.contains("set-environment -g CMUX_SURFACE_ID"), log)
         XCTAssertFalse(log.contains("set-environment -g CMUX_PANEL_ID"), log)
@@ -3037,7 +3037,7 @@ final class ZshShellIntegrationHandoffTests: XCTestCase {
             command: "_cmux_preexec tmux; print -r -- READY",
             extraEnvironment: [
                 "PATH": "\(binDir.path):/usr/bin:/bin:/usr/sbin:/sbin",
-                "CMUX_SOCKET_PATH": "/tmp/cmux-current.sock",
+                "CMUX_SOCKET_PATH": "/tmp/cmuxpro-current.sock",
                 "CMUX_TAG": "feat-tmux-notification-attention-state",
                 "CMUX_WORKSPACE_ID": "11111111-1111-1111-1111-111111111111",
                 "CMUX_SURFACE_ID": "22222222-2222-2222-2222-222222222222",
@@ -3065,7 +3065,7 @@ final class ZshShellIntegrationHandoffTests: XCTestCase {
             contents: """
             #!/bin/sh
             if [ "$1" = "show-environment" ] && [ "$2" = "-g" ]; then
-              printf '%s\\n' 'CMUX_SOCKET_PATH=/tmp/cmux-current.sock'
+              printf '%s\\n' 'CMUX_SOCKET_PATH=/tmp/cmuxpro-current.sock'
               printf '%s\\n' 'CMUX_TAG=feat-tmux-notification-attention-state'
               printf '%s\\n' 'CMUX_WORKSPACE_ID=11111111-1111-1111-1111-111111111111'
               printf '%s\\n' 'CMUX_SURFACE_ID=99999999-9999-9999-9999-999999999999'
@@ -3084,7 +3084,7 @@ final class ZshShellIntegrationHandoffTests: XCTestCase {
             extraEnvironment: [
                 "PATH": "\(binDir.path):/usr/bin:/bin:/usr/sbin:/sbin",
                 "TMUX": "/tmp/tmux-stale,123,0",
-                "CMUX_SOCKET_PATH": "/tmp/cmux-stale.sock",
+                "CMUX_SOCKET_PATH": "/tmp/cmuxpro-stale.sock",
                 "CMUX_TAG": "feat-tmux-integration-experiments",
                 "CMUX_WORKSPACE_ID": "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA",
                 "CMUX_SURFACE_ID": "22222222-2222-2222-2222-222222222222",
@@ -3095,7 +3095,7 @@ final class ZshShellIntegrationHandoffTests: XCTestCase {
 
         XCTAssertEqual(
             output,
-            "feat-tmux-notification-attention-state|/tmp/cmux-current.sock|11111111-1111-1111-1111-111111111111|22222222-2222-2222-2222-222222222222|22222222-2222-2222-2222-222222222222"
+            "feat-tmux-notification-attention-state|/tmp/cmuxpro-current.sock|11111111-1111-1111-1111-111111111111|22222222-2222-2222-2222-222222222222|22222222-2222-2222-2222-222222222222"
         )
     }
 

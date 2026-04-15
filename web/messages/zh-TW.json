@@ -306,7 +306,7 @@
       "title": "自訂指令",
       "metaTitle": "自訂指令",
       "metaDescription": "在 cmux.json 中定義自訂指令和工作區版面配置。支援按專案設定和全域設定，並具備即時檔案監視功能。",
-      "intro": "透過在專案根目錄或 ~/.config/cmux/ 中新增 cmux.json 檔案來定義自訂指令和工作區版面配置。指令將顯示於指令面板中。",
+      "intro": "透過在專案根目錄或 ~/.config/cmuxpro/ 中新增 cmux.json 檔案來定義自訂指令和工作區版面配置。指令將顯示於指令面板中。",
       "fileLocations": "檔案位置",
       "fileLocationsDesc": "cmux 在兩個地方尋找設定：",
       "localConfig": "依專案：",

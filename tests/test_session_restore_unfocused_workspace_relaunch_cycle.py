@@ -35,7 +35,7 @@ def _bundle_id(app_path: Path) -> str:
 
 def _snapshot_path(bundle_id: str) -> Path:
     safe_bundle = re.sub(r"[^A-Za-z0-9._-]", "_", bundle_id)
-    return Path.home() / "Library/Application Support/cmux" / f"session-{safe_bundle}.json"
+    return Path.home() / "Library/Application Support/cmuxpro" / f"session-{safe_bundle}.json"
 
 
 def _socket_reachable(socket_path: Path) -> bool:
@@ -147,7 +147,7 @@ def main() -> int:
 
     bundle_id = _bundle_id(app_path)
     snapshot = _snapshot_path(bundle_id)
-    socket_path = Path(f"/tmp/cmux-session-restore-cycle-{bundle_id.replace('.', '-')}.sock")
+    socket_path = Path(f"/tmp/cmuxpro-session-restore-cycle-{bundle_id.replace('.', '-')}.sock")
 
     markers = [f"CMUX_RESTORE_EDGE_{i}" for i in range(3)]
     failures: list[str] = []

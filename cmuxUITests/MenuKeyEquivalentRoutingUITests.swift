@@ -23,9 +23,9 @@ final class MenuKeyEquivalentRoutingUITests: XCTestCase {
         super.setUp()
         continueAfterFailure = false
 
-        gotoSplitPath = "/tmp/cmux-ui-test-goto-split-\(UUID().uuidString).json"
-        keyequivPath = "/tmp/cmux-ui-test-keyequiv-\(UUID().uuidString).json"
-        socketPath = "/tmp/cmux-ui-test-socket-\(UUID().uuidString).sock"
+        gotoSplitPath = "/tmp/cmuxpro-ui-test-goto-split-\(UUID().uuidString).json"
+        keyequivPath = "/tmp/cmuxpro-ui-test-keyequiv-\(UUID().uuidString).json"
+        socketPath = "/tmp/cmuxpro-ui-test-socket-\(UUID().uuidString).sock"
 
         try? FileManager.default.removeItem(atPath: gotoSplitPath)
         try? FileManager.default.removeItem(atPath: keyequivPath)
@@ -398,9 +398,9 @@ final class SplitCloseRightBlankRegressionUITests: XCTestCase {
         super.setUp()
         continueAfterFailure = false
 
-        dataPath = "/tmp/cmux-ui-test-split-close-right-\(UUID().uuidString).json"
-        socketPath = "/tmp/cmux-ui-test-socket-\(UUID().uuidString).sock"
-        diagnosticsPath = "/tmp/cmux-ui-test-diagnostics-\(UUID().uuidString).json"
+        dataPath = "/tmp/cmuxpro-ui-test-split-close-right-\(UUID().uuidString).json"
+        socketPath = "/tmp/cmuxpro-ui-test-socket-\(UUID().uuidString).sock"
+        diagnosticsPath = "/tmp/cmuxpro-ui-test-diagnostics-\(UUID().uuidString).json"
         // Prefer a globally accessible dir so we can pull screenshots from the VM for debugging.
         // If sandbox rules prevent this, fall back to the runner's container temp dir.
         let leaf = "cmux-ui-test-split-close-right-shots-\(UUID().uuidString)"

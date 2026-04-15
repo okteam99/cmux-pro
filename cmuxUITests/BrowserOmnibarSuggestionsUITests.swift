@@ -7,7 +7,7 @@ final class BrowserOmnibarSuggestionsUITests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        dataPath = "/tmp/cmux-ui-test-omnibar-suggestions-\(UUID().uuidString).json"
+        dataPath = "/tmp/cmuxpro-ui-test-omnibar-suggestions-\(UUID().uuidString).json"
         try? FileManager.default.removeItem(atPath: dataPath)
 
         // Terminate any lingering app from a prior test so its debounced
@@ -570,7 +570,7 @@ final class BrowserOmnibarSuggestionsUITests: XCTestCase {
             return
         }
 
-        let bundleId = "com.cmuxterm.app.debug"
+        let bundleId = "com.okteam99.cmuxpro.debug"
         let dir = appSupport.appendingPathComponent(bundleId, isDirectory: true)
         let url = dir.appendingPathComponent("browser_history.json", isDirectory: false)
         do {

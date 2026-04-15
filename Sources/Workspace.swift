@@ -4816,7 +4816,7 @@ final class WorkspaceRemoteSessionController {
     static func remoteDropPath(for fileURL: URL, uuid: UUID = UUID()) -> String {
         let extensionSuffix = fileURL.pathExtension.trimmingCharacters(in: .whitespacesAndNewlines)
         let lowercasedSuffix = extensionSuffix.isEmpty ? "" : ".\(extensionSuffix.lowercased())"
-        return "/tmp/cmux-drop-\(uuid.uuidString.lowercased())\(lowercasedSuffix)"
+        return "/tmp/cmuxpro-drop-\(uuid.uuidString.lowercased())\(lowercasedSuffix)"
     }
 
     private func cleanupUploadedRemotePaths(_ remotePaths: [String]) {

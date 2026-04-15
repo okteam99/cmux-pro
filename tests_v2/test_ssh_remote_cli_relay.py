@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from cmux import cmux, cmuxError
 
 
-SOCKET_PATH = os.environ.get("CMUX_SOCKET", "/tmp/cmux-debug.sock")
+SOCKET_PATH = os.environ.get("CMUX_SOCKET", "/tmp/cmuxpro-debug.sock")
 # Keep the fixture's extra HTTP server below 1024 so there are no eligible
 # (>1023) ports to auto-forward. This guards the "connecting forever" regression.
 REMOTE_HTTP_PORT = int(os.environ.get("CMUX_SSH_TEST_REMOTE_HTTP_PORT", "81"))
@@ -39,7 +39,7 @@ def _find_cli_binary() -> str:
         return fixed
 
     candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/cmux"), recursive=True)
-    candidates += glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux")
+    candidates += glob.glob("/tmp/cmuxpro-*/Build/Products/Debug/cmux")
     candidates = [p for p in candidates if os.path.isfile(p) and os.access(p, os.X_OK)]
     if not candidates:
         raise cmuxError("Could not locate cmux CLI binary; set CMUXTERM_CLI")

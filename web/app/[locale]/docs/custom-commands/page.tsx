@@ -29,7 +29,7 @@ export default function CustomCommandsPage() {
           <strong>{t("localConfig")}</strong> <code>./cmux.json</code> &mdash; {t("localConfigDesc")}
         </li>
         <li>
-          <strong>{t("globalConfig")}</strong> <code>~/.config/cmux/cmux.json</code> &mdash; {t("globalConfigDesc")}
+          <strong>{t("globalConfig")}</strong> <code>~/.config/cmuxpro/cmux.json</code> &mdash; {t("globalConfigDesc")}
         </li>
       </ul>
       <Callout type="info">{t("precedenceNote")}</Callout>
@@ -249,7 +249,7 @@ export default function CustomCommandsPage() {
                   {
                     "type": "terminal",
                     "name": "Events",
-                    "command": "tail -f /tmp/cmux-debug.log",
+                    "command": "tail -f /tmp/cmuxpro-debug.log",
                     "focus": true
                   }
                 ]
