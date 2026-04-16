@@ -2,6 +2,13 @@
 
 All notable changes to cmux are documented here.
 
+## [0.64.3] - 2026-04-16
+
+### Fixed
+- Isolate cmux Pro's control socket from upstream cmux. Both previously wrote to `~/Library/Application Support/cmux/cmux.sock`, so starting the other app erased the first's socket file. Symptoms included silent notifications, tab status markers that never cleared, and `Stop hook error: Socket not found` from the Claude Code integration. cmux Pro now binds under `~/Library/Application Support/cmuxpro/cmuxpro.sock`.
+- File Explorer: revealing a deeply nested path now expands every ancestor in one pass instead of bailing out partway and leaving the target row unselected.
+- Markdown viewer: wide tables stay inside the centered content column instead of pushing the layout sideways; internal `.md` / `.markdown` links now open in the reader rather than handing off to the system default app.
+
 ## [0.64.2] - 2026-04-16
 
 ### Changed
