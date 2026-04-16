@@ -198,10 +198,17 @@ final class MarkdownViewerWindowController: NSWindowController, NSWindowDelegate
             }
         case .openExternal(let url):
             let resolved = resolveExternalURL(url)
-            #if DEBUG
-            dlog("markdownViewer.webNav url=\(resolved) action=open-external")
-            #endif
-            NSWorkspace.shared.open(resolved)
+            if resolved.isFileURL, Self.isMarkdownFile(resolved.path) {
+                #if DEBUG
+                dlog("markdownViewer.webNav url=\(resolved) action=open-in-viewer")
+                #endif
+                MarkdownViewerWindowManager.shared.showWindow(for: resolved.path)
+            } else {
+                #if DEBUG
+                dlog("markdownViewer.webNav url=\(resolved) action=open-external")
+                #endif
+                NSWorkspace.shared.open(resolved)
+            }
         case .mermaidRenderError(let count, _):
             #if DEBUG
             dlog("markdownViewer.mermaid renderErrors=\(count) path=\(fileSource.filePath)")
@@ -251,6 +258,11 @@ final class MarkdownViewerWindowController: NSWindowController, NSWindowDelegate
         return url
     }
 
+    private static func isMarkdownFile(_ path: String) -> Bool {
+        let ext = (path as NSString).pathExtension.lowercased()
+        return ext == "md" || ext == "markdown"
+    }
+
     // MARK: - NSWindowDelegate
 
     func windowWillClose(_ notification: Notification) {
@@ -281,11 +293,17 @@ final class MarkdownViewerWindowController: NSWindowController, NSWindowDelegate
         let scheme = url.scheme?.lowercased() ?? ""
         let allowedSchemes: Set<String> = ["file", "about", "data"]
         if navigationAction.navigationType == .linkActivated {
-            // Any link click: route externally via bridge convention.
-            #if DEBUG
-            dlog("markdownViewer.webNav url=\(url) action=open-external(decidePolicy)")
-            #endif
-            NSWorkspace.shared.open(url)
+            if url.isFileURL, Self.isMarkdownFile(url.path) {
+                #if DEBUG
+                dlog("markdownViewer.webNav url=\(url) action=open-in-viewer(decidePolicy)")
+                #endif
+                MarkdownViewerWindowManager.shared.showWindow(for: url.path)
+            } else {
+                #if DEBUG
+                dlog("markdownViewer.webNav url=\(url) action=open-external(decidePolicy)")
+                #endif
+                NSWorkspace.shared.open(url)
+            }
             decisionHandler(.cancel)
             return
         }
