@@ -1954,6 +1954,25 @@ final class SocketControlSettingsTests: XCTestCase {
         XCTAssertEqual(path, SocketControlSettings.userScopedStableSocketPath(currentUserID: 501))
     }
 
+    // Regression: cmux Pro must not share its App Support socket path with upstream cmux.
+    // Upstream cmux binds to ~/Library/Application Support/cmux/cmux.sock; side-by-side installs
+    // fought over that path and one instance's unlink() erased the other's listener file.
+    func testStableSocketPathIsIsolatedFromUpstreamCmux() throws {
+        let fileURL = try XCTUnwrap(SocketControlSettings.stableSocketFileURL())
+        let dirURL = try XCTUnwrap(SocketControlSettings.stableSocketDirectoryURL())
+
+        XCTAssertEqual(dirURL.lastPathComponent, "cmuxpro")
+        XCTAssertEqual(fileURL.lastPathComponent, "cmuxpro.sock")
+
+        let upstream = try XCTUnwrap(
+            FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        )
+        .appendingPathComponent("cmux", isDirectory: true)
+        .appendingPathComponent("cmux.sock", isDirectory: false)
+        .path
+        XCTAssertNotEqual(fileURL.path, upstream)
+    }
+
     func testUntaggedDebugBundleBlockedWithoutLaunchTag() {
         XCTAssertTrue(
             SocketControlSettings.shouldBlockUntaggedDebugLaunch(
