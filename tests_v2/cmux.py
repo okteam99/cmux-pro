@@ -33,8 +33,8 @@ class cmuxError(Exception):
     """Exception raised for cmux errors."""
 
 
-_APP_SUPPORT_DIR = os.path.expanduser("~/Library/Application Support/cmuxpropro")
-_STABLE_SOCKET_PATH = os.path.join(_APP_SUPPORT_DIR, "cmux.sock")
+_APP_SUPPORT_DIR = os.path.expanduser("~/Library/Application Support/cmuxpro")
+_STABLE_SOCKET_PATH = os.path.join(_APP_SUPPORT_DIR, "cmuxpro.sock")
 _LEGACY_STABLE_SOCKET_PATH = "/tmp/cmux.sock"
 _LAST_SOCKET_PATH_FILES = [
     os.path.join(_APP_SUPPORT_DIR, "last-socket-path"),

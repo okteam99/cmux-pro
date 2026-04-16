@@ -31,7 +31,7 @@ def infer_app_name_for_osascript(socket_path: str) -> str:
     Examples:
       - /tmp/cmuxpro-debug.sock          -> "cmux DEV"
       - /tmp/cmuxpro-debug-foo.sock      -> "cmux DEV foo"
-      - ~/Library/Application Support/cmuxpropro/cmux.sock -> "cmux"
+      - ~/Library/Application Support/cmuxpro/cmuxpro.sock -> "cmux"
       - /tmp/cmuxpro-foo.sock            -> "cmux foo"
     """
     base = Path(socket_path).name

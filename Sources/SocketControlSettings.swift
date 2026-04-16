@@ -61,7 +61,8 @@ enum SocketControlMode: String, CaseIterable, Identifiable {
 }
 
 enum SocketControlPasswordStore {
-    static let directoryName = "cmux"
+    static let directoryName = "cmuxpro"
+    static let legacyDirectoryName = "cmux"
     static let fileName = "socket-control-password"
     static let didChangeNotification = Notification.Name("cmux.socketControlPasswordDidChange")
     private static let keychainMigrationDefaultsKey = "socketControlPasswordMigrationVersion"
@@ -161,17 +162,14 @@ enum SocketControlPasswordStore {
     }
 
     static func loadPassword(fileURL: URL? = nil) throws -> String? {
-        guard let fileURL = fileURL ?? defaultPasswordFileURL() else {
-            return nil
+        let primary = fileURL ?? defaultPasswordFileURL()
+        let candidates: [URL] = [primary, fileURL == nil ? legacyPasswordFileURL() : nil].compactMap { $0 }
+        for candidate in candidates where FileManager.default.fileExists(atPath: candidate.path) {
+            let data = try Data(contentsOf: candidate)
+            guard let password = String(data: data, encoding: .utf8) else { continue }
+            return normalized(password)
         }
-        guard FileManager.default.fileExists(atPath: fileURL.path) else {
-            return nil
-        }
-        let data = try Data(contentsOf: fileURL)
-        guard let password = String(data: data, encoding: .utf8) else {
-            return nil
-        }
-        return normalized(password)
+        return nil
     }
 
     static func savePassword(_ password: String, fileURL: URL? = nil) throws {
@@ -231,6 +229,23 @@ enum SocketControlPasswordStore {
         }
         return resolvedAppSupport
             .appendingPathComponent(directoryName, isDirectory: true)
+            .appendingPathComponent(fileName, isDirectory: false)
+    }
+
+    static func legacyPasswordFileURL(
+        appSupportDirectory: URL? = nil,
+        fileManager: FileManager = .default
+    ) -> URL? {
+        let resolvedAppSupport: URL
+        if let appSupportDirectory {
+            resolvedAppSupport = appSupportDirectory
+        } else if let discovered = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+            resolvedAppSupport = discovered
+        } else {
+            return nil
+        }
+        return resolvedAppSupport
+            .appendingPathComponent(legacyDirectoryName, isDirectory: true)
             .appendingPathComponent(fileName, isDirectory: false)
     }
 
@@ -296,8 +311,10 @@ struct SocketControlSettings {
     static let socketPasswordEnvKey = "CMUX_SOCKET_PASSWORD"
     static let launchTagEnvKey = "CMUX_TAG"
     static let baseDebugBundleIdentifier = "com.okteam99.cmuxpro.debug"
-    private static let socketDirectoryName = "cmux"
-    private static let stableSocketFileName = "cmux.sock"
+    private static let socketDirectoryName = "cmuxpro"
+    private static let stableSocketFileName = "cmuxpro.sock"
+    static let legacySocketDirectoryName = "cmux"
+    static let legacyStableSocketFileName = "cmux.sock"
     private static let lastSocketPathFileName = "last-socket-path"
     static let legacyStableDefaultSocketPath = "/tmp/cmux.sock"
     static let legacyLastSocketPathFile = "/tmp/cmuxpro-last-socket-path"
@@ -490,7 +507,7 @@ struct SocketControlSettings {
 
     static func userScopedStableSocketPath(currentUserID: uid_t = getuid()) -> String {
         stableSocketDirectoryURL()?
-            .appendingPathComponent("cmux-\(currentUserID).sock", isDirectory: false)
+            .appendingPathComponent("cmuxpro-\(currentUserID).sock", isDirectory: false)
             .path ?? "/tmp/cmuxpro-\(currentUserID).sock"
     }
 

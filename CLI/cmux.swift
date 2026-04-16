@@ -538,7 +538,8 @@ enum CLIIDFormat: String {
 enum SocketPasswordResolver {
     private static let service = "com.okteam99.cmuxpro.socket-control"
     private static let account = "local-socket-password"
-    private static let directoryName = "cmux"
+    private static let directoryName = "cmuxpro"
+    private static let legacyDirectoryName = "cmux"
     private static let fileName = "socket-control-password"
 
     static func resolve(explicit: String?, socketPath: String) -> String? {
@@ -564,16 +565,18 @@ enum SocketPasswordResolver {
         guard let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
             return nil
         }
-        let passwordURL = appSupport
-            .appendingPathComponent(directoryName, isDirectory: true)
-            .appendingPathComponent(fileName, isDirectory: false)
-        guard let data = try? Data(contentsOf: passwordURL) else {
-            return nil
+        for dir in [directoryName, legacyDirectoryName] {
+            let passwordURL = appSupport
+                .appendingPathComponent(dir, isDirectory: true)
+                .appendingPathComponent(fileName, isDirectory: false)
+            guard let data = try? Data(contentsOf: passwordURL),
+                  let value = String(data: data, encoding: .utf8),
+                  let normalized = normalized(value) else {
+                continue
+            }
+            return normalized
         }
-        guard let value = String(data: data, encoding: .utf8) else {
-            return nil
-        }
-        return normalized(value)
+        return nil
     }
 
     static func keychainServices(
@@ -667,8 +670,10 @@ private enum CLISocketPathSource {
 }
 
 private enum CLISocketPathResolver {
-    private static let appSupportDirectoryName = "cmux"
-    private static let stableSocketFileName = "cmux.sock"
+    private static let appSupportDirectoryName = "cmuxpro"
+    private static let legacyAppSupportDirectoryName = "cmux"
+    private static let stableSocketFileName = "cmuxpro.sock"
+    private static let legacyStableSocketFileName = "cmux.sock"
     private static let lastSocketPathFileName = "last-socket-path"
     static let legacyDefaultSocketPath = "/tmp/cmux.sock"
     private static let fallbackSocketPath = "/tmp/cmuxpro-debug.sock"
@@ -680,6 +685,16 @@ private enum CLISocketPathResolver {
             .appendingPathComponent(stableSocketFileName, isDirectory: false)
             .path
         return stablePath ?? legacyDefaultSocketPath
+    }
+
+    static var legacyAppSupportSocketPath: String? {
+        guard let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            return nil
+        }
+        return appSupport
+            .appendingPathComponent(legacyAppSupportDirectoryName, isDirectory: true)
+            .appendingPathComponent(legacyStableSocketFileName, isDirectory: false)
+            .path
     }
 
     static func isImplicitDefaultPath(_ path: String) -> Bool {
@@ -721,6 +736,9 @@ private enum CLISocketPathResolver {
 
         candidates.append(requestedPath)
         candidates.append(defaultSocketPath)
+        if let legacy = legacyAppSupportSocketPath {
+            candidates.append(legacy)
+        }
         candidates.append(legacyDefaultSocketPath)
         candidates.append(fallbackSocketPath)
         candidates.append(stagingSocketPath)
@@ -14475,7 +14493,7 @@ struct CMUXCLI {
           CMUX_TAB_ID         Optional alias used by `tab-action`/`rename-tab` as default --tab.
           CMUX_SURFACE_ID     Auto-set in cmux terminals. Used as default --surface.
           CMUX_SOCKET_PATH    Override the Unix socket path. Without this, the CLI defaults
-                              to ~/Library/Application Support/cmuxpropro/cmux.sock and auto-discovers tagged/debug sockets.
+                              to ~/Library/Application Support/cmuxpro/cmuxpro.sock and auto-discovers tagged/debug sockets.
         """
     }
 
