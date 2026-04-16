@@ -124,11 +124,18 @@ struct FileExplorerPanelView: NSViewRepresentable {
         }
 
         private func restoreExpansionState(_ expandedPaths: Set<String>, in outlineView: NSOutlineView) {
-            for row in 0..<outlineView.numberOfRows {
-                guard let node = outlineView.item(atRow: row) as? FileExplorerNode else { continue }
-                if expandedPaths.contains(node.path) && outlineView.isExpandable(node) {
+            // While-loop (not for-in-range) so rows added by expandItem mid-iteration
+            // are themselves visited — required for revealing deeply-nested paths
+            // where multiple ancestor directories need to be expanded in one pass.
+            var row = 0
+            while row < outlineView.numberOfRows {
+                if let node = outlineView.item(atRow: row) as? FileExplorerNode,
+                   expandedPaths.contains(node.path),
+                   outlineView.isExpandable(node),
+                   !outlineView.isItemExpanded(node) {
                     outlineView.expandItem(node)
                 }
+                row += 1
             }
         }
 
