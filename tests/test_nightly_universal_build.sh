@@ -39,7 +39,7 @@ if ! awk '
   exit 1
 fi
 
-if ! grep -Fq 'com.cmuxterm.app.nightly.universal' "$WORKFLOW_FILE"; then
+if ! grep -Fq 'com.okteam99.cmuxpro.nightly.universal' "$WORKFLOW_FILE"; then
   echo "FAIL: nightly workflow must set a distinct .universal bundle ID"
   exit 1
 fi

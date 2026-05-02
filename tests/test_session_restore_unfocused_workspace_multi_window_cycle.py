@@ -30,7 +30,7 @@ def _bundle_id(app_path: Path) -> str:
 
 def _snapshot_path(bundle_id: str) -> Path:
     safe_bundle = re.sub(r"[^A-Za-z0-9._-]", "_", bundle_id)
-    return Path.home() / "Library/Application Support/cmux" / f"session-{safe_bundle}.json"
+    return Path.home() / "Library/Application Support/cmuxpro" / f"session-{safe_bundle}.json"
 
 
 def _sanitize_tag_slug(raw: str) -> str:
@@ -46,7 +46,7 @@ def _socket_candidates(app_path: Path, preferred: Path) -> list[Path]:
     if app_name.startswith(prefix):
         tag = app_name[len(prefix):]
         slug = _sanitize_tag_slug(tag)
-        candidates.append(Path(f"/tmp/cmux-debug-{slug}.sock"))
+        candidates.append(Path(f"/tmp/cmuxpro-debug-{slug}.sock"))
     deduped: list[Path] = []
     seen: set[str] = set()
     for candidate in candidates:
@@ -221,7 +221,7 @@ def main() -> int:
     snapshot = _snapshot_path(bundle_id)
     # Keep the override path short enough for Darwin's Unix socket path limit.
     bundle_suffix = re.sub(r"[^A-Za-z0-9]", "", bundle_id)[-16:] or "bundle"
-    socket_path = Path(f"/tmp/cmux-mw-restore-{bundle_suffix}.sock")
+    socket_path = Path(f"/tmp/cmuxpro-mw-restore-{bundle_suffix}.sock")
 
     markers = {
         "w1_ws0": "CMUX_MW_RESTORE_W1_WS0",

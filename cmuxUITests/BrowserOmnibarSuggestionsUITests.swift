@@ -8,7 +8,7 @@ final class BrowserOmnibarSuggestionsUITests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        dataPath = "/tmp/cmux-ui-test-omnibar-suggestions-\(UUID().uuidString).json"
+        dataPath = "/tmp/cmuxpro-ui-test-omnibar-suggestions-\(UUID().uuidString).json"
         browserHistorySeedJSON = nil
         try? FileManager.default.removeItem(atPath: dataPath)
 

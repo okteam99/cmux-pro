@@ -15,8 +15,8 @@ from cmux import cmuxError
 
 SOCKET_PATH = os.environ.get("CMUX_SOCKET_PATH", "").strip()
 if not SOCKET_PATH:
-    raise cmuxError("CMUX_SOCKET_PATH is required (expected /tmp/cmux-debug-<tag>.sock)")
-LAST_SOCKET_HINT_PATH = Path("/tmp/cmux-last-socket-path")
+    raise cmuxError("CMUX_SOCKET_PATH is required (expected /tmp/cmuxpro-debug-<tag>.sock)")
+LAST_SOCKET_HINT_PATH = Path("/tmp/cmuxpro-last-socket-path")
 
 
 def _must(cond: bool, msg: str) -> None:
@@ -34,7 +34,7 @@ def _find_cli_binary() -> str:
         return fixed
 
     candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/cmux"), recursive=True)
-    candidates += glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux")
+    candidates += glob.glob("/tmp/cmuxpro-*/Build/Products/Debug/cmux")
     candidates = [p for p in candidates if os.path.isfile(p) and os.access(p, os.X_OK)]
     if not candidates:
         raise cmuxError("Could not locate cmux CLI binary; set CMUXTERM_CLI")
@@ -105,7 +105,7 @@ def main() -> int:
     _must(conflict_proc.returncode != 0, f"conflicting socket env should fail: {conflict_out!r}")
     _must("CMUX_SOCKET_PATH" in conflict_out and "differ" in conflict_out, f"conflict error should name canonical socket env: {conflict_out!r}")
 
-    # Debug builds should auto-resolve the active debug socket via /tmp/cmux-last-socket-path
+    # Debug builds should auto-resolve the active debug socket via /tmp/cmuxpro-last-socket-path
     # when CMUX_SOCKET_PATH is not set.
     hint_backup: str | None = None
     hint_had_file = LAST_SOCKET_HINT_PATH.exists()

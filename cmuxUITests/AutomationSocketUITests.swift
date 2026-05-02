@@ -3,7 +3,7 @@ import Foundation
 
 final class AutomationSocketUITests: XCTestCase {
     private var socketPath = ""
-    private let defaultsDomain = "com.cmuxterm.app.debug"
+    private let defaultsDomain = "com.okteam99.cmuxpro.debug"
     private let modeKey = "socketControlMode"
     private let legacyKey = "socketControlEnabled"
     private let launchTag = "ui-tests-automation-socket"
@@ -11,7 +11,7 @@ final class AutomationSocketUITests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        socketPath = "/tmp/cmux-debug-\(UUID().uuidString).sock"
+        socketPath = "/tmp/cmuxpro-debug-\(UUID().uuidString).sock"
         resetSocketDefaults()
         removeSocketFile()
     }
