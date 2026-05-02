@@ -255,7 +255,7 @@ working-directory = ~/code`}</CodeBlock>
       <h2 id="cmux-json" className="scroll-mt-24">cmux.json</h2>
       <p>
         cmux keeps app-owned settings, shortcuts, actions, custom commands, and workspace layouts in{" "}
-        <code>~/.config/cmux/cmux.json</code>. Terminal rendering still lives in Ghostty config.
+        <code>~/.config/cmuxpro/cmux.json</code>. Terminal rendering still lives in Ghostty config.
         On launch, if the file is missing, cmux writes a commented template there.
       </p>
       <p>
@@ -264,15 +264,15 @@ working-directory = ~/code`}</CodeBlock>
       </p>
       <ol>
         <li>
-          <code>~/.config/cmux/cmux.json</code>
+          <code>~/.config/cmuxpro/cmux.json</code>
         </li>
         <li>
           <code>.cmux/cmux.json</code> in a project for project-scoped actions and workspace commands
         </li>
       </ol>
       <Callout type="info">
-        <strong>Precedence:</strong> global <code>~/.config/cmux/cmux.json</code> settings override
-        values saved in the Settings window. Legacy <code>~/.config/cmux/settings.json</code> and
+        <strong>Precedence:</strong> global <code>~/.config/cmuxpro/cmux.json</code> settings override
+        values saved in the Settings window. Legacy <code>~/.config/cmuxpro/settings.json</code> and
         Application Support settings files are read only as fallback for missing settings keys.
         Project-local <code>.cmux/cmux.json</code> can override actions, commands, and UI action
         wiring, but not global app preferences.
@@ -291,7 +291,7 @@ working-directory = ~/code`}</CodeBlock>
         at <a href={schemaUrl}>{schemaUrl}</a> and the source lives at{" "}
         <a href={schemaSourceUrl}>{schemaSourceUrl}</a>.
       </p>
-      <CodeBlock title="~/.config/cmux/cmux.json" lang="json">
+      <CodeBlock title="~/.config/cmuxpro/cmux.json" lang="json">
         {settingsFileExample}
       </CodeBlock>
 

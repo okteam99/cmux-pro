@@ -63,13 +63,13 @@ export default function ApiPage() {
           <tr>
             <td>{t("debug")}</td>
             <td>
-              <code>/tmp/cmux-debug.sock</code>
+              <code>/tmp/cmuxpro-debug.sock</code>
             </td>
           </tr>
           <tr>
             <td>{t("taggedDebug")}</td>
             <td>
-              <code>/tmp/cmux-debug-&lt;tag&gt;.sock</code>
+              <code>/tmp/cmuxpro-debug-&lt;tag&gt;.sock</code>
             </td>
           </tr>
         </tbody>

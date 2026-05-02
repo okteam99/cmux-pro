@@ -148,7 +148,7 @@ cmux browser surface:2 scroll --selector "#log-view" --dx 0 --dy 400`}</CodeBloc
       <p>{t("inspectionDesc")}</p>
       <CodeBlock lang="bash">{`cmux browser surface:2 snapshot --interactive --compact
 cmux browser surface:2 snapshot --selector "main" --max-depth 5
-cmux browser surface:2 screenshot --out /tmp/cmux-page.png
+cmux browser surface:2 screenshot --out /tmp/cmuxpro-page.png
 
 cmux browser surface:2 get title
 cmux browser surface:2 get url
@@ -199,8 +199,8 @@ cmux browser surface:2 storage local clear
 cmux browser surface:2 storage session set flow onboarding
 cmux browser surface:2 storage session get flow
 
-cmux browser surface:2 state save /tmp/cmux-browser-state.json
-cmux browser surface:2 state load /tmp/cmux-browser-state.json`}</CodeBlock>
+cmux browser surface:2 state save /tmp/cmuxpro-browser-state.json
+cmux browser surface:2 state load /tmp/cmuxpro-browser-state.json`}</CodeBlock>
 
       <h2>{t("tabsSection")}</h2>
       <p>{t("tabsDesc")}</p>
@@ -257,7 +257,7 @@ cmux browser surface:2 is visible "#dashboard"`}</CodeBlock>
       <h3>{t("patternDebug")}</h3>
       <CodeBlock lang="bash">{`cmux browser surface:2 console list
 cmux browser surface:2 errors list
-cmux browser surface:2 screenshot --out /tmp/cmux-failure.png
+cmux browser surface:2 screenshot --out /tmp/cmuxpro-failure.png
 cmux browser surface:2 snapshot --interactive --compact`}</CodeBlock>
 
       <h3>{t("patternSession")}</h3>

@@ -306,7 +306,7 @@
       "title": "Commandes personnalisées",
       "metaTitle": "Commandes personnalisées",
       "metaDescription": "Définissez des actions, commandes personnalisées et dispositions d’espace de travail dans cmux.json. Prend en charge la configuration par projet et globale avec rechargement explicite.",
-      "intro": "Définissez des commandes personnalisées et des mises en page d'espace de travail en ajoutant un fichier cmux.json à la racine de votre projet ou ~/.config/cmux/. Les commandes apparaissent dans la palette de commandes.",
+      "intro": "Définissez des commandes personnalisées et des mises en page d'espace de travail en ajoutant un fichier cmux.json à la racine de votre projet ou ~/.config/cmuxpro/. Les commandes apparaissent dans la palette de commandes.",
       "fileLocations": "Emplacements des fichiers",
       "fileLocationsDesc": "cmux recherche la configuration à deux endroits :",
       "localConfig": "Par projet :",

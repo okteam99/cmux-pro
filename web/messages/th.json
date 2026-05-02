@@ -306,7 +306,7 @@
       "title": "คำสั่งที่กำหนดเอง",
       "metaTitle": "คำสั่งที่กำหนดเอง",
       "metaDescription": "กำหนด actions, custom commands และเลย์เอาต์ workspace ใน cmux.json รองรับการตั้งค่าแบบต่อโปรเจกต์และแบบ global พร้อมการ reload อย่างชัดเจน",
-      "intro": "กำหนดคำสั่งที่กำหนดเองและเลย์เอาต์ workspace โดยเพิ่มไฟล์ cmux.json ลงในรากโปรเจกต์หรือ ~/.config/cmux/ คำสั่งจะปรากฏในแผงคำสั่ง",
+      "intro": "กำหนดคำสั่งที่กำหนดเองและเลย์เอาต์ workspace โดยเพิ่มไฟล์ cmux.json ลงในรากโปรเจกต์หรือ ~/.config/cmuxpro/ คำสั่งจะปรากฏในแผงคำสั่ง",
       "fileLocations": "ตำแหน่งไฟล์",
       "fileLocationsDesc": "cmux ค้นหาการตั้งค่าจากสองที่:",
       "localConfig": "ต่อโปรเจกต์:",

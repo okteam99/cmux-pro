@@ -306,7 +306,7 @@
       "title": "Brugerdefinerede kommandoer",
       "metaTitle": "Brugerdefinerede kommandoer",
       "metaDescription": "Definer handlinger, brugerdefinerede kommandoer og arbejdsområdelayouts i cmux.json. Understøtter projektbaseret og global konfiguration med eksplicit genindlæsning.",
-      "intro": "Definer brugerdefinerede kommandoer og workspace-layouts ved at tilføje en cmux.json-fil til din projektrod eller ~/.config/cmux/. Kommandoer vises i kommandopaletten.",
+      "intro": "Definer brugerdefinerede kommandoer og workspace-layouts ved at tilføje en cmux.json-fil til din projektrod eller ~/.config/cmuxpro/. Kommandoer vises i kommandopaletten.",
       "fileLocations": "Filplaceringer",
       "fileLocationsDesc": "cmux leder efter konfiguration to steder:",
       "localConfig": "Per projekt:",
