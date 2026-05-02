@@ -2,6 +2,34 @@
 
 All notable changes to cmux are documented here.
 
+## [0.64.3] - 2026-04-16
+
+### Fixed
+- Isolate cmux Pro's control socket from upstream cmux. Both previously wrote to `~/Library/Application Support/cmux/cmux.sock`, so starting the other app erased the first's socket file. Symptoms included silent notifications, tab status markers that never cleared, and `Stop hook error: Socket not found` from the Claude Code integration. cmux Pro now binds under `~/Library/Application Support/cmuxpro/cmuxpro.sock`.
+- File Explorer: revealing a deeply nested path now expands every ancestor in one pass instead of bailing out partway and leaving the target row unselected.
+- Markdown viewer: wide tables stay inside the centered content column instead of pushing the layout sideways; internal `.md` / `.markdown` links now open in the reader rather than handing off to the system default app.
+
+## [0.64.2] - 2026-04-16
+
+### Changed
+- Recolor app icon chevron from blue/cyan to an orange gradient so cmux Pro is visually distinct from upstream cmux.
+
+## [0.64.1] - 2026-04-15
+
+### Fixed
+- DMG bundle renamed to `cmux Pro.app` so it installs side-by-side with the upstream `cmux.app` instead of prompting to replace it.
+
+## [0.64.0] - 2026-04-15
+
+### Added
+- Reveal terminal filesystem paths in the File Explorer sidebar by clicking local file links.
+- Toggle File Explorer button in the sidebar footer and a matching View menu entry with configurable shortcut.
+- Markdown viewer window backed by a vendored WebKit bundle (marked, highlight.js, mermaid) for opening `.md` / `.markdown` files from the explorer.
+
+### Changed
+- Fork rebased on `okteam99/cmux-pro`; release workflow, Sparkle feed URL, and remote daemon asset repo now point at this fork.
+- Bump bundled `vendor/bonsplit` to pick up the file explorer split button and tab/minimal-mode interaction fixes.
+
 ## [0.63.2] - 2026-04-06
 
 ### Added
