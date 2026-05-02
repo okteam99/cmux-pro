@@ -197,6 +197,25 @@ struct cmuxApp: App {
                     }
 #endif
                     bootstrapMainWindowScene()
+                    NotificationCenter.default.addObserver(
+                        forName: Notification.Name("com.cmux.toggleFileExplorer"),
+                        object: nil,
+                        queue: .main
+                    ) { [appDelegate] _ in
+                        appDelegate.fileExplorerState?.toggle()
+                    }
+                    NotificationCenter.default.addObserver(
+                        forName: Notification.Name("com.cmux.fileExplorerOpenRequest"),
+                        object: nil,
+                        queue: .main
+                    ) { [tabManager] note in
+                        guard let path = note.userInfo?["path"] as? String else { return }
+                        guard let workspace = tabManager.selectedWorkspace else {
+                            NSWorkspace.shared.open(URL(fileURLWithPath: path))
+                            return
+                        }
+                        workspace.openFileFromExplorer(filePath: path)
+                    }
                 }
                 .onChange(of: appearanceMode) { _ in
                     applyAppearance()
@@ -644,6 +663,9 @@ struct cmuxApp: App {
                         NSSound.beep()
                     }
                 }
+            }
+            splitCommandButton(title: String(localized: "menu.view.toggleFileExplorer", defaultValue: "Toggle File Explorer"), shortcut: menuShortcut(for: .toggleFileExplorer)) {
+                AppDelegate.shared?.fileExplorerState?.toggle()
             }
             Divider()
             splitCommandButton(title: String(localized: "menu.view.nextSurface", defaultValue: "Next Surface"), shortcut: menuShortcut(for: .nextSurface)) {
@@ -4653,7 +4675,7 @@ enum AppIconLaunchState {
 enum AppIconSettings {
     static let modeKey = "appIconMode"
     static let defaultMode: AppIconMode = .automatic
-    private static let dockTileIconDidChangeNotification = Notification.Name("com.cmuxterm.appIconDidChange")
+    private static let dockTileIconDidChangeNotification = Notification.Name("com.okteam99.cmuxpro.appIconDidChange")
     private static var liveEnvironmentProvider: () -> Environment = { .live() }
 
     private static func isRunningUnderXCTest(_ env: [String: String] = ProcessInfo.processInfo.environment) -> Bool {

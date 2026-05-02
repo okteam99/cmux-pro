@@ -11,7 +11,7 @@ struct GhosttyConfig {
     static let cmuxDefaultLightThemeName = "Apple System Colors Light"
     static let cmuxDefaultDarkThemeName = "Apple System Colors"
 
-    private static let cmuxReleaseBundleIdentifier = "com.cmuxterm.app"
+    private static let cmuxReleaseBundleIdentifier = "com.okteam99.cmuxpro"
     private static let loadCacheLock = NSLock()
     private static var cachedConfigsByColorScheme: [ColorSchemePreference: GhosttyConfig] = [:]
 

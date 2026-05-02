@@ -278,6 +278,12 @@
 		FE003102 /* SessionIndexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE003002 /* SessionIndexView.swift */; };
 		FE003103 /* RightSidebarPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE003003 /* RightSidebarPanelView.swift */; };
 		FE003104 /* SessionIndexStore+CodexSQL.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE003004 /* SessionIndexStore+CodexSQL.swift */; };
+		CB5000000000000000000001 /* FileExplorerRevealTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5000000000000000000002 /* FileExplorerRevealTests.swift */; };
+		CB5000000000000000000010 /* MarkdownViewerFileSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5000000000000000000011 /* MarkdownViewerFileSource.swift */; };
+		CB5000000000000000000012 /* MarkdownViewerWebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5000000000000000000013 /* MarkdownViewerWebBridge.swift */; };
+		CB5000000000000000000014 /* MarkdownViewerWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5000000000000000000015 /* MarkdownViewerWindowController.swift */; };
+		CB5000000000000000000016 /* MarkdownViewerWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5000000000000000000017 /* MarkdownViewerWindowManager.swift */; };
+		CB5000000000000000000020 /* MarkdownViewer in Resources */ = {isa = PBXBuildFile; fileRef = CB5000000000000000000021 /* MarkdownViewer */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -617,6 +623,12 @@
 		FE003003 /* RightSidebarPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightSidebarPanelView.swift; sourceTree = "<group>"; };
 		FE003004 /* SessionIndexStore+CodexSQL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SessionIndexStore+CodexSQL.swift"; sourceTree = "<group>"; };
 		IC000002 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AppIcon.icon; sourceTree = "<group>"; };
+		CB5000000000000000000002 /* FileExplorerRevealTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExplorerRevealTests.swift; sourceTree = "<group>"; };
+		CB5000000000000000000011 /* MarkdownViewerFileSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerFileSource.swift; sourceTree = "<group>"; };
+		CB5000000000000000000013 /* MarkdownViewerWebBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerWebBridge.swift; sourceTree = "<group>"; };
+		CB5000000000000000000015 /* MarkdownViewerWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerWindowController.swift; sourceTree = "<group>"; };
+		CB5000000000000000000017 /* MarkdownViewerWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerWindowManager.swift; sourceTree = "<group>"; };
+		CB5000000000000000000021 /* MarkdownViewer */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MarkdownViewer; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -677,6 +689,7 @@
 				DA7A10CA710E000000000002 /* InfoPlist.xcstrings */,
 				FEED0000000000000000F006 /* opencode-plugin.js */,
 				FEED0A00000000000000F006 /* feed-tui */,
+				CB5000000000000000000021 /* MarkdownViewer */,
 				A5001622 /* cmux.sdef */,
 			);
 			path = Resources;
@@ -906,6 +919,10 @@
 				FE001001 /* FileExplorerStore.swift */,
 				FE001003 /* FileExplorerSearchController.swift */,
 				FE001002 /* FileExplorerView.swift */,
+				CB5000000000000000000011 /* MarkdownViewerFileSource.swift */,
+				CB5000000000000000000013 /* MarkdownViewerWebBridge.swift */,
+				CB5000000000000000000015 /* MarkdownViewerWindowController.swift */,
+				CB5000000000000000000017 /* MarkdownViewerWindowManager.swift */,
 				FE003001 /* SessionIndexStore.swift */,
 				FE003004 /* SessionIndexStore+CodexSQL.swift */,
 				FE003002 /* SessionIndexView.swift */,
@@ -1011,6 +1028,7 @@
 				FE002001 /* FileExplorerRootResolverTests.swift */,
 				FE002002 /* FileExplorerStoreTests.swift */,
 				FE002003 /* FileSearchRipgrepParserTests.swift */,
+				CB5000000000000000000002 /* FileExplorerRevealTests.swift */,
 			);
 			path = cmuxTests;
 			sourceTree = "<group>";
@@ -1197,6 +1215,7 @@
 				FEED0000000000000000F007 /* opencode-plugin.js in Resources */,
 				FEED0A00000000000000F007 /* feed-tui in Resources */,
 				A5001623 /* cmux.sdef in Resources */,
+				CB5000000000000000000020 /* MarkdownViewer in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1382,6 +1401,10 @@
 				E30750000000000000000004 /* CmuxWorkspaceDefinition.swift in Sources */,
 				A5001652 /* CmuxConfigExecutor.swift in Sources */,
 				A5001654 /* CmuxActionTrust.swift in Sources */,
+				CB5000000000000000000010 /* MarkdownViewerFileSource.swift in Sources */,
+				CB5000000000000000000012 /* MarkdownViewerWebBridge.swift in Sources */,
+				CB5000000000000000000014 /* MarkdownViewerWindowController.swift in Sources */,
+				CB5000000000000000000016 /* MarkdownViewerWindowManager.swift in Sources */,
 				FE001101 /* FileExplorerStore.swift in Sources */,
 				FE001103 /* FileExplorerSearchController.swift in Sources */,
 				FE001102 /* FileExplorerView.swift in Sources */,
@@ -1526,6 +1549,7 @@
 				FE002101 /* FileExplorerRootResolverTests.swift in Sources */,
 				FE002102 /* FileExplorerStoreTests.swift in Sources */,
 				FE002103 /* FileSearchRipgrepParserTests.swift in Sources */,
+				CB5000000000000000000001 /* FileExplorerRevealTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1559,12 +1583,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 83;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.63.2;
+				MARKETING_VERSION = 0.64.3;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cmuxterm.appuitests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.okteam99.cmuxpro.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_TARGET_NAME = GhosttyTabs;
@@ -1641,7 +1665,7 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 83;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -1650,7 +1674,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.63.2;
+				MARKETING_VERSION = 0.64.3;
 				OTHER_LDFLAGS = (
 					"-lc++",
 					"-framework",
@@ -1664,7 +1688,7 @@
 					"-framework",
 					Carbon,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.cmuxterm.app.debug;
+				PRODUCT_BUNDLE_IDENTIFIER = com.okteam99.cmuxpro.debug;
 				PRODUCT_NAME = "cmux DEV";
 				SPARKLE_PUBLIC_KEY = "avjcgKibf1FTvhIjLBxhd+0HSpsXU4D0IGlVk8cgqRc=";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1681,7 +1705,7 @@
 				CODE_SIGN_ENTITLEMENTS = Resources/cmux.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 83;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = NO;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -1690,7 +1714,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.63.2;
+				MARKETING_VERSION = 0.64.3;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-lc++",
@@ -1705,7 +1729,7 @@
 					"-framework",
 					Carbon,
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.cmuxterm.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.okteam99.cmuxpro;
 				PRODUCT_NAME = cmux;
 				SPARKLE_PUBLIC_KEY = "avjcgKibf1FTvhIjLBxhd+0HSpsXU4D0IGlVk8cgqRc=";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1757,12 +1781,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 83;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.63.2;
+				MARKETING_VERSION = 0.64.3;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cmuxterm.appuitests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.okteam99.cmuxpro.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_VERSION = 5.0;
@@ -1775,7 +1799,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 83;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1784,8 +1808,8 @@
 				INFOPLIST_KEY_NSPrincipalClass = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.63.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cmuxterm.app.docktileplugin.debug;
+				MARKETING_VERSION = 0.64.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.okteam99.cmuxpro.docktileplugin.debug;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -1800,7 +1824,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 83;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1809,8 +1833,8 @@
 				INFOPLIST_KEY_NSPrincipalClass = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.63.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cmuxterm.app.docktileplugin;
+				MARKETING_VERSION = 0.64.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.okteam99.cmuxpro.docktileplugin;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
@@ -1824,12 +1848,12 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 83;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.63.2;
+				MARKETING_VERSION = 0.64.3;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cmuxterm.apptests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.okteam99.cmuxpro.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_VERSION = 5.0;
@@ -1843,12 +1867,12 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 83;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 0.63.2;
+				MARKETING_VERSION = 0.64.3;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.cmuxterm.apptests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.okteam99.cmuxpro.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/cmux.app/Contents/MacOS/cmux";
