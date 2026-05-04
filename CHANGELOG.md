@@ -2,7 +2,7 @@
 
 All notable changes to cmux are documented here.
 
-## [0.65.0] - 2026-05-04
+## [0.65.1] - 2026-05-04
 
 ### Added
 - Markdown viewer: collapsible left outline sidebar showing the document's heading hierarchy.
