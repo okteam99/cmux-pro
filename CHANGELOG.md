@@ -2,11 +2,14 @@
 
 All notable changes to cmux are documented here.
 
-## [0.65.1] - 2026-05-04
+## [0.65.2] - 2026-05-04
 
 ### Added
 - Markdown viewer: collapsible left outline sidebar showing the document's heading hierarchy.
 - File explorer: revealing a path now auto-expands every ancestor folder in one pass.
+
+### Fixed
+- DMG launch failure on macOS 26: drop the WebAuthn (`web-browser.public-key-credential`) entitlement so the fork's Developer ID-signed app no longer needs a managed provisioning profile to pass amfi at launch. Browser-pane passkeys remain disabled in cmux Pro for now.
 
 ## [0.64.3] - 2026-04-16
 
