@@ -2,6 +2,14 @@
 
 All notable changes to cmux are documented here.
 
+## [0.65.3] - 2026-05-04
+
+### Changed
+- Markdown viewer: opening a `.md` file now adds it as a tab to the existing viewer window instead of spawning a separate window. Re-opening the same file still focuses its existing tab.
+
+### Fixed
+- Markdown viewer: dropped the full-size content view style so traffic lights and the in-content breadcrumb / outline no longer overlap when switching back to the first tab.
+
 ## [0.65.2] - 2026-05-04
 
 ### Added

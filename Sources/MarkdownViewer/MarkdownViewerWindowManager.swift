@@ -11,6 +11,10 @@ import WebKit
 final class MarkdownViewerWindowManager: NSObject {
     static let shared = MarkdownViewerWindowManager()
 
+    /// Tab grouping identifier shared by every Markdown viewer window so
+    /// AppKit merges them into a single tabbed window.
+    static let tabbingIdentifier = "ai.okteam99.cmuxpro.markdown-viewer"
+
     /// Shared WebKit process pool. Lives for the lifetime of the application
     /// process; intentionally never released so warm opens stay warm.
     let processPool = WKProcessPool()
@@ -43,7 +47,13 @@ final class MarkdownViewerWindowManager: NSObject {
             processPool: processPool,
             manager: self
         )
+
+        let host = controllers.values.compactMap(\.window).first
         controllers[key] = controller
+
+        if let host, let newWindow = controller.window, host !== newWindow {
+            host.addTabbedWindow(newWindow, ordered: .above)
+        }
         controller.showWindow(nil)
         controller.window?.makeKeyAndOrderFront(nil)
         return controller

@@ -49,7 +49,7 @@ final class MarkdownViewerWindowController: NSWindowController, NSWindowDelegate
 
         let window = NSWindow(
             contentRect: initialFrame,
-            styleMask: [.titled, .closable, .resizable, .miniaturizable, .fullSizeContentView],
+            styleMask: [.titled, .closable, .resizable, .miniaturizable],
             backing: .buffered,
             defer: false
         )
@@ -59,6 +59,8 @@ final class MarkdownViewerWindowController: NSWindowController, NSWindowDelegate
         window.isReleasedWhenClosed = false
         window.minSize = NSSize(width: 480, height: 360)
         window.contentView = webView
+        window.tabbingMode = .preferred
+        window.tabbingIdentifier = MarkdownViewerWindowManager.tabbingIdentifier
         if MarkdownViewerFrameMemory.loadIfValid() == nil {
             window.center()
         }
