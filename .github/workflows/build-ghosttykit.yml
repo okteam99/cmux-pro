@@ -1,10 +1,7 @@
 name: Build GhosttyKit
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -12,7 +9,7 @@ concurrency:
 
 jobs:
   build-ghosttykit:
-    runs-on: warp-macos-15-arm64-6x
+    runs-on: macos-15
     timeout-minutes: 20
     steps:
       - name: Checkout
