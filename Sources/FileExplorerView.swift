@@ -64,6 +64,7 @@ struct FileExplorerPanelView: NSViewRepresentable {
         private var observationCancellable: AnyCancellable?
         private var styleObserver: Any?
         private var isUpdatingOutlineProgrammatically = false
+        private var revealObserver: Any?
 
         init(
             store: FileExplorerStore,
@@ -88,12 +89,47 @@ struct FileExplorerPanelView: NSViewRepresentable {
                     self.applyStoredSelection(in: outlineView, fallbackToFirstVisible: false, scroll: false)
                 }
             }
+            revealObserver = NotificationCenter.default.addObserver(
+                forName: Notification.Name("com.cmux.revealInFileExplorer"),
+                object: nil,
+                queue: .main
+            ) { [weak self] note in
+                guard let self else { return }
+                guard (note.object as AnyObject?) === self.store else { return }
+                guard let path = note.userInfo?["path"] as? String else { return }
+                self.handleRevealRequest(path: path)
+            }
         }
 
         deinit {
             if let observer = styleObserver {
                 NotificationCenter.default.removeObserver(observer)
             }
+            if let observer = revealObserver {
+                NotificationCenter.default.removeObserver(observer)
+            }
+        }
+
+        private func handleRevealRequest(path: String) {
+            if !state.isVisible {
+                state.setVisible(true)
+            }
+            let store = self.store
+            Task { @MainActor [weak self] in
+                guard let node = await store.reveal(path: path) else { return }
+                self?.selectAndScroll(to: node)
+            }
+        }
+
+        @MainActor
+        private func selectAndScroll(to node: FileExplorerNode) {
+            guard let outlineView = self.outlineView else { return }
+            outlineView.reloadData()
+            self.restoreExpansionState(self.store.expandedPaths, in: outlineView)
+            let row = outlineView.row(forItem: node)
+            guard row >= 0 else { return }
+            outlineView.selectRowIndexes(IndexSet(integer: row), byExtendingSelection: false)
+            outlineView.scrollRowToVisible(row)
         }
 
         private func observeStore() {
@@ -125,11 +161,18 @@ struct FileExplorerPanelView: NSViewRepresentable {
         }
 
         private func restoreExpansionState(_ expandedPaths: Set<String>, in outlineView: NSOutlineView) {
-            for row in 0..<outlineView.numberOfRows {
-                guard let node = outlineView.item(atRow: row) as? FileExplorerNode else { continue }
-                if expandedPaths.contains(node.path) && outlineView.isExpandable(node) {
+            // While-loop (not for-in-range) so rows added by expandItem mid-iteration
+            // are themselves visited — required for revealing deeply-nested paths
+            // where multiple ancestor directories need to be expanded in one pass.
+            var row = 0
+            while row < outlineView.numberOfRows {
+                if let node = outlineView.item(atRow: row) as? FileExplorerNode,
+                   expandedPaths.contains(node.path),
+                   outlineView.isExpandable(node),
+                   !outlineView.isItemExpanded(node) {
                     outlineView.expandItem(node)
                 }
+                row += 1
             }
         }
 
@@ -204,8 +247,46 @@ struct FileExplorerPanelView: NSViewRepresentable {
                     self.store.cancelPrefetch(for: node)
                 }
             }
+            cellView.onOpenClicked = { [weak self, weak node] in
+                guard let self, let node else { return }
+                self.performOpen(for: node)
+            }
 
             return cellView
+        }
+
+        // MARK: - Open request handling
+
+        @objc func handleOutlineDoubleClick(_ sender: Any?) {
+            guard let outlineView else { return }
+            let row = outlineView.clickedRow
+            guard row >= 0,
+                  let node = outlineView.item(atRow: row) as? FileExplorerNode else { return }
+            performOpen(for: node)
+        }
+
+        private func performOpen(for node: FileExplorerNode) {
+            guard let outlineView else { return }
+            if node.isDirectory {
+                if outlineView.isItemExpanded(node) {
+                    outlineView.collapseItem(node)
+                } else {
+                    outlineView.expandItem(node)
+                }
+                #if DEBUG
+                dlog("fileExplorer.open path=\(node.path) route=expand")
+                #endif
+                return
+            }
+            #if DEBUG
+            let ext = (node.path as NSString).pathExtension.lowercased()
+            dlog("fileExplorer.open path=\(node.path) route=\(ext == "md" || ext == "markdown" ? "markdown" : "external")")
+            #endif
+            NotificationCenter.default.post(
+                name: Notification.Name("com.cmux.fileExplorerOpenRequest"),
+                object: store,
+                userInfo: ["path": node.path]
+            )
         }
 
         func outlineView(_ outlineView: NSOutlineView, shouldExpandItem item: Any) -> Bool {
@@ -472,24 +553,6 @@ struct FileExplorerPanelView: NSViewRepresentable {
             FilePreviewDragPasteboardWriter.discardRegisteredDrag(from: NSPasteboard(name: .drag))
         }
 
-        @objc func handleDoubleClick(_ sender: NSOutlineView) {
-            let row = sender.clickedRow >= 0 ? sender.clickedRow : sender.selectedRow
-            guard row >= 0,
-                  let node = sender.item(atRow: row) as? FileExplorerNode else { return }
-
-            if node.isDirectory {
-                if sender.isItemExpanded(node) {
-                    sender.collapseItem(node)
-                } else if sender.isExpandable(node) {
-                    sender.expandItem(node)
-                }
-                return
-            }
-
-            guard store.provider is LocalFileExplorerProvider else { return }
-            onOpenFilePreview(node.path)
-        }
-
         // MARK: - Context Menu (NSMenuDelegate)
 
         func menuNeedsUpdate(_ menu: NSMenu) {
@@ -697,7 +760,7 @@ final class FileExplorerContainerView: NSView {
         outlineView.dataSource = coordinator
         outlineView.delegate = coordinator
         outlineView.target = coordinator
-        outlineView.doubleAction = #selector(FileExplorerPanelView.Coordinator.handleDoubleClick(_:))
+        outlineView.doubleAction = #selector(FileExplorerPanelView.Coordinator.handleOutlineDoubleClick(_:))
         outlineView.setDraggingSourceOperationMask(.move, forLocal: true)
         coordinator.outlineView = outlineView
 
@@ -1463,14 +1526,14 @@ final class FileExplorerHeaderView: NSView {
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: RightSidebarChromeMetrics.secondaryBarHeight),
 
-            iconView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            pathLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            pathLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            pathLabel.trailingAnchor.constraint(lessThanOrEqualTo: iconView.leadingAnchor, constant: -4),
+
+            iconView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
             iconView.centerYAnchor.constraint(equalTo: centerYAnchor),
             iconView.widthAnchor.constraint(equalToConstant: 14),
             iconView.heightAnchor.constraint(equalToConstant: 14),
-
-            pathLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 4),
-            pathLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            pathLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
         ])
         applyHeaderState()
     }
@@ -1505,10 +1568,12 @@ final class FileExplorerCellView: NSTableCellView {
     private let iconView = NSImageView()
     private let nameLabel = NSTextField(labelWithString: "")
     private let loadingIndicator = NSProgressIndicator()
+    private let openButton = NSButton()
     private var trackingArea: NSTrackingArea?
     var onHover: ((Bool) -> Void)?
     private var nameLabelTrailingToLoadingConstraint: NSLayoutConstraint!
     private var nameLabelTrailingToContainerConstraint: NSLayoutConstraint!
+    var onOpenClicked: (() -> Void)?
 
     init(identifier: NSUserInterfaceItemIdentifier) {
         super.init(frame: .zero)
@@ -1540,9 +1605,30 @@ final class FileExplorerCellView: NSTableCellView {
         loadingIndicator.isHidden = true
         loadingIndicator.setAccessibilityIdentifier("FileExplorerLoadingIndicator")
 
+        openButton.translatesAutoresizingMaskIntoConstraints = false
+        openButton.isBordered = false
+        openButton.bezelStyle = .recessed
+        openButton.imagePosition = .imageOnly
+        openButton.image = NSImage(
+            systemSymbolName: "arrow.up.forward.square",
+            accessibilityDescription: String(
+                localized: "fileExplorer.cell.open",
+                defaultValue: "Open"
+            )
+        )?.withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 11, weight: .regular))
+        openButton.contentTintColor = .secondaryLabelColor
+        openButton.isHidden = true
+        openButton.target = self
+        openButton.action = #selector(handleOpenClick(_:))
+        openButton.setAccessibilityLabel(
+            String(localized: "fileExplorer.cell.open", defaultValue: "Open")
+        )
+        openButton.setAccessibilityIdentifier("FileExplorerRowOpenButton")
+
         addSubview(iconView)
         addSubview(nameLabel)
         addSubview(loadingIndicator)
+        addSubview(openButton)
 
         iconWidthConstraint = iconView.widthAnchor.constraint(equalToConstant: 16)
         iconHeightConstraint = iconView.heightAnchor.constraint(equalToConstant: 16)
@@ -1557,6 +1643,10 @@ final class FileExplorerCellView: NSTableCellView {
 
             iconToTextConstraint,
             nameLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            openButton.trailingAnchor.constraint(equalTo: loadingIndicator.leadingAnchor, constant: -4),
+            openButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            openButton.widthAnchor.constraint(equalToConstant: 16),
+            openButton.heightAnchor.constraint(equalToConstant: 16),
 
             loadingIndicator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4),
             loadingIndicator.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -1577,6 +1667,18 @@ final class FileExplorerCellView: NSTableCellView {
             nameLabelTrailingToContainerConstraint
         ])
         nameLabelTrailingToLoadingConstraint.isActive = false
+    }
+
+    @objc private func handleOpenClick(_ sender: NSButton) {
+        onOpenClicked?()
+    }
+
+    override var backgroundStyle: NSView.BackgroundStyle {
+        didSet {
+            let selected = backgroundStyle != .normal
+            openButton.isHidden = !selected
+            openButton.contentTintColor = selected ? .labelColor : .secondaryLabelColor
+        }
     }
 
     func configure(with node: FileExplorerNode, gitStatus: GitFileStatus? = nil) {

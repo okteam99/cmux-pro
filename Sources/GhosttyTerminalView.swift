@@ -1423,7 +1423,7 @@ class GhosttyApp {
     }
 
     static let shared = GhosttyApp()
-    private static let releaseBundleIdentifier = "com.cmuxterm.app"
+    private static let releaseBundleIdentifier = "com.okteam99.cmuxpro"
     private static let fallbackAppearanceConfig = GhosttyConfig()
     private static let backgroundLogTimestampFormatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
@@ -1465,7 +1465,7 @@ class GhosttyApp {
             return baseURL.deletingLastPathComponent().appendingPathComponent(bgName)
         }
 
-        return URL(fileURLWithPath: "/tmp/cmux-bg.log")
+        return URL(fileURLWithPath: "/tmp/cmuxpro-bg.log")
     }
 
     fileprivate static func runtimeReadClipboardCallback(
@@ -1696,7 +1696,7 @@ class GhosttyApp {
     }
 
     #if DEBUG
-    private static let initLogPath = "/tmp/cmux-ghostty-init.log"
+    private static let initLogPath = "/tmp/cmuxpro-ghostty-init.log"
 
     private static func initLog(_ message: String) {
         let timestamp = ISO8601DateFormatter().string(from: Date())
@@ -3857,6 +3857,21 @@ class GhosttyApp {
                 // Fall through to the existing NSWorkspace path below.
             }
 
+            if case let .external(candidate) = target,
+               candidate.isFileURL,
+               let store = FileExplorerStoreRegistry.shared.storeContaining(path: candidate.path) {
+                #if DEBUG
+                dlog("link.openURL target=fileReveal url=\(candidate.path)")
+                #endif
+                return performOnMain {
+                    NotificationCenter.default.post(
+                        name: Notification.Name("com.cmux.revealInFileExplorer"),
+                        object: store,
+                        userInfo: ["path": candidate.path]
+                    )
+                    return true
+                }
+            }
             if !BrowserLinkOpenSettings.openTerminalLinksInCmuxBrowser() {
                 #if DEBUG
                 cmuxDebugLog("link.openURL cmuxBrowser=disabled, opening externally url=\(target.url)")
@@ -4658,8 +4673,8 @@ final class TerminalSurface: Identifiable, ObservableObject {
     }
 
 #if DEBUG
-    private static let surfaceLogPath = "/tmp/cmux-ghostty-surface.log"
-    private static let sizeLogPath = "/tmp/cmux-ghostty-size.log"
+    private static let surfaceLogPath = "/tmp/cmuxpro-ghostty-surface.log"
+    private static let sizeLogPath = "/tmp/cmuxpro-ghostty-size.log"
 
     func debugCurrentPixelSize() -> (width: UInt32, height: UInt32) {
         (lastPixelWidth, lastPixelHeight)
@@ -8141,7 +8156,26 @@ class GhosttyNSView: NSView, NSUserInterfaceValidations {
         cmuxDebugLog("link.wordFallback resolved=\(resolution.path) source=\(resolution.source.rawValue)")
         #endif
 
-        PreferredEditorSettings.open(URL(fileURLWithPath: resolution.path))
+        openResolvedTerminalPath(resolution.path)
+    }
+
+    /// Route a resolved filesystem path to the in-app file explorer when the path
+    /// belongs to an active workspace root, otherwise fall back to the preferred
+    /// external editor. Shared by the OPEN_URL action, word-fallback, and
+    /// command-click-release handlers.
+    private func openResolvedTerminalPath(_ path: String) {
+        if let store = FileExplorerStoreRegistry.shared.storeContaining(path: path) {
+            #if DEBUG
+            dlog("link.wordFallback target=fileReveal path=\(path)")
+            #endif
+            NotificationCenter.default.post(
+                name: Notification.Name("com.cmux.revealInFileExplorer"),
+                object: store,
+                userInfo: ["path": path]
+            )
+            return
+        }
+        PreferredEditorSettings.open(URL(fileURLWithPath: path))
     }
 
     /// Check if the word under the mouse cursor resolves to an existing file/directory
@@ -8567,8 +8601,8 @@ class GhosttyNSView: NSView, NSUserInterfaceValidations {
 
         // Remote-surface guard runs before shouldRoute so we never stat a local
         // path on the main thread for a remote workspace. When the viewer path
-        // is applicable but split creation fails, fall back to the preferred
-        // editor so the click never silently no-ops.
+        // is applicable but split creation fails, fall back to openResolvedTerminalPath
+        // (file explorer reveal → preferred editor) so the click never silently no-ops.
         if let termSurface = terminalSurface,
            let workspace = termSurface.owningWorkspace(),
            !workspace.isRemoteTerminalSurface(termSurface.id),
@@ -8577,7 +8611,7 @@ class GhosttyNSView: NSView, NSUserInterfaceValidations {
             return resolution
         }
 
-        PreferredEditorSettings.open(URL(fileURLWithPath: resolution.path))
+        openResolvedTerminalPath(resolution.path)
         return resolution
     }
 

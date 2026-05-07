@@ -561,7 +561,7 @@ final class BonsplitTabDragUITests: XCTestCase {
         windowSize: String? = nil
     ) -> (XCUIApplication, String) {
         let app = XCUIApplication()
-        let dataPath = "/tmp/cmux-ui-test-bonsplit-tab-drag-\(UUID().uuidString).json"
+        let dataPath = "/tmp/cmuxpro-ui-test-bonsplit-tab-drag-\(UUID().uuidString).json"
         try? FileManager.default.removeItem(atPath: dataPath)
 
         app.launchEnvironment["CMUX_UI_TEST_MODE"] = "1"

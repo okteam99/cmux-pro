@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>F3 · Markdown Viewer UI Preview</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --page-bg: #EDEDED;
+    --page-fg: #1E1E1E;
+    --panel-bg: #FAFAFA;
+    --bg: #FAFAFA;
+    --bg-soft: #EDEDED;
+    --bg-raise: #FFFFFF;
+    --fg: #1E1E1E;
+    --fg-strong: #000000;
+    --fg-muted: #666666;
+    --divider: #E0E0E0;
+    --divider-strong: #C8C8C8;
+    --accent: #0A7BFF;
+    --accent-soft: #6FAEFF;
+    --link: #0A63DF;
+    --code-inline-fg: #6A1F9E;
+    --code-inline-bg: #EBE8EB;
+    --code-block-fg: #333333;
+    --code-block-bg: #EDEDED;
+    --table-row-alt: #F4F4F4;
+    --banner-warn-bg: #FFF4D6;
+    --banner-warn-fg: #6B4E00;
+    --banner-warn-border: #EBD48A;
+    --danger-bg: #FFECEC;
+    --danger-fg: #B3261E;
+    --danger-border: #E9A7A2;
+    --hl-keyword: #A71D5D;
+    --hl-string: #0A3069;
+    --hl-comment: #6A737D;
+    --hl-number: #005CC5;
+    --hl-type: #6F42C1;
+    --hl-function: #6F42C1;
+    --titlebar-bg: #E8E8E8;
+    --titlebar-fg: #222222;
+    --shadow: 0 10px 30px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.06);
+  }
+  html.dark {
+    --page-bg: #111111;
+    --page-fg: #EAEAEA;
+    --panel-bg: #1F1F1F;
+    --bg: #1F1F1F;
+    --bg-soft: #2B2B2B;
+    --bg-raise: #242424;
+    --fg: #EAEAEA;
+    --fg-strong: #FFFFFF;
+    --fg-muted: #A0A0A0;
+    --divider: #333333;
+    --divider-strong: #444444;
+    --accent: #4FA3FF;
+    --accent-soft: #6B8FD0;
+    --link: #6EB5FF;
+    --code-inline-fg: #E5A8FF;
+    --code-inline-bg: #2E2E2E;
+    --code-block-fg: #E6E6E6;
+    --code-block-bg: #141414;
+    --table-row-alt: #262626;
+    --banner-warn-bg: #3A3420;
+    --banner-warn-fg: #F5D877;
+    --banner-warn-border: #5A4E20;
+    --danger-bg: #3A1F1F;
+    --danger-fg: #FF9E9A;
+    --danger-border: #6B2F2B;
+    --hl-keyword: #F97583;
+    --hl-string: #9ECBFF;
+    --hl-comment: #8B949E;
+    --hl-number: #79B8FF;
+    --hl-type: #B392F0;
+    --hl-function: #B392F0;
+    --titlebar-bg: #2A2A2A;
+    --titlebar-fg: #DDDDDD;
+    --shadow: 0 10px 30px rgba(0,0,0,.55), 0 2px 4px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--page-bg);
+    color: var(--page-fg);
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .preview-toolbar {
+    position: sticky; top: 0; z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--divider);
+    box-shadow: 0 1px 0 rgba(0,0,0,.04);
+  }
+  .preview-toolbar h1 {
+    font-size: 14px; font-weight: 600; margin: 0;
+    color: var(--fg);
+  }
+  .preview-toolbar .meta {
+    font-size: 12px; color: var(--fg-muted); font-family: "SF Mono", monospace;
+  }
+  .preview-toolbar button {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--divider);
+    background: var(--bg-raise);
+    color: var(--fg);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .preview-toolbar button:hover { border-color: var(--accent); }
+
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    gap: 28px;
+    padding: 28px;
+  }
+
+  .case {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--panel-bg);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--divider);
+  }
+  .case-label {
+    padding: 8px 14px;
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--divider);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .case-label .ac {
+    margin-left: 6px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  /* ---------- Mock macOS NSWindow chrome ---------- */
+  .nswin { display: flex; flex-direction: column; }
+  .nswin-titlebar {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+    background: var(--titlebar-bg);
+    color: var(--titlebar-fg);
+    border-bottom: 1px solid var(--divider);
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+  }
+  .nswin-titlebar .traffic { display: flex; gap: 8px; }
+  .nswin-titlebar .traffic span {
+    width: 12px; height: 12px; border-radius: 50%;
+    display: inline-block;
+  }
+  .nswin-titlebar .traffic .r { background: #FF5F57; }
+  .nswin-titlebar .traffic .y { background: #FEBC2E; }
+  .nswin-titlebar .traffic .g { background: #28C840; }
+  .nswin-titlebar .title {
+    position: absolute;
+    left: 0; right: 0;
+    text-align: center;
+    pointer-events: none;
+    font-size: 13px;
+  }
+
+  /* ---------- Viewer chrome (truncate banner + breadcrumb) ---------- */
+  .viewer-body {
+    position: relative;
+    background: var(--bg);
+    min-height: 420px;
+    max-height: 560px;
+    overflow: auto;
+  }
+  .truncate-banner {
+    position: sticky; top: 0; z-index: 5;
+    height: 28px;
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 16px;
+    background: var(--banner-warn-bg);
+    color: var(--banner-warn-fg);
+    border-bottom: 1px solid var(--banner-warn-border);
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .breadcrumb {
+    position: sticky; top: 0; z-index: 4;
+    height: 32px;
+    display: flex; align-items: center;
+    padding: 0 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--divider);
+    font-family: "SF Mono", "Menlo", monospace;
+    font-size: 11px;
+    color: var(--fg-muted);
+  }
+  .truncate-banner + .breadcrumb { top: 28px; }
+
+  .viewer-content {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px 28px 48px;
+    color: var(--fg);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ---------- Typography ---------- */
+  .viewer-content h1 {
+    font-size: 26px;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--divider-strong);
+    color: var(--fg-strong);
+    font-weight: 700;
+  }
+  .viewer-content h2 {
+    font-size: 20px;
+    line-height: 1.3;
+    margin: 28px 0 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--divider);
+    color: var(--fg-strong);
+    font-weight: 700;
+  }
+  .viewer-content h3 {
+    font-size: 17px; line-height: 1.35;
+    margin: 22px 0 6px; color: var(--fg-strong); font-weight: 700;
+  }
+  .viewer-content p { margin: 0 0 12px; line-height: 1.7; }
+  .viewer-content ul, .viewer-content ol { margin: 0 0 12px; padding-left: 26px; }
+  .viewer-content li + li { margin-top: 4px; }
+
+  .viewer-content blockquote {
+    margin: 12px 0;
+    padding: 4px 14px;
+    border-left: 3px solid var(--accent-soft);
+    background: var(--bg-soft);
+    color: var(--fg-muted);
+  }
+  .viewer-content hr {
+    border: none; height: 1px; background: var(--divider);
+    margin: 22px 0;
+  }
+  .viewer-content a { color: var(--link); text-decoration: none; }
+  .viewer-content a:hover { text-decoration: underline; }
+
+  .viewer-content code {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--code-inline-fg);
+    background: var(--code-inline-bg);
+  }
+  .viewer-content pre {
+    position: relative;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 14px 0;
+    padding: 14px 16px;
+    background: var(--code-block-bg);
+    color: var(--code-block-fg);
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  .viewer-content pre::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 8px; right: 44px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--fg-muted);
+    opacity: 0.6;
+  }
+  .viewer-content pre code { padding: 0; background: none; color: inherit; }
+  .viewer-content pre .copy-btn {
+    position: absolute;
+    top: 6px; right: 8px;
+    height: 24px;
+    padding: 0 8px;
+    background: var(--bg-raise);
+    border: 1px solid var(--divider);
+    color: var(--fg-muted);
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .viewer-content pre .copy-btn:hover { color: var(--fg); border-color: var(--accent); }
+
+  .viewer-content table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 14px 0;
+    border: 1px solid var(--divider);
+  }
+  .viewer-content th, .viewer-content td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--divider);
+    text-align: left;
+  }
+  .viewer-content th { background: var(--bg-soft); color: var(--fg-strong); font-weight: 600; }
+  .viewer-content tr:nth-child(even) td { background: var(--table-row-alt); }
+
+  /* highlight.js-like tokens */
+  .hljs-keyword { color: var(--hl-keyword); }
+  .hljs-string  { color: var(--hl-string); }
+  .hljs-comment { color: var(--hl-comment); font-style: italic; }
+  .hljs-number  { color: var(--hl-number); }
+  .hljs-type, .hljs-class { color: var(--hl-type); }
+  .hljs-function, .hljs-title { color: var(--hl-function); }
+
+  /* ---------- Mermaid container ---------- */
+  .mermaid-wrap {
+    margin: 18px auto;
+    padding: 16px;
+    max-width: 620px;
+    border: 1px solid var(--divider);
+    border-radius: 10px;
+    background: var(--bg-soft);
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .mermaid-wrap svg { max-width: 100%; height: auto; }
+  .mermaid-wrap.is-loading {
+    color: var(--fg-muted);
+    gap: 10px;
+    font-size: 13px;
+  }
+  .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid var(--divider);
+    border-top-color: var(--fg-muted);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .mermaid-wrap.is-error {
+    border-color: var(--danger-border);
+    background: var(--danger-bg);
+    text-align: left;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+  }
+  .mermaid-wrap.is-error .msg {
+    color: var(--danger-fg);
+    font-size: 13px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .mermaid-wrap.is-error pre { margin: 0; font-size: 12px; }
+
+  /* ---------- Local image fallback ---------- */
+  .local-image {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--bg-soft);
+    color: var(--link);
+    text-decoration: none;
+    font-size: 14px;
+    border: 1px dashed var(--divider);
+  }
+  .local-image:hover { text-decoration: underline; background: var(--bg-raise); }
+  .local-image .icon { font-size: 14px; color: var(--fg-muted); }
+  .local-image .label { font-family: "SF Mono", Menlo, monospace; font-size: 13px; }
+  .local-image .hint { color: var(--fg-muted); font-size: 12px; }
+
+  /* ---------- Empty / deleted ---------- */
+  .viewer-empty {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 10px;
+    color: var(--fg-muted);
+    padding: 32px;
+    text-align: center;
+  }
+  .viewer-empty .ico { font-size: 40px; }
+  .viewer-empty .title { font-size: 15px; color: var(--fg); font-weight: 500; }
+  .viewer-empty .path { font-family: "SF Mono", Menlo, monospace; font-size: 12px; }
+  .viewer-empty .hint { font-size: 12px; }
+
+  .hover-note {
+    position: absolute;
+    bottom: 10px; right: 12px;
+    font-size: 10px;
+    padding: 3px 6px;
+    background: var(--bg-soft);
+    color: var(--fg-muted);
+    border-radius: 3px;
+    font-family: "SF Mono", monospace;
+    border: 1px solid var(--divider);
+  }
+
+  /* mermaid placeholder SVG nodes */
+  .mermaid-svg-light text { fill: #333; font-family: inherit; }
+  .mermaid-svg-light .node rect { fill: #ECECFF; stroke: #9370DB; }
+  .mermaid-svg-light .edge path { stroke: #333; }
+  html.dark .mermaid-svg-light text { fill: #E6E6E6; }
+  html.dark .mermaid-svg-light .node rect { fill: #2F2A4A; stroke: #9F88E0; }
+  html.dark .mermaid-svg-light .edge path { stroke: #CCC; }
+</style>
+</head>
+<body>
+
+<div class="preview-toolbar">
+  <div>
+    <h1>F3 · Markdown Viewer — UI Preview</h1>
+    <div class="meta">Covers AC-1 · AC-7 to AC-22 · AC-32 · AC-D1 to AC-D5</div>
+  </div>
+  <button id="themeToggle" type="button">Toggle dark</button>
+</div>
+
+<div class="preview-grid">
+
+  <!-- ============================================================= -->
+  <!-- CASE 1: Normal render (H1/H2/paragraph/list/inline code/table/quote/hr/link) -->
+  <!-- ============================================================= -->
+  <div class="case">
+    <div class="case-label">1 · Normal render <span class="ac">AC-7 / AC-13 / AC-14 / AC-15 / AC-16 / AC-17 / AC-D1</span></div>
+    <div class="nswin">
+      <div class="nswin-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="title">README.md</div>
+      </div>
+      <div class="viewer-body">
+        <div class="breadcrumb">/Users/liam/apps/okok/cmux-pro/README.md</div>
+        <article class="viewer-content">
+          <h1>cmux</h1>
+          <p>A unified <strong>terminal + AI</strong> environment. Open any <code>.md</code> file from the File Explorer and read it in this window.</p>
+
+          <h2>Features</h2>
+          <ul>
+            <li>Markdown rendering with <a href="#headings">anchor jumps</a></li>
+            <li>Mermaid diagrams (see next case)</li>
+            <li>External links open via <a href="https://example.com">system browser</a></li>
+          </ul>
+
+          <h3 id="headings">Headings &amp; lists</h3>
+          <ol>
+            <li>Cold open ≤ 500 ms</li>
+            <li>Warm open ≤ 200 ms</li>
+          </ol>
+
+          <blockquote>
+            Quoted passages inherit the soft background and a 3 px accent left bar.
+          </blockquote>
+
+          <hr>
+
+          <h3>Matrix</h3>
+          <table>
+            <thead>
+              <tr><th>AC</th><th>Scope</th><th>Layer</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>AC-7</td><td>Basic MD</td><td>marked</td></tr>
+              <tr><td>AC-9</td><td>Mermaid</td><td>mermaid.js</td></tr>
+              <tr><td>AC-19</td><td>Reload keep-scroll</td><td>anchor|ratio</td></tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- CASE 2: Code block with syntax highlight (swift) -->
+  <!-- ============================================================= -->
+  <div class="case">
+    <div class="case-label">2 · Code block + highlight <span class="ac">AC-8</span></div>
+    <div class="nswin">
+      <div class="nswin-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="title">snippets.md</div>
+      </div>
+      <div class="viewer-body">
+        <div class="breadcrumb">/Users/liam/apps/okok/cmux-pro/docs/snippets.md</div>
+        <article class="viewer-content">
+          <h2>Swift example</h2>
+          <p>Inline <code>WKWebView</code> is the rendering host. Below is a <code>swift</code> block with <code>highlight.js</code> tokens.</p>
+<pre data-lang="swift"><button class="copy-btn" type="button">Copy</button><code><span class="hljs-keyword">import</span> <span class="hljs-type">AppKit</span>
+
+<span class="hljs-comment">// AC-24 warm open target: &lt;= 200ms</span>
+<span class="hljs-keyword">final class</span> <span class="hljs-class">MarkdownViewerWindowManager</span> {
+    <span class="hljs-keyword">static let</span> shared = <span class="hljs-type">MarkdownViewerWindowManager</span>()
+    <span class="hljs-keyword">let</span> processPool = <span class="hljs-type">WKProcessPool</span>()
+    <span class="hljs-keyword">private var</span> controllers: [<span class="hljs-type">String</span>: <span class="hljs-type">MarkdownViewerWindowController</span>] = [:]
+
+    <span class="hljs-keyword">func</span> <span class="hljs-function">showWindow</span>(<span class="hljs-keyword">for</span> filePath: <span class="hljs-type">String</span>) {
+        <span class="hljs-keyword">if let</span> existing = controllers[filePath] {
+            existing.showWindow(<span class="hljs-keyword">nil</span>)
+            <span class="hljs-keyword">return</span>
+        }
+        <span class="hljs-comment">// ...</span>
+    }
+}</code></pre>
+
+          <h3>Shell example</h3>
+<pre data-lang="bash"><button class="copy-btn" type="button">Copy</button><code><span class="hljs-comment"># verify vendor bundle integrity (AC-27)</span>
+<span class="hljs-keyword">./scripts/verify-markdown-viewer-vendor.sh</span>
+<span class="hljs-keyword">du</span> -sh Resources/MarkdownViewer/vendor</code></pre>
+          <p class="hover-note-wrap"><span class="hint" style="font-size:11px;color:var(--fg-muted)">Hover a code block to see the Copy button highlight.</span></p>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- CASE 3: Mermaid success (placeholder SVG) -->
+  <!-- ============================================================= -->
+  <div class="case">
+    <div class="case-label">3 · Mermaid — success <span class="ac">AC-9 / AC-10 / AC-11 / AC-14</span></div>
+    <div class="nswin">
+      <div class="nswin-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="title">ARCHITECTURE.md</div>
+      </div>
+      <div class="viewer-body">
+        <div class="breadcrumb">/Users/liam/apps/okok/cmux-pro/docs/ARCHITECTURE.md</div>
+        <article class="viewer-content">
+          <h2>Data flow</h2>
+          <p>The rendered SVG is produced by <code>mermaid.js</code> at runtime. Theme follows <code>html.dark</code>. Placeholder shown here (not real mermaid).</p>
+
+          <div class="mermaid-wrap" aria-label="Rendered Mermaid SVG">
+            <svg class="mermaid-svg-light" viewBox="0 0 420 160" width="420" height="160" xmlns="http://www.w3.org/2000/svg">
+              <g class="edge">
+                <path d="M80,50 L180,50" fill="none" stroke-width="1.5" marker-end="url(#arr)"/>
+                <path d="M240,50 L340,50" fill="none" stroke-width="1.5" marker-end="url(#arr)"/>
+                <path d="M210,70 L210,120" fill="none" stroke-width="1.5" marker-end="url(#arr)"/>
+              </g>
+              <defs>
+                <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                  <path d="M0,0 L8,4 L0,8 Z" fill="currentColor"/>
+                </marker>
+              </defs>
+              <g class="node">
+                <rect x="20" y="30" width="60" height="40" rx="4" ry="4"/>
+                <text x="50" y="55" text-anchor="middle" font-size="13">File</text>
+              </g>
+              <g class="node">
+                <rect x="180" y="30" width="60" height="40" rx="4" ry="4"/>
+                <text x="210" y="55" text-anchor="middle" font-size="13">marked</text>
+              </g>
+              <g class="node">
+                <rect x="340" y="30" width="60" height="40" rx="4" ry="4"/>
+                <text x="370" y="55" text-anchor="middle" font-size="13">DOM</text>
+              </g>
+              <g class="node">
+                <rect x="180" y="120" width="60" height="30" rx="4" ry="4"/>
+                <text x="210" y="140" text-anchor="middle" font-size="12">mermaid</text>
+              </g>
+            </svg>
+          </div>
+
+          <p style="font-size:12px;color:var(--fg-muted)">Note: real implementation uses <code>```mermaid\ngraph LR\nFile --&gt; marked --&gt; DOM\nmarked --&gt; mermaid\n```</code> → <code>mermaid.render()</code> → SVG.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- CASE 4: Mermaid loading -->
+  <!-- ============================================================= -->
+  <div class="case">
+    <div class="case-label">4 · Mermaid — loading <span class="ac">AC-9 (CLS guard)</span></div>
+    <div class="nswin">
+      <div class="nswin-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="title">heavy-diagram.md</div>
+      </div>
+      <div class="viewer-body">
+        <div class="breadcrumb">/Users/liam/apps/okok/cmux-pro/docs/heavy-diagram.md</div>
+        <article class="viewer-content">
+          <h2>Large gantt</h2>
+          <p>Container keeps its reserved height while <code>mermaid.render()</code> runs off the main thread.</p>
+          <div class="mermaid-wrap is-loading">
+            <span class="spinner"></span>
+            <span>Rendering diagram…</span>
+          </div>
+          <p style="font-size:12px;color:var(--fg-muted)">xcstrings: <code>markdownViewer.mermaid.loading</code> (new key — see UI.md §4.1).</p>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- CASE 5: Mermaid error -->
+  <!-- ============================================================= -->
+  <div class="case">
+    <div class="case-label">5 · Mermaid — error <span class="ac">AC-12</span></div>
+    <div class="nswin">
+      <div class="nswin-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="title">broken.md</div>
+      </div>
+      <div class="viewer-body">
+        <div class="breadcrumb">/Users/liam/apps/okok/cmux-pro/docs/broken.md</div>
+        <article class="viewer-content">
+          <h2>Syntax error</h2>
+          <p>When <code>mermaid.render()</code> throws, the container switches to the error state; the original source is shown verbatim so the rest of the document keeps rendering.</p>
+
+          <div class="mermaid-wrap is-error" role="alert">
+            <div class="msg">
+              <span>⚠</span>
+              <span>Failed to render Mermaid diagram.</span>
+            </div>
+<pre data-lang="mermaid"><code>grph TD
+    A --&gt B
+    B -- C</code></pre>
+          </div>
+
+          <p style="font-size:12px;color:var(--fg-muted)">xcstrings: <code>markdownViewer.mermaid.error</code> — triggers <code>cmux.mermaidRenderError</code> bridge message.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- CASE 6: File deleted -->
+  <!-- ============================================================= -->
+  <div class="case">
+    <div class="case-label">6 · File deleted (waiting) <span class="ac">AC-20</span></div>
+    <div class="nswin">
+      <div class="nswin-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="title">gone.md</div>
+      </div>
+      <div class="viewer-body" style="min-height:420px">
+        <div class="breadcrumb">/Users/liam/apps/okok/cmux-pro/docs/gone.md</div>
+        <div class="viewer-empty">
+          <div class="ico">🗑️</div>
+          <div class="title">The file has been deleted.</div>
+          <div class="path">/Users/liam/apps/okok/cmux-pro/docs/gone.md</div>
+          <div class="hint">Waiting for the file to reappear…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- CASE 7: Large file truncated banner -->
+  <!-- ============================================================= -->
+  <div class="case">
+    <div class="case-label">7 · Truncated banner <span class="ac">AC-21</span></div>
+    <div class="nswin">
+      <div class="nswin-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="title">huge.md</div>
+      </div>
+      <div class="viewer-body">
+        <div class="truncate-banner">
+          <span class="icon">⚠</span>
+          <span>File too large — showing first 10MB only.</span>
+        </div>
+        <div class="breadcrumb">/Users/liam/apps/okok/cmux-pro/logs/huge.md</div>
+        <article class="viewer-content">
+          <h1>Huge log dump</h1>
+          <p>The banner sticks at the very top (z-index 5) across scroll. It does not overlap the breadcrumb — the breadcrumb offset-top bumps by 28 px when the banner is present.</p>
+          <h2>Content starts here</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.</p>
+          <pre data-lang="log"><button class="copy-btn" type="button">Copy</button><code>2026-04-14T10:00:00Z  INFO  boot  starting cmux
+2026-04-14T10:00:00Z  INFO  boot  loaded 24 workspaces
+2026-04-14T10:00:00Z  WARN  fs    ./logo.png does not exist</code></pre>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- CASE 8: Local image fallback -->
+  <!-- ============================================================= -->
+  <div class="case">
+    <div class="case-label">8 · Local image fallback <span class="ac">AC-32</span></div>
+    <div class="nswin">
+      <div class="nswin-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="title">design.md</div>
+      </div>
+      <div class="viewer-body">
+        <div class="breadcrumb">/Users/liam/apps/okok/cmux-pro/docs/design.md</div>
+        <article class="viewer-content">
+          <h2>Local images</h2>
+          <p>Source <code>&lt;img src="./logo.png"&gt;</code> becomes a clickable link (see UI.md §8). WKWebView is not granted read access outside the viewer resource dir, so the image cannot be embedded.</p>
+          <p>
+            Logo:
+            <a class="local-image" href="file:///Users/liam/apps/okok/cmux-pro/docs/logo.png" data-external="true" title="Open in default app">
+              <span class="icon">🔗</span>
+              <span class="label">logo.png</span>
+              <span class="hint">(local image · click to open)</span>
+            </a>
+          </p>
+          <p>A <code>data:</code> URI image still renders normally (no permission risk):</p>
+          <p>
+            <img alt="1px red" src="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' width='80' height='30'&gt;&lt;rect width='80' height='30' fill='%23E9A7A2'/&gt;&lt;text x='40' y='20' font-size='12' text-anchor='middle' fill='%23333'&gt;data:&lt;/text&gt;&lt;/svg&gt;">
+          </p>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================= -->
+  <!-- CASE 9: Empty file -->
+  <!-- ============================================================= -->
+  <div class="case">
+    <div class="case-label">9 · Empty file <span class="ac">AC-7 (degenerate)</span></div>
+    <div class="nswin">
+      <div class="nswin-titlebar">
+        <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="title">empty.md</div>
+      </div>
+      <div class="viewer-body" style="min-height:420px">
+        <div class="breadcrumb">/Users/liam/apps/okok/cmux-pro/docs/empty.md</div>
+        <div class="viewer-empty">
+          <div class="ico">􀈿</div>
+          <div class="title">(empty)</div>
+          <div class="path">/Users/liam/apps/okok/cmux-pro/docs/empty.md</div>
+          <div class="hint">The file contains no content.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  (function () {
+    const btn = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    // default to system preference
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      root.classList.add('dark');
+    }
+    function sync() {
+      btn.textContent = root.classList.contains('dark') ? 'Switch to light' : 'Switch to dark';
+    }
+    sync();
+    btn.addEventListener('click', function () {
+      root.classList.toggle('dark');
+      sync();
+    });
+
+    // purely cosmetic: Copy button feedback inside preview
+    document.querySelectorAll('.copy-btn').forEach(b => {
+      b.addEventListener('click', function (e) {
+        e.preventDefault();
+        const pre = b.closest('pre');
+        const code = pre.querySelector('code');
+        if (code && navigator.clipboard) {
+          navigator.clipboard.writeText(code.innerText).catch(() => {});
+        }
+        const old = b.textContent;
+        b.textContent = 'Copied';
+        setTimeout(() => { b.textContent = old; }, 1500);
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>

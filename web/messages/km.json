@@ -306,7 +306,7 @@
       "title": "ពាក្យបញ្ជាផ្ទាល់ខ្លួន",
       "metaTitle": "ពាក្យបញ្ជាផ្ទាល់ខ្លួន",
       "metaDescription": "កំណត់ actions, custom commands និង layout workspace ក្នុង cmux.json។ គាំទ្រ configuration តាម project និង global ជាមួយការផ្ទុកឡើងវិញដោយច្បាស់លាស់។",
-      "intro": "កំណត់ពាក្យបញ្ជាផ្ទាល់ខ្លួននិងប្លង់ workspace ដោយបន្ថែមឯកសារ cmux.json ទៅឫសគម្រោងរបស់អ្នក ឬ ~/.config/cmux/។ ពាក្យបញ្ជាលេចឡើងក្នុងបន្ទះពាក្យបញ្ជា។",
+      "intro": "កំណត់ពាក្យបញ្ជាផ្ទាល់ខ្លួននិងប្លង់ workspace ដោយបន្ថែមឯកសារ cmux.json ទៅឫសគម្រោងរបស់អ្នក ឬ ~/.config/cmuxpro/។ ពាក្យបញ្ជាលេចឡើងក្នុងបន្ទះពាក្យបញ្ជា។",
       "fileLocations": "ទីតាំងឯកសារ",
       "fileLocationsDesc": "cmux រកការកំណត់រចនាសម្ព័ន្ធនៅ២កន្លែង:",
       "localConfig": "តាមគម្រោង:",

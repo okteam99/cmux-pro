@@ -10,8 +10,8 @@ final class MultiWindowNotificationsUITests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
-        dataPath = "/tmp/cmux-ui-test-multi-window-notifs-\(UUID().uuidString).json"
-        socketPath = "/tmp/cmux-ui-test-socket-\(UUID().uuidString).sock"
+        dataPath = "/tmp/cmuxpro-ui-test-multi-window-notifs-\(UUID().uuidString).json"
+        socketPath = "/tmp/cmuxpro-ui-test-socket-\(UUID().uuidString).sock"
         launchTag = "ui-tests-multi-window-notifs-\(UUID().uuidString.prefix(8))"
         try? FileManager.default.removeItem(atPath: dataPath)
         try? FileManager.default.removeItem(atPath: socketPath)
@@ -766,10 +766,10 @@ final class MultiWindowNotificationsUITests: XCTestCase {
             appendCLIPathCandidates(fromProductsDirectory: productsDir, strategy: strategy, to: &candidates)
         }
 
-        candidates.append("/tmp/cmux-\(launchTag)/Build/Products/Debug/cmux DEV.app/Contents/Resources/bin/cmux")
-        candidates.append("/tmp/cmux-\(launchTag)/Build/Products/Debug/cmux.app/Contents/Resources/bin/cmux")
+        candidates.append("/tmp/cmuxpro-\(launchTag)/Build/Products/Debug/cmux DEV.app/Contents/Resources/bin/cmux")
+        candidates.append("/tmp/cmuxpro-\(launchTag)/Build/Products/Debug/cmux.app/Contents/Resources/bin/cmux")
         if strategy == .any {
-            candidates.append("/tmp/cmux-\(launchTag)/Build/Products/Debug/cmux")
+            candidates.append("/tmp/cmuxpro-\(launchTag)/Build/Products/Debug/cmux")
         }
 
         var resolvedPaths: [String] = []
@@ -935,13 +935,13 @@ final class MultiWindowNotificationsUITests: XCTestCase {
 
     private func expectedSocketCandidates(includeGlobalFallback: Bool) -> [String] {
         var candidates = [socketPath]
-        let taggedDebugSocket = "/tmp/cmux-debug-\(launchTag).sock"
+        let taggedDebugSocket = "/tmp/cmuxpro-debug-\(launchTag).sock"
         if !taggedDebugSocket.isEmpty {
             candidates.append(taggedDebugSocket)
         }
         if includeGlobalFallback {
             candidates.append(contentsOf: discoverTmpSocketCandidates(limit: 12))
-            candidates.append("/tmp/cmux-debug.sock")
+            candidates.append("/tmp/cmuxpro-debug.sock")
             candidates.append(stableSocketPath())
             candidates.append("/tmp/cmux.sock")
         }

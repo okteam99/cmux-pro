@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src data: file:; font-src 'self'; connect-src 'none';">
+  <title>Markdown Viewer</title>
+  <link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+  <div id="breadcrumb" class="breadcrumb" aria-hidden="true"></div>
+  <div id="banner" class="banner" hidden></div>
+  <div class="layout">
+    <aside id="outline" class="outline" hidden>
+      <div class="outline-header">
+        <button id="outlineToggle" type="button" class="outline-toggle" aria-expanded="true" aria-controls="outlineNav" aria-label="Toggle outline" title="Toggle outline">
+          <span class="outline-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <div class="outline-title">Outline</div>
+      </div>
+      <nav id="outlineNav" class="outline-nav" aria-label="Document outline"></nav>
+    </aside>
+    <main id="content" class="content"></main>
+  </div>
+  <div id="emptyState" class="empty-state" hidden></div>
+
+  <script src="vendor/marked.min.js"></script>
+  <script src="vendor/mermaid.min.js"></script>
+  <script src="vendor/highlight.min.js"></script>
+  <script src="viewer.js"></script>
+</body>
+</html>

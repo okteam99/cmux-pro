@@ -1,8 +1,6 @@
 name: Nightly macOS build
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       force:
@@ -100,7 +98,7 @@ jobs:
   build-sign-notarize-nightly:
     needs: decide
     if: needs.decide.outputs.should_build == 'true'
-    runs-on: warp-macos-26-arm64-6x
+    runs-on: macos-26
     timeout-minutes: 20
     steps:
       - name: Checkout build ref
@@ -311,11 +309,11 @@ jobs:
 
           prepare_variant \
             "$APP_DIR" \
-            "com.cmuxterm.app.nightly" \
+            "com.okteam99.cmuxpro.nightly" \
             "https://files.cmux.com/nightly/appcast.xml"
 
           echo "Nightly app name: cmux NIGHTLY"
-          echo "Nightly bundle ID: com.cmuxterm.app.nightly"
+          echo "Nightly bundle ID: com.okteam99.cmuxpro.nightly"
           echo "Nightly marketing version: ${NIGHTLY_MARKETING_VERSION}"
           echo "Nightly build number: ${NIGHTLY_BUILD}"
           echo "Nightly immutable DMG: ${NIGHTLY_DMG_IMMUTABLE}"
@@ -600,7 +598,7 @@ jobs:
             Automated nightly build for `${{ needs.decide.outputs.short_sha }}`.
 
             **cmux NIGHTLY** is published as a universal app:
-            - bundle ID `com.cmuxterm.app.nightly`
+            - bundle ID `com.okteam99.cmuxpro.nightly`
             - feed `appcast.xml`
             - compatibility feed `appcast-universal.xml` for older universal nightlies
 

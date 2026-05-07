@@ -22,15 +22,15 @@ on:
       runner:
         description: "Runner OS (Depot runners for GUI activation support)"
         required: false
-        default: "depot-macos-latest"
+        default: "macos-latest"
         type: choice
         options:
-          - depot-macos-latest
-          - depot-macos-14
+          - macos-latest
+          - macos-14
 
 jobs:
   e2e:
-    runs-on: ${{ inputs.runner || 'depot-macos-latest' }}
+    runs-on: ${{ inputs.runner || 'macos-latest' }}
     timeout-minutes: 20
     env:
       TEST_REF: ${{ inputs.ref || github.ref }}
@@ -179,8 +179,8 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: .ci-source-packages
-          key: spm-${{ inputs.runner || 'depot-macos-latest' }}-${{ hashFiles('GhosttyTabs.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
-          restore-keys: spm-${{ inputs.runner || 'depot-macos-latest' }}-
+          key: spm-${{ inputs.runner || 'macos-latest' }}-${{ hashFiles('GhosttyTabs.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
+          restore-keys: spm-${{ inputs.runner || 'macos-latest' }}-
 
       - name: Resolve Swift packages
         run: |
@@ -215,7 +215,7 @@ jobs:
 
           if [ "$TEST_FILTER" = "DisplayResolutionRegressionUITests" ]; then
             HELPER_PATH="/tmp/create-virtual-display"
-            MANIFEST_PATH="/tmp/cmux-ui-test-display-harness.json"
+            MANIFEST_PATH="/tmp/cmuxpro-ui-test-display-harness.json"
 
             rm -f "$MANIFEST_PATH"
             trap 'rm -f "$MANIFEST_PATH"' EXIT

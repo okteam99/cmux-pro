@@ -5385,7 +5385,7 @@ final class WorkspaceRemoteSessionController {
     static func remoteDropPath(for fileURL: URL, uuid: UUID = UUID()) -> String {
         let extensionSuffix = fileURL.pathExtension.trimmingCharacters(in: .whitespacesAndNewlines)
         let lowercasedSuffix = extensionSuffix.isEmpty ? "" : ".\(extensionSuffix.lowercased())"
-        return "/tmp/cmux-drop-\(uuid.uuidString.lowercased())\(lowercasedSuffix)"
+        return "/tmp/cmuxpro-drop-\(uuid.uuidString.lowercased())\(lowercasedSuffix)"
     }
 
     private func cleanupUploadedRemotePaths(_ remotePaths: [String]) {
@@ -10542,6 +10542,29 @@ final class Workspace: Identifiable, ObservableObject {
         filePreviewPanel.focus()
         installFilePreviewPanelSubscription(filePreviewPanel)
         return filePreviewPanel
+    }
+
+    /// Open a filesystem path requested from the File Explorer. Markdown files
+    /// open as a new MarkdownPanel tab in the focused pane; other files fall
+    /// back to the system default application. Returns true when a panel was
+    /// created, false when the system opener was used.
+    @discardableResult
+    func openFileFromExplorer(filePath: String) -> Bool {
+        let ext = (filePath as NSString).pathExtension.lowercased()
+        let isMarkdown = ext == "md" || ext == "markdown"
+        if isMarkdown {
+            if MarkdownViewerWindowManager.shared.isEnabled {
+                MarkdownViewerWindowManager.shared.showWindow(for: filePath)
+                return true
+            }
+            // Feature-flag off → fall back to legacy tab version.
+            if let paneId = bonsplitController.focusedPaneId ?? bonsplitController.allPaneIds.first {
+                _ = newMarkdownSurface(inPane: paneId, filePath: filePath, focus: true)
+                return true
+            }
+        }
+        NSWorkspace.shared.open(URL(fileURLWithPath: filePath))
+        return false
     }
 
     /// Tear down all panels in this workspace, freeing their Ghostty surfaces.

@@ -95,13 +95,13 @@ final class CmuxSettingsFileStore {
         "shortcuts.bindings",
     ]
 
-    private static let releaseBundleIdentifier = "com.cmuxterm.app"
+    private static let releaseBundleIdentifier = "com.okteam99.cmuxpro"
     private static let backupsDefaultsKey = "cmux.settingsFile.backups.v1"
     fileprivate static let socketPasswordBackupIdentifier = "automation.socketPassword"
 
     static var defaultPrimaryPath: String {
         let home = FileManager.default.homeDirectoryForCurrentUser.path
-        return (home as NSString).appendingPathComponent(".config/cmux/cmux.json")
+        return (home as NSString).appendingPathComponent(".config/cmuxpro/settings.json")
     }
 
     static var defaultFallbackPath: String? {
@@ -1183,8 +1183,8 @@ final class CmuxSettingsFileStore {
             "  // This file uses JSON with comments (JSONC).",
             "  // Uncomment and edit any setting to make it file-managed.",
             "  // Remove a setting to fall back to the value saved in Settings.",
-            "  // cmux creates this template on launch when ~/.config/cmux/cmux.json is missing.",
-            "  // Legacy settings.json files are read only as fallback for keys not present here.",
+            "  // cmux creates this template on launch when ~/.config/cmuxpro/settings.json is missing.",
+            "  // Legacy ~/.config/cmux/settings.json is read only as fallback for keys not present here.",
             "",
         ]
 

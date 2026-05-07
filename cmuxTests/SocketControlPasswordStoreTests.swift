@@ -174,13 +174,27 @@ final class SocketControlPasswordStoreTests: XCTestCase {
         XCTAssertEqual(readCount, 1)
     }
 
-    func testDefaultPasswordFileURLUsesCmuxAppSupportPath() throws {
+    func testDefaultPasswordFileURLUsesCmuxproAppSupportPath() throws {
         let tempDir = FileManager.default.temporaryDirectory
             .appendingPathComponent("cmux-socket-password-tests-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: tempDir) }
 
         let resolved = SocketControlPasswordStore.defaultPasswordFileURL(appSupportDirectory: tempDir)
+        XCTAssertEqual(
+            resolved?.path,
+            tempDir.appendingPathComponent("cmuxpro", isDirectory: true)
+                .appendingPathComponent("socket-control-password", isDirectory: false).path
+        )
+    }
+
+    func testLegacyPasswordFileURLPointsAtCmuxDirectory() throws {
+        let tempDir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("cmux-socket-password-tests-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: tempDir) }
+
+        let resolved = SocketControlPasswordStore.legacyPasswordFileURL(appSupportDirectory: tempDir)
         XCTAssertEqual(
             resolved?.path,
             tempDir.appendingPathComponent("cmux", isDirectory: true)

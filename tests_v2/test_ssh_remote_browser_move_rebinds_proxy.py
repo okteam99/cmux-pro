@@ -46,7 +46,7 @@ def _find_cli_binary() -> str:
         return fixed
 
     candidates = glob.glob(os.path.expanduser("~/Library/Developer/Xcode/DerivedData/**/Build/Products/Debug/cmux"), recursive=True)
-    candidates += glob.glob("/tmp/cmux-*/Build/Products/Debug/cmux")
+    candidates += glob.glob("/tmp/cmuxpro-*/Build/Products/Debug/cmux")
     candidates = [p for p in candidates if os.path.isfile(p) and os.access(p, os.X_OK)]
     if not candidates:
         raise cmuxError("Could not locate cmux CLI binary; set CMUXTERM_CLI")
@@ -227,7 +227,7 @@ def main() -> int:
 
             server_script = (
                 f"printf '%s\\n' {marker_body} > /tmp/{marker_file}; "
-                f"python3 -m http.server {ssh_web_port} --directory /tmp >/tmp/cmux-remote-browser-proxy-{stamp}.log 2>&1 & "
+                f"python3 -m http.server {ssh_web_port} --directory /tmp >/tmp/cmuxpro-remote-browser-proxy-{stamp}.log 2>&1 & "
                 "for _ in $(seq 1 30); do "
                 f"  if curl -fsS http://localhost:{ssh_web_port}/{marker_file} | grep -q {marker_body}; then "
                 f"    echo {ready_token}; "

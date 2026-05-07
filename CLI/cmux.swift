@@ -606,9 +606,10 @@ enum CLIIDFormat: String {
 }
 
 enum SocketPasswordResolver {
-    private static let service = "com.cmuxterm.app.socket-control"
+    private static let service = "com.okteam99.cmuxpro.socket-control"
     private static let account = "local-socket-password"
-    private static let directoryName = "cmux"
+    private static let directoryName = "cmuxpro"
+    private static let legacyDirectoryName = "cmux"
     private static let fileName = "socket-control-password"
 
     static func resolve(explicit: String?, socketPath: String) -> String? {
@@ -634,16 +635,18 @@ enum SocketPasswordResolver {
         guard let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
             return nil
         }
-        let passwordURL = appSupport
-            .appendingPathComponent(directoryName, isDirectory: true)
-            .appendingPathComponent(fileName, isDirectory: false)
-        guard let data = try? Data(contentsOf: passwordURL) else {
-            return nil
+        for dir in [directoryName, legacyDirectoryName] {
+            let passwordURL = appSupport
+                .appendingPathComponent(dir, isDirectory: true)
+                .appendingPathComponent(fileName, isDirectory: false)
+            guard let data = try? Data(contentsOf: passwordURL),
+                  let value = String(data: data, encoding: .utf8),
+                  let normalized = normalized(value) else {
+                continue
+            }
+            return normalized
         }
-        guard let value = String(data: data, encoding: .utf8) else {
-            return nil
-        }
-        return normalized(value)
+        return nil
     }
 
     static func keychainServices(
@@ -668,7 +671,7 @@ enum SocketPasswordResolver {
         }
 
         let candidate = URL(fileURLWithPath: socketPath).lastPathComponent
-        let prefixes = ["cmux-debug-", "cmux-"]
+        let prefixes = ["cmuxpro-debug-", "cmuxpro-"]
         for prefix in prefixes {
             guard candidate.hasPrefix(prefix), candidate.hasSuffix(".sock") else { continue }
             let start = candidate.index(candidate.startIndex, offsetBy: prefix.count)
@@ -737,19 +740,31 @@ private enum CLISocketPathSource {
 }
 
 private enum CLISocketPathResolver {
-    private static let appSupportDirectoryName = "cmux"
-    private static let stableSocketFileName = "cmux.sock"
+    private static let appSupportDirectoryName = "cmuxpro"
+    private static let legacyAppSupportDirectoryName = "cmux"
+    private static let stableSocketFileName = "cmuxpro.sock"
+    private static let legacyStableSocketFileName = "cmux.sock"
     private static let lastSocketPathFileName = "last-socket-path"
     static let legacyDefaultSocketPath = "/tmp/cmux.sock"
-    private static let fallbackSocketPath = "/tmp/cmux-debug.sock"
-    private static let stagingSocketPath = "/tmp/cmux-staging.sock"
-    private static let legacyLastSocketPathFile = "/tmp/cmux-last-socket-path"
+    private static let fallbackSocketPath = "/tmp/cmuxpro-debug.sock"
+    private static let stagingSocketPath = "/tmp/cmuxpro-staging.sock"
+    private static let legacyLastSocketPathFile = "/tmp/cmuxpro-last-socket-path"
 
     static var defaultSocketPath: String {
         let stablePath: String? = stableSocketDirectoryURL()?
             .appendingPathComponent(stableSocketFileName, isDirectory: false)
             .path
         return stablePath ?? legacyDefaultSocketPath
+    }
+
+    static var legacyAppSupportSocketPath: String? {
+        guard let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            return nil
+        }
+        return appSupport
+            .appendingPathComponent(legacyAppSupportDirectoryName, isDirectory: true)
+            .appendingPathComponent(legacyStableSocketFileName, isDirectory: false)
+            .path
     }
 
     static func isImplicitDefaultPath(_ path: String) -> Bool {
@@ -785,12 +800,15 @@ private enum CLISocketPathResolver {
 
         if let tag = normalized(environment["CMUX_TAG"]) {
             let slug = sanitizeTagSlug(tag)
-            candidates.append("/tmp/cmux-debug-\(slug).sock")
-            candidates.append("/tmp/cmux-\(slug).sock")
+            candidates.append("/tmp/cmuxpro-debug-\(slug).sock")
+            candidates.append("/tmp/cmuxpro-\(slug).sock")
         }
 
         candidates.append(requestedPath)
         candidates.append(defaultSocketPath)
+        if let legacy = legacyAppSupportSocketPath {
+            candidates.append(legacy)
+        }
         candidates.append(legacyDefaultSocketPath)
         candidates.append(fallbackSocketPath)
         candidates.append(stagingSocketPath)
@@ -1709,7 +1727,7 @@ enum CLIProcessRunner {
 struct CMUXCLI {
     let args: [String]
 
-    private static let debugLastSocketHintPath = "/tmp/cmux-last-socket-path"
+    private static let debugLastSocketHintPath = "/tmp/cmuxpro-last-socket-path"
     private static let vmCreateIdempotencyTTLSeconds: TimeInterval = 10 * 60
     private static let vmCreateResponseTimeoutSeconds: TimeInterval = 16 * 60
     private static let vmAttachResponseTimeoutSeconds: TimeInterval = 16 * 60
@@ -1826,7 +1844,7 @@ struct CMUXCLI {
             return nil
         }
         guard let hinted = normalizedEnvValue(raw),
-              hinted.hasPrefix("/tmp/cmux-debug"),
+              hinted.hasPrefix("/tmp/cmuxpro-debug"),
               hinted.hasSuffix(".sock"),
               pathIsSocket(hinted) else {
             return nil
@@ -1845,7 +1863,7 @@ struct CMUXCLI {
         if let hinted = debugSocketPathFromHintFile() {
             return hinted
         }
-        return "/tmp/cmux-debug.sock"
+        return "/tmp/cmuxpro-debug.sock"
 #else
         return "/tmp/cmux.sock"
 #endif
@@ -6727,9 +6745,9 @@ struct CMUXCLI {
 
     private func defaultSSHControlPathTemplate(remoteRelayPort: Int? = nil) -> String {
         if let remoteRelayPort, remoteRelayPort > 0 {
-            return "/tmp/cmux-ssh-\(getuid())-\(remoteRelayPort)-%C"
+            return "/tmp/cmuxpro-ssh-\(getuid())-\(remoteRelayPort)-%C"
         }
-        return "/tmp/cmux-ssh-\(getuid())-%C"
+        return "/tmp/cmuxpro-ssh-\(getuid())-%C"
     }
 
     private func normalizedSSHIdentityPath(_ rawPath: String?) -> String? {
@@ -6802,7 +6820,7 @@ struct CMUXCLI {
             if let trimmedExplicit, !trimmedExplicit.isEmpty {
                 return trimmedExplicit
             }
-            guard let marker = try? String(contentsOfFile: "/tmp/cmux-last-debug-log-path", encoding: .utf8) else {
+            guard let marker = try? String(contentsOfFile: "/tmp/cmuxpro-last-debug-log-path", encoding: .utf8) else {
                 return nil
             }
             let trimmedMarker = marker.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -9059,7 +9077,7 @@ struct CMUXCLI {
             Usage: cmux reload-config
 
             Run the same configuration reload as the Reload Configuration shortcut.
-            This reloads Ghostty config, re-reads ~/.config/cmux/cmux.json, and refreshes terminals.
+            This reloads Ghostty config, re-reads ~/.config/cmuxpro/cmux.json plus ~/.config/cmuxpro/settings.json, and refreshes terminals.
 
             Example:
               cmux reload-config
@@ -13304,7 +13322,7 @@ struct CMUXCLI {
     private func tmuxWaitForSignalURL(name: String) -> URL {
         let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "._-"))
         let sanitized = name.unicodeScalars.map { allowed.contains($0) ? Character($0) : "_" }
-        return URL(fileURLWithPath: "/tmp/cmux-wait-for-\(String(sanitized)).sig")
+        return URL(fileURLWithPath: "/tmp/cmuxpro-wait-for-\(String(sanitized)).sig")
     }
 
     private func runTmuxCompatCommand(
@@ -20097,7 +20115,7 @@ export default CMUXSessionRestore;
           CMUX_TAB_ID         Optional alias used by `tab-action`/`rename-tab` as default --tab.
           CMUX_SURFACE_ID     Auto-set in cmux terminals. Used as default --surface.
           CMUX_SOCKET_PATH    Override the Unix socket path. Without this, the CLI defaults
-                              to ~/Library/Application Support/cmux/cmux.sock and auto-discovers tagged/debug sockets.
+                              to ~/Library/Application Support/cmuxpro/cmuxpro.sock and auto-discovers tagged/debug sockets.
         """
     }
 

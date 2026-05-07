@@ -674,13 +674,13 @@ final class GhosttyPasteboardHelperTests: XCTestCase {
 
         TerminalImageTransferPlanner.executeForTesting(
             plan: .uploadFiles([url], .workspaceRemote),
-            uploadWorkspaceRemote: { _, _, finish in finish(.success(["/tmp/cmux-drop-123.png"])) },
+            uploadWorkspaceRemote: { _, _, finish in finish(.success(["/tmp/cmuxpro-drop-123.png"])) },
             uploadDetectedSSH: { _, _, _, finish in finish(.failure(NSError(domain: "unused", code: 0))) },
             insertText: { completedText = $0 },
             onFailure: { _ in XCTFail("unexpected failure") }
         )
 
-        XCTAssertEqual(completedText, "/tmp/cmux-drop-123.png")
+        XCTAssertEqual(completedText, "/tmp/cmuxpro-drop-123.png")
     }
 
     func testCancelledRemoteImagePasteExecutionSuppressesCompletionHandlers() throws {
@@ -712,7 +712,7 @@ final class GhosttyPasteboardHelperTests: XCTestCase {
 
         XCTAssertTrue(returnedOperation === operation)
         XCTAssertTrue(operation.cancel())
-        completion?(.success(["/tmp/cmux-drop-cancelled.png"]))
+        completion?(.success(["/tmp/cmuxpro-drop-cancelled.png"]))
 
         XCTAssertEqual(cancellationHandlerCalls, 1)
         XCTAssertTrue(insertedTexts.isEmpty)
@@ -727,7 +727,7 @@ final class GhosttyPasteboardHelperTests: XCTestCase {
         XCTAssertTrue(operation.cancel())
 
         let returnedOperation = TerminalImageTransferPlanner.executeForTesting(
-            plan: .insertText("/tmp/cmux-drop-local.png"),
+            plan: .insertText("/tmp/cmuxpro-drop-local.png"),
             operation: operation,
             uploadWorkspaceRemote: { _, _, finish in
                 finish(.failure(NSError(domain: "unused", code: 0)))
@@ -768,7 +768,7 @@ final class GhosttyPasteboardHelperTests: XCTestCase {
             isRemoteTerminalSurface: true,
             uploadRemote: { urls, finish in
                 uploadedURLs = urls
-                finish(.success(["/tmp/cmux-drop-abc123.png"]))
+                finish(.success(["/tmp/cmuxpro-drop-abc123.png"]))
             },
             sendText: { sentText.append($0) },
             onFailure: { failureCount += 1 }
@@ -777,7 +777,7 @@ final class GhosttyPasteboardHelperTests: XCTestCase {
 
         XCTAssertTrue(handled)
         XCTAssertEqual(uploadedURLs.count, 1)
-        XCTAssertEqual(sentText, ["/tmp/cmux-drop-abc123.png"])
+        XCTAssertEqual(sentText, ["/tmp/cmuxpro-drop-abc123.png"])
         XCTAssertEqual(failureCount, 0)
     }
 
@@ -795,7 +795,7 @@ final class GhosttyPasteboardHelperTests: XCTestCase {
                 uploadedURL = urls.first
                 XCTAssertEqual(urls.count, 1)
                 XCTAssertTrue(FileManager.default.fileExists(atPath: urls[0].path))
-                finish(.success(["/tmp/cmux-drop-abc123.png"]))
+                finish(.success(["/tmp/cmuxpro-drop-abc123.png"]))
             },
             sendText: { _ in },
             onFailure: {}
@@ -4081,11 +4081,11 @@ final class TerminalOpenURLTargetResolutionTests: XCTestCase {
     }
 
     func testResolvesAbsolutePathAsExternalFileURL() throws {
-        let target = try XCTUnwrap(resolveTerminalOpenURLTarget("/tmp/cmux-path.txt"))
+        let target = try XCTUnwrap(resolveTerminalOpenURLTarget("/tmp/cmuxpro-path.txt"))
         switch target {
         case let .external(url):
             XCTAssertTrue(url.isFileURL)
-            XCTAssertEqual(url.path, "/tmp/cmux-path.txt")
+            XCTAssertEqual(url.path, "/tmp/cmuxpro-path.txt")
         default:
             XCTFail("Expected absolute file path to open externally")
         }
@@ -4170,7 +4170,7 @@ final class TerminalCmdClickPathPunctuationTrimmingTests: XCTestCase {
     }
 
     func testResolveQuicklookFallsBackToStrippedPathWhenLiteralPathIsMissing() {
-        let strippedPath = "/tmp/cmux-cmdclick-path.md"
+        let strippedPath = "/tmp/cmuxpro-cmdclick-path.md"
 
         XCTAssertEqual(
             cmuxResolveQuicklookPathForTesting(
@@ -4183,8 +4183,8 @@ final class TerminalCmdClickPathPunctuationTrimmingTests: XCTestCase {
     }
 
     func testResolveQuicklookPrefersLiteralPathThatReallyEndsWithDot() {
-        let literalPath = "/tmp/cmux-cmdclick-literal-dot.md."
-        let strippedPath = "/tmp/cmux-cmdclick-literal-dot.md"
+        let literalPath = "/tmp/cmuxpro-cmdclick-literal-dot.md."
+        let strippedPath = "/tmp/cmuxpro-cmdclick-literal-dot.md"
 
         XCTAssertEqual(
             cmuxResolveQuicklookPathForTesting(
@@ -4197,8 +4197,8 @@ final class TerminalCmdClickPathPunctuationTrimmingTests: XCTestCase {
     }
 
     func testResolveQuicklookPrefersLiteralPathThatReallyEndsWithParen() {
-        let literalPath = "/tmp/cmux-cmdclick-literal-paren)"
-        let strippedPath = "/tmp/cmux-cmdclick-literal-paren"
+        let literalPath = "/tmp/cmuxpro-cmdclick-literal-paren)"
+        let strippedPath = "/tmp/cmuxpro-cmdclick-literal-paren"
 
         XCTAssertEqual(
             cmuxResolveQuicklookPathForTesting(
@@ -4401,7 +4401,7 @@ final class TerminalControllerSocketListenerHealthTests: XCTestCase {
     func testNonStableSocketBindFailureDoesNotFallback() {
         XCTAssertNil(
             TerminalController.fallbackSocketPathAfterBindFailure(
-                requestedPath: "/tmp/cmux-debug.sock",
+                requestedPath: "/tmp/cmuxpro-debug.sock",
                 stage: "bind",
                 errnoCode: EACCES,
                 currentUserID: 501
@@ -4410,7 +4410,7 @@ final class TerminalControllerSocketListenerHealthTests: XCTestCase {
     }
 
     private func makeTempSocketPath() -> String {
-        "/tmp/cmux-socket-health-\(UUID().uuidString).sock"
+        "/tmp/cmuxpro-socket-health-\(UUID().uuidString).sock"
     }
 
     private func bindUnixSocket(at path: String) throws -> Int32 {

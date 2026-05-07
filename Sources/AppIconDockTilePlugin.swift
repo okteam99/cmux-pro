@@ -1,7 +1,7 @@
 import AppKit
 import CoreServices
 
-private let cmuxAppIconDidChangeNotification = Notification.Name("com.cmuxterm.appIconDidChange")
+private let cmuxAppIconDidChangeNotification = Notification.Name("com.okteam99.cmuxpro.appIconDidChange")
 private let cmuxAppIconModeKey = "appIconMode"
 
 private enum DockTileAppIconMode: String {

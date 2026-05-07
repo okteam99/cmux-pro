@@ -306,7 +306,7 @@
       "title": "Benutzerdefinierte Befehle",
       "metaTitle": "Benutzerdefinierte Befehle",
       "metaDescription": "Definiere Aktionen, benutzerdefinierte Befehle und Workspace-Layouts in cmux.json. Unterstützt projektbezogene und globale Konfiguration mit explizitem Neuladen.",
-      "intro": "Definieren Sie benutzerdefinierte Befehle und Workspace-Layouts, indem Sie eine cmux.json-Datei in Ihr Projektstammverzeichnis oder ~/.config/cmux/ hinzufügen. Befehle erscheinen in der Befehlspalette.",
+      "intro": "Definieren Sie benutzerdefinierte Befehle und Workspace-Layouts, indem Sie eine cmux.json-Datei in Ihr Projektstammverzeichnis oder ~/.config/cmuxpro/ hinzufügen. Befehle erscheinen in der Befehlspalette.",
       "fileLocations": "Dateispeicherorte",
       "fileLocationsDesc": "cmux sucht an zwei Stellen nach Konfiguration:",
       "localConfig": "Projektspezifisch:",
