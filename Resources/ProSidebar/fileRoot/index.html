@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>cmux Pro — File Root</title>
+    <link rel="stylesheet" href="../shared/sidebar.css" />
+    <link rel="stylesheet" href="fileRoot.css" />
+  </head>
+  <body>
+    <div id="app">
+      <section class="root-card">
+        <div class="root-row">
+          <div id="root-display" class="root-display" title="">…</div>
+          <button id="root-choose" class="btn">Choose…</button>
+        </div>
+        <div class="root-row">
+          <div id="session-display" class="root-display session" title="">…</div>
+          <button id="root-reset" class="btn btn-secondary">Apply</button>
+        </div>
+      </section>
+      <section class="tree-section">
+        <div class="tree-status-row">
+          <div id="tree-status" class="tree-status"></div>
+          <button id="root-refresh" class="btn btn-secondary btn-icon" title="Refresh">↻</button>
+        </div>
+        <ul id="tree" class="tree" role="tree"></ul>
+      </section>
+    </div>
+    <script src="../shared/bridge.js"></script>
+    <script src="../shared/tree.js"></script>
+    <script src="fileRoot.js"></script>
+  </body>
+</html>

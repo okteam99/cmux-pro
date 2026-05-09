@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>cmux Pro — File WorkTree</title>
+    <link rel="stylesheet" href="../shared/sidebar.css" />
+    <link rel="stylesheet" href="fileWorkTree.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="row">
+        <select id="worktree-select" class="wt-select"></select>
+        <button id="refresh-btn" class="btn btn-secondary" title="Refresh">↻</button>
+      </div>
+      <div id="worktree-meta" class="wt-meta-line"></div>
+      <section class="tree-section">
+        <div class="tree-status-row">
+          <div id="tree-status" class="tree-status"></div>
+          <button id="tree-refresh" class="btn btn-secondary btn-icon" title="Refresh tree">↻</button>
+        </div>
+        <ul id="tree" class="tree" role="tree"></ul>
+      </section>
+    </div>
+    <script src="../shared/bridge.js"></script>
+    <script src="../shared/tree.js"></script>
+    <script src="fileWorkTree.js"></script>
+  </body>
+</html>

@@ -10,9 +10,10 @@ import WebKit
 /// tab toggles.
 struct ProSidebarWebHost: NSViewRepresentable {
     let mode: ProSidebarMode
+    let defaultRootProvider: () -> String?
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(mode: mode)
+        Coordinator(mode: mode, defaultRootProvider: defaultRootProvider)
     }
 
     func makeNSView(context: Context) -> WKWebView {
@@ -32,9 +33,10 @@ struct ProSidebarWebHost: NSViewRepresentable {
         let webView: WKWebView
         private var didLoad = false
 
-        init(mode: ProSidebarMode) {
+        init(mode: ProSidebarMode, defaultRootProvider: @escaping () -> String?) {
             self.mode = mode
             let bridge = ProSidebarWebBridge()
+            bridge.defaultRootProvider = defaultRootProvider
             self.bridge = bridge
 
             let configuration = WKWebViewConfiguration()

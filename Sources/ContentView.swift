@@ -2715,7 +2715,13 @@ struct ContentView: View {
     @ViewBuilder
     private var rightSidebarPanel: some View {
         if ProSidebarFlags.enabled {
-            ProSidebarContainerView(titlebarHeight: RightSidebarChromeMetrics.titlebarHeight)
+            ProSidebarContainerView(
+                titlebarHeight: RightSidebarChromeMetrics.titlebarHeight,
+                defaultRootProvider: { [fileExplorerStore] in
+                    let path = fileExplorerStore.rootPath
+                    return path.isEmpty ? nil : path
+                }
+            )
                 .frame(width: rightSidebarWidth)
                 .clipped()
                 .allowsHitTesting(rightSidebarVisible)

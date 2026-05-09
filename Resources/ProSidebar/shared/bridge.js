@@ -1,5 +1,5 @@
 // Shared bridge between Pro sidebar tabs and the native side.
-// Each tab loads this before its own bundle. Public API is on `window.cmuxProSidebar`.
+// Each tab loads this before its own bundle. Public API is `window.cmuxProSidebar`.
 (function () {
   const handler = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.cmuxProSidebar;
   const pending = new Map();
@@ -9,9 +9,7 @@
   }
 
   function post(kind, body) {
-    if (!handler) {
-      return;
-    }
+    if (!handler) return;
     handler.postMessage(Object.assign({ kind }, body || {}));
   }
 
@@ -48,6 +46,27 @@
     },
     ping(payload) {
       return call("ping", { payload });
+    },
+    getDefaultRoot() {
+      return call("getDefaultRoot");
+    },
+    chooseDirectory(initialPath) {
+      return call("chooseDirectory", { initialPath: initialPath || null });
+    },
+    listGitWorktrees(rootPath) {
+      return call("listGitWorktrees", { rootPath });
+    },
+    listDir(path, options) {
+      return call("listDir", {
+        path,
+        includeHidden: !!(options && options.includeHidden),
+      });
+    },
+    openFile(path) {
+      return call("openFile", { path });
+    },
+    getGitStatus(rootPath) {
+      return call("getGitStatus", { rootPath });
     },
   };
 })();
