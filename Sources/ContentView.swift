@@ -2712,7 +2712,21 @@ struct ContentView: View {
         return panel
     }
 
+    @ViewBuilder
     private var rightSidebarPanel: some View {
+        if ProSidebarFlags.enabled {
+            ProSidebarContainerView(titlebarHeight: RightSidebarChromeMetrics.titlebarHeight)
+                .frame(width: rightSidebarWidth)
+                .clipped()
+                .allowsHitTesting(rightSidebarVisible)
+                .accessibilityHidden(!rightSidebarVisible)
+                .transaction { $0.animation = nil }
+        } else {
+            upstreamRightSidebarPanel
+        }
+    }
+
+    private var upstreamRightSidebarPanel: some View {
         return RightSidebarPanelView(
             fileExplorerStore: fileExplorerStore,
             fileExplorerState: fileExplorerState,

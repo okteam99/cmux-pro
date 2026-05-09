@@ -382,6 +382,12 @@
 		CB5000000000000000000014 /* MarkdownViewerWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5000000000000000000015 /* MarkdownViewerWindowController.swift */; };
 		CB5000000000000000000016 /* MarkdownViewerWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB5000000000000000000017 /* MarkdownViewerWindowManager.swift */; };
 		CB5000000000000000000020 /* MarkdownViewer in Resources */ = {isa = PBXBuildFile; fileRef = CB5000000000000000000021 /* MarkdownViewer */; };
+		CB6000000000000000000010 /* ProSidebarFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6000000000000000000011 /* ProSidebarFlags.swift */; };
+		CB6000000000000000000012 /* ProSidebarMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6000000000000000000013 /* ProSidebarMode.swift */; };
+		CB6000000000000000000014 /* ProSidebarWebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6000000000000000000015 /* ProSidebarWebBridge.swift */; };
+		CB6000000000000000000016 /* ProSidebarWebHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6000000000000000000017 /* ProSidebarWebHost.swift */; };
+		CB6000000000000000000018 /* ProSidebarContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB6000000000000000000019 /* ProSidebarContainerView.swift */; };
+		CB6000000000000000000020 /* ProSidebar in Resources */ = {isa = PBXBuildFile; fileRef = CB6000000000000000000021 /* ProSidebar */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -819,6 +825,12 @@
 		CB5000000000000000000015 /* MarkdownViewerWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerWindowController.swift; sourceTree = "<group>"; };
 		CB5000000000000000000017 /* MarkdownViewerWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownViewer/MarkdownViewerWindowManager.swift; sourceTree = "<group>"; };
 		CB5000000000000000000021 /* MarkdownViewer */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MarkdownViewer; sourceTree = "<group>"; };
+		CB6000000000000000000011 /* ProSidebarFlags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProSidebar/ProSidebarFlags.swift; sourceTree = "<group>"; };
+		CB6000000000000000000013 /* ProSidebarMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProSidebar/ProSidebarMode.swift; sourceTree = "<group>"; };
+		CB6000000000000000000015 /* ProSidebarWebBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProSidebar/ProSidebarWebBridge.swift; sourceTree = "<group>"; };
+		CB6000000000000000000017 /* ProSidebarWebHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProSidebar/ProSidebarWebHost.swift; sourceTree = "<group>"; };
+		CB6000000000000000000019 /* ProSidebarContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProSidebar/ProSidebarContainerView.swift; sourceTree = "<group>"; };
+		CB6000000000000000000021 /* ProSidebar */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ProSidebar; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -886,6 +898,7 @@
 				FEED0A00000000000000F006 /* feed-tui */,
 				A5001622 /* cmux.sdef */,
 				CB5000000000000000000021 /* MarkdownViewer */,
+				CB6000000000000000000021 /* ProSidebar */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1160,6 +1173,11 @@
 				CB5000000000000000000013 /* MarkdownViewerWebBridge.swift */,
 				CB5000000000000000000015 /* MarkdownViewerWindowController.swift */,
 				CB5000000000000000000017 /* MarkdownViewerWindowManager.swift */,
+				CB6000000000000000000011 /* ProSidebarFlags.swift */,
+				CB6000000000000000000013 /* ProSidebarMode.swift */,
+				CB6000000000000000000015 /* ProSidebarWebBridge.swift */,
+				CB6000000000000000000017 /* ProSidebarWebHost.swift */,
+				CB6000000000000000000019 /* ProSidebarContainerView.swift */,
 				FE003001 /* SessionIndexStore.swift */,
 				FE003004 /* SessionIndexStore+CodexSQL.swift */,
 				FE003005 /* RovoDevIndex.swift */,
@@ -1512,6 +1530,7 @@
 				FEED0000000000000000F007 /* opencode-plugin.js in Resources */,
 				FEED0A00000000000000F007 /* feed-tui in Resources */,
 				CB5000000000000000000020 /* MarkdownViewer in Resources */,
+				CB6000000000000000000020 /* ProSidebar in Resources */,
 				A5001623 /* cmux.sdef in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1744,6 +1763,11 @@
 				CB5000000000000000000012 /* MarkdownViewerWebBridge.swift in Sources */,
 				CB5000000000000000000014 /* MarkdownViewerWindowController.swift in Sources */,
 				CB5000000000000000000016 /* MarkdownViewerWindowManager.swift in Sources */,
+				CB6000000000000000000010 /* ProSidebarFlags.swift in Sources */,
+				CB6000000000000000000012 /* ProSidebarMode.swift in Sources */,
+				CB6000000000000000000014 /* ProSidebarWebBridge.swift in Sources */,
+				CB6000000000000000000016 /* ProSidebarWebHost.swift in Sources */,
+				CB6000000000000000000018 /* ProSidebarContainerView.swift in Sources */,
 				FE003101 /* SessionIndexStore.swift in Sources */,
 				FE003104 /* SessionIndexStore+CodexSQL.swift in Sources */,
 				FE003105 /* RovoDevIndex.swift in Sources */,
