@@ -7,12 +7,17 @@ enum ProSidebarBridgeMessage {
     case ready(mode: String)
     case ping(payload: String, replyId: String)
     case getDefaultRoot(replyId: String)
+    case getWorkspaceId(replyId: String)
     case chooseDirectory(initialPath: String?, replyId: String)
     case listGitWorktrees(rootPath: String, replyId: String)
     case listDir(path: String, includeHidden: Bool, replyId: String)
     case openFile(path: String, replyId: String)
     case getGitStatus(rootPath: String, replyId: String)
     case unknown(kind: String)
+}
+
+extension Notification.Name {
+    static let proSidebarWorkspaceDidChange = Notification.Name("cmux.proSidebar.workspaceDidChange")
 }
 
 /// Reply payload sent back to a JS caller awaiting a `replyId`.
@@ -29,8 +34,42 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
     /// Sourced from the active workspace's file explorer root.
     var defaultRootProvider: (() -> String?)?
 
+    /// Returns the current workspace UUID string. JS namespaces its
+    /// localStorage state by this so per-session views don't bleed.
+    var currentWorkspaceIdProvider: (() -> String?)?
+
     /// Set by the host so handlers can post replies back to the web layer.
     weak var webView: WKWebView?
+
+    private var workspaceObserver: NSObjectProtocol?
+
+    override init() {
+        super.init()
+        workspaceObserver = NotificationCenter.default.addObserver(
+            forName: .proSidebarWorkspaceDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] note in
+            guard let self else { return }
+            let id = (note.userInfo?["workspaceId"] as? String) ?? ""
+            self.notifyWorkspaceChange(id: id)
+        }
+    }
+
+    deinit {
+        if let workspaceObserver {
+            NotificationCenter.default.removeObserver(workspaceObserver)
+        }
+    }
+
+    private func notifyWorkspaceChange(id: String) {
+        guard let webView else { return }
+        let escaped = id
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+        let js = "window.dispatchEvent(new CustomEvent('cmux:workspaceDidChange', {detail:{id:\"\(escaped)\"}}));"
+        webView.evaluateJavaScript(js, completionHandler: nil)
+    }
 
     /// Forwarded for tab-specific reactions; built-in handlers are dispatched
     /// before this fires.
@@ -59,6 +98,12 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
             send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
                 "ok": true,
                 "path": path,
+            ]))
+        case let .getWorkspaceId(replyId):
+            let id = currentWorkspaceIdProvider?() ?? ""
+            send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
+                "ok": true,
+                "id": id,
             ]))
         case let .chooseDirectory(initialPath, replyId):
             let chosen = Self.openDirectoryPicker(initialPath: initialPath)
@@ -124,6 +169,8 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
             )
         case "getDefaultRoot":
             return .getDefaultRoot(replyId: (dict["replyId"] as? String) ?? "")
+        case "getWorkspaceId":
+            return .getWorkspaceId(replyId: (dict["replyId"] as? String) ?? "")
         case "chooseDirectory":
             return .chooseDirectory(
                 initialPath: dict["initialPath"] as? String,

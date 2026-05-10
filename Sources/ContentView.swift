@@ -2717,9 +2717,29 @@ struct ContentView: View {
         if ProSidebarFlags.enabled {
             ProSidebarContainerView(
                 titlebarHeight: RightSidebarChromeMetrics.titlebarHeight,
-                defaultRootProvider: { [fileExplorerStore] in
-                    let path = fileExplorerStore.rootPath
-                    return path.isEmpty ? nil : path
+                defaultRootProvider: { [tabManager, fileExplorerStore] in
+                    if let workspaceId = tabManager.selectedTabId,
+                       let workspace = tabManager.tabs.first(where: { $0.id == workspaceId }) {
+                        if let panelId = workspace.focusedPanelId,
+                           let dir = workspace.panelDirectories[panelId]?
+                                .trimmingCharacters(in: .whitespacesAndNewlines),
+                           !dir.isEmpty {
+                            return dir
+                        }
+                        let workspaceDir = workspace.currentDirectory
+                            .trimmingCharacters(in: .whitespacesAndNewlines)
+                        if !workspaceDir.isEmpty { return workspaceDir }
+                    }
+                    let fallback = fileExplorerStore.rootPath
+                    return fallback.isEmpty ? nil : fallback
+                },
+                currentWorkspaceIdProvider: { [tabManager] in
+                    guard let workspaceId = tabManager.selectedTabId else { return nil }
+                    let workspaceString = workspaceId.uuidString
+                    if let panelId = tabManager.focusedPanelId(for: workspaceId) {
+                        return "\(workspaceString):\(panelId.uuidString)"
+                    }
+                    return workspaceString
                 }
             )
                 .frame(width: rightSidebarWidth)
@@ -2727,6 +2747,13 @@ struct ContentView: View {
                 .allowsHitTesting(rightSidebarVisible)
                 .accessibilityHidden(!rightSidebarVisible)
                 .transaction { $0.animation = nil }
+                .onChange(of: tabManager.selectedTabId) { newValue in
+                    NotificationCenter.default.post(
+                        name: .proSidebarWorkspaceDidChange,
+                        object: nil,
+                        userInfo: ["workspaceId": newValue?.uuidString ?? ""]
+                    )
+                }
         } else {
             upstreamRightSidebarPanel
         }

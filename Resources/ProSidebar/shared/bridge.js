@@ -50,6 +50,9 @@
     getDefaultRoot() {
       return call("getDefaultRoot");
     },
+    getWorkspaceId() {
+      return call("getWorkspaceId");
+    },
     chooseDirectory(initialPath) {
       return call("chooseDirectory", { initialPath: initialPath || null });
     },

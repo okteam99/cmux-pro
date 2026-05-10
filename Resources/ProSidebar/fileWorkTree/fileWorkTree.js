@@ -1,6 +1,4 @@
 (function () {
-  const STORAGE_KEY = "cmuxProSidebar.fileRoot.override";
-  const SELECTED_WT_KEY = "cmuxProSidebar.fileWorkTree.selectedPath";
   const select = document.getElementById("worktree-select");
   const meta = document.getElementById("worktree-meta");
   const refreshBtn = document.getElementById("refresh-btn");
@@ -9,6 +7,7 @@
   const treeStatus = document.getElementById("tree-status");
 
   const tree = window.cmuxProSidebarTree.create({ rootEl: treeEl, statusEl: treeStatus });
+  const ws = window.cmuxProSidebarWorkspace;
   let sessionRoot = "";
   let worktrees = [];
   let selectedPath = "";
@@ -52,9 +51,7 @@
 
   function applySelection(path) {
     selectedPath = path || "";
-    if (selectedPath) {
-      localStorage.setItem(SELECTED_WT_KEY, selectedPath);
-    }
+    if (selectedPath) ws.set("fileWorkTree.selectedPath", selectedPath);
     tree.setRoot(selectedPath);
     updateMetaForSelection();
   }
@@ -84,9 +81,7 @@
       opt.textContent = `${rel}  ·  ${branch}`;
       select.appendChild(opt);
     }
-    // Pick a selection: previously remembered → else the worktree matching the
-    // current root → else the first.
-    const remembered = localStorage.getItem(SELECTED_WT_KEY) || "";
+    const remembered = ws.get("fileWorkTree.selectedPath") || "";
     let initial = worktrees.find(w => w.path === remembered)
               || worktrees.find(w => w.path === currentRoot)
               || worktrees[0];
@@ -94,9 +89,9 @@
     applySelection(initial.path);
   }
 
-  async function refresh() {
+  async function reload() {
     setMeta("loading…");
-    let rootPath = localStorage.getItem(STORAGE_KEY) || "";
+    let rootPath = ws.get("fileRoot.override") || "";
     try {
       const reply = await window.cmuxProSidebar.getDefaultRoot();
       sessionRoot = (reply && reply.path) || "";
@@ -127,7 +122,7 @@
   }
   if (refreshBtn) {
     refreshBtn.addEventListener("click", async () => {
-      await refresh();
+      await reload();
       tree.refresh();
     });
   }
@@ -138,5 +133,5 @@
   if (window.cmuxProSidebar && typeof window.cmuxProSidebar.ready === "function") {
     window.cmuxProSidebar.ready("fileWorkTree");
   }
-  refresh();
+  ws.bind(reload);
 })();

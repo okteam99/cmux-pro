@@ -11,9 +11,14 @@ import WebKit
 struct ProSidebarWebHost: NSViewRepresentable {
     let mode: ProSidebarMode
     let defaultRootProvider: () -> String?
+    let currentWorkspaceIdProvider: () -> String?
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(mode: mode, defaultRootProvider: defaultRootProvider)
+        Coordinator(
+            mode: mode,
+            defaultRootProvider: defaultRootProvider,
+            currentWorkspaceIdProvider: currentWorkspaceIdProvider
+        )
     }
 
     func makeNSView(context: Context) -> WKWebView {
@@ -33,10 +38,15 @@ struct ProSidebarWebHost: NSViewRepresentable {
         let webView: WKWebView
         private var didLoad = false
 
-        init(mode: ProSidebarMode, defaultRootProvider: @escaping () -> String?) {
+        init(
+            mode: ProSidebarMode,
+            defaultRootProvider: @escaping () -> String?,
+            currentWorkspaceIdProvider: @escaping () -> String?
+        ) {
             self.mode = mode
             let bridge = ProSidebarWebBridge()
             bridge.defaultRootProvider = defaultRootProvider
+            bridge.currentWorkspaceIdProvider = currentWorkspaceIdProvider
             self.bridge = bridge
 
             let configuration = WKWebViewConfiguration()

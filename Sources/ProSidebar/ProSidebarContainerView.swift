@@ -8,6 +8,9 @@ struct ProSidebarContainerView: View {
     /// Resolves the current workspace's root path. Called every time a tab
     /// asks `getDefaultRoot`, so workspace switches are reflected live.
     let defaultRootProvider: () -> String?
+    /// Resolves the current workspace UUID string so JS can namespace its
+    /// localStorage by session.
+    let currentWorkspaceIdProvider: () -> String?
 
     @State private var selectedMode: ProSidebarMode = .fileRoot
 
@@ -56,7 +59,8 @@ struct ProSidebarContainerView: View {
             ForEach(ProSidebarMode.allCases) { mode in
                 ProSidebarWebHost(
                     mode: mode,
-                    defaultRootProvider: defaultRootProvider
+                    defaultRootProvider: defaultRootProvider,
+                    currentWorkspaceIdProvider: currentWorkspaceIdProvider
                 )
                 .opacity(selectedMode == mode ? 1 : 0)
                 .allowsHitTesting(selectedMode == mode)
