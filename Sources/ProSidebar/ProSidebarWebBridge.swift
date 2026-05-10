@@ -333,7 +333,15 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
         guard !rootPath.isEmpty else { return [:] }
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
-        process.arguments = ["git", "-C", rootPath, "status", "--porcelain", "--untracked-files=all"]
+        process.arguments = [
+            "git", "-C", rootPath,
+            // Disable C-style escaping for non-ASCII paths so paths with CJK
+            // (or any byte > 0x7e) come back as UTF-8. Without this git wraps
+            // such paths in double quotes with octal escapes and folder
+            // colors stop propagating below the first non-ASCII segment.
+            "-c", "core.quotePath=false",
+            "status", "--porcelain", "--untracked-files=all",
+        ]
         let pipe = Pipe()
         process.standardOutput = pipe
         process.standardError = Pipe()

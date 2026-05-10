@@ -2,6 +2,11 @@
 
 All notable changes to cmux are documented here.
 
+## [0.67.1] - 2026-05-11
+
+### Fixed
+- ProSidebar git status colors now propagate through folders whose names contain non-ASCII characters (CJK, etc.). Previously porcelain output escaped such paths, so the JS layer couldn't match them and folder coloring stopped at the first non-ASCII segment. The fork now passes `-c core.quotePath=false` so git emits UTF-8 paths directly.
+
 ## [0.67.0] - 2026-05-10
 
 ### Added
