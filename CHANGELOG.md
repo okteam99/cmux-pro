@@ -2,6 +2,18 @@
 
 All notable changes to cmux are documented here.
 
+## [0.67.0] - 2026-05-10
+
+### Added
+- New webview-based right sidebar (cmux Pro). Two tabs:
+  - **File Root**: choose any directory as the root or apply the active terminal's cwd; the tree lazy-expands folders, shows git status (blue for tracked changes, red for untracked-not-ignored, with folder names aggregating the most-significant status of their descendants), and survives refreshes by preserving expanded folders + scroll position. Click `.md` files to open in the Markdown viewer; other file types fall back to the system default.
+  - **File WorkTree**: dropdown of `git worktree list` entries shown as paths relative to the workspace root; selecting a worktree loads its tree below.
+- Right sidebar state is now scoped per terminal tab (composite `workspace:panel` identity), so different terminals keep independent root overrides, worktree selections, and tree expansion state.
+- File Root's session-dir line live-updates as the active terminal's working directory changes (poll every 1s); pressing **Apply** rebinds the active root.
+
+### Changed
+- The fork's right sidebar replaces the upstream Files / Find / Sessions / Feed / Dock tabs by default. Upstream's `RightSidebarPanelView` remains in the source tree as a fallback when `proSidebar.enabled` is set to `false` in user defaults.
+
 ## [0.66.0] - 2026-05-07
 
 ### Changed
