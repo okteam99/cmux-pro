@@ -602,7 +602,7 @@ jobs:
             - feed `appcast.xml`
             - compatibility feed `appcast-universal.xml` for older universal nightlies
 
-            [Download cmux-nightly-macos.dmg](https://github.com/manaflow-ai/cmux/releases/download/nightly/cmux-nightly-macos.dmg)
+            [Download cmux-nightly-macos.dmg](https://github.com/${{ github.repository }}/releases/download/nightly/cmux-nightly-macos.dmg)
           files: |
             cmux-nightly-macos-${{ github.run_id }}*.dmg
             cmux-nightly-macos.dmg

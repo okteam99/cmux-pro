@@ -2,6 +2,11 @@
 
 All notable changes to cmux are documented here.
 
+## [0.67.2] - 2026-05-12
+
+### Fixed
+- Auto-update from 0.67.1 failed with "Couldn't Download Update" (HTTP 404). The published Sparkle appcast pointed the DMG enclosure at the upstream `manaflow-ai/cmux` release, but the DMG is hosted on this fork (`okteam99/cmux-pro`). The release pipeline now derives the appcast download URL and release-notes link from the active GitHub repository, so existing 0.67.1 users will receive 0.67.2 automatically once the new appcast replaces the broken one.
+
 ## [0.67.1] - 2026-05-11
 
 ### Fixed

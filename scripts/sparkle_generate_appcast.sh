@@ -16,8 +16,12 @@ if [[ -z "${SPARKLE_PRIVATE_KEY:-}" ]]; then
 fi
 
 SPARKLE_VERSION="${SPARKLE_VERSION:-2.8.1}"
-DOWNLOAD_URL_PREFIX="${DOWNLOAD_URL_PREFIX:-https://github.com/manaflow-ai/cmux/releases/download/$TAG/}"
-RELEASE_NOTES_URL="${RELEASE_NOTES_URL:-https://github.com/manaflow-ai/cmux/releases/tag/$TAG}"
+# Derive the release repo from $GITHUB_REPOSITORY so both stable and nightly
+# workflows publish appcast URLs that point at the repo actually hosting the
+# DMG asset. Falls back to the cmux-pro fork for local invocations.
+RELEASE_REPO="${GITHUB_REPOSITORY:-okteam99/cmux-pro}"
+DOWNLOAD_URL_PREFIX="${DOWNLOAD_URL_PREFIX:-https://github.com/${RELEASE_REPO}/releases/download/$TAG/}"
+RELEASE_NOTES_URL="${RELEASE_NOTES_URL:-https://github.com/${RELEASE_REPO}/releases/tag/$TAG}"
 
 work_dir="$(mktemp -d)"
 cleanup() {
