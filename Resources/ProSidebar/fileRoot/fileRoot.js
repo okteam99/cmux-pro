@@ -7,7 +7,11 @@
   const treeEl = document.getElementById("tree");
   const status = document.getElementById("tree-status");
 
-  const tree = window.cmuxProSidebarTree.create({ rootEl: treeEl, statusEl: status });
+  const tree = window.cmuxProSidebarTree.create({
+    rootEl: treeEl,
+    statusEl: status,
+    storageKey: "fileRoot.expanded",
+  });
   const ws = window.cmuxProSidebarWorkspace;
   let sessionRoot = "";
   let currentRoot = "";

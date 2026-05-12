@@ -6,7 +6,11 @@
   const treeEl = document.getElementById("tree");
   const treeStatus = document.getElementById("tree-status");
 
-  const tree = window.cmuxProSidebarTree.create({ rootEl: treeEl, statusEl: treeStatus });
+  const tree = window.cmuxProSidebarTree.create({
+    rootEl: treeEl,
+    statusEl: treeStatus,
+    storageKey: "fileWorkTree.expanded",
+  });
   const ws = window.cmuxProSidebarWorkspace;
   let sessionRoot = "";
   let worktrees = [];

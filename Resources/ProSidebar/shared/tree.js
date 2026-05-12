@@ -22,11 +22,39 @@
     return "📄";
   }
 
-  function create({ rootEl, statusEl }) {
+  function create({ rootEl, statusEl, storageKey }) {
     if (!rootEl) throw new Error("tree.create: rootEl required");
     let currentRoot = "";
-    const expanded = new Set();
+    let expanded = new Set();
     const dirCache = new Map();
+
+    // Per-workspace persistence for the expanded-folder set. Keyed via
+    // `cmuxProSidebarWorkspace` so each workspace keeps its own state and
+    // survives workspace switches (and app restarts).
+    function loadExpanded() {
+      if (!storageKey) return new Set();
+      const ws = window.cmuxProSidebarWorkspace;
+      if (!ws) return new Set();
+      const raw = ws.get(storageKey);
+      if (!raw) return new Set();
+      try {
+        const arr = JSON.parse(raw);
+        return new Set(Array.isArray(arr) ? arr : []);
+      } catch (_) {
+        return new Set();
+      }
+    }
+
+    function saveExpanded() {
+      if (!storageKey) return;
+      const ws = window.cmuxProSidebarWorkspace;
+      if (!ws) return;
+      if (expanded.size === 0) {
+        ws.clear(storageKey);
+      } else {
+        ws.set(storageKey, JSON.stringify([...expanded]));
+      }
+    }
     // Per-path git status from the most recent fetch.
     let statusByPath = new Map();
     // Aggregated status for ancestor folders. "modified" beats "untracked".
@@ -119,6 +147,7 @@
       } catch (_) {
         // Folder gone or unreadable since last expand — fall back to collapsed.
         expanded.delete(fullPath);
+        saveExpanded();
         const chev = li.querySelector(":scope > .tree-row > .tree-chevron");
         if (chev) chev.textContent = "▸";
         return li;
@@ -183,6 +212,7 @@
     async function toggleDir(li, fullPath, depth) {
       if (expanded.has(fullPath)) {
         expanded.delete(fullPath);
+        saveExpanded();
         const sub = li.querySelector(":scope > ul");
         if (sub) sub.remove();
         const chev = li.querySelector(":scope > .tree-row > .tree-chevron");
@@ -190,6 +220,7 @@
         return;
       }
       expanded.add(fullPath);
+      saveExpanded();
       const chev = li.querySelector(":scope > .tree-row > .tree-chevron");
       if (chev) chev.textContent = "▾";
       let children;
@@ -215,7 +246,10 @@
 
     async function setRootAsync(next) {
       currentRoot = next;
-      expanded.clear();
+      // Reload expansion state from the now-current workspace's storage so
+      // switching workspaces (which changes the workspace-scoped key) picks
+      // up that workspace's open folders instead of clearing them.
+      expanded = loadExpanded();
       dirCache.clear();
       await loadGitStatus();
       await render();
@@ -223,13 +257,16 @@
 
     return {
       setRoot(path) {
-        const next = path || "";
-        if (next === currentRoot) return;
-        setRootAsync(next);
+        // Always re-run setRootAsync: even when `path` equals the current
+        // root, the workspace may have changed and `expanded` must be
+        // reloaded from the new workspace's namespace.
+        setRootAsync(path || "");
       },
       clear() {
         currentRoot = "";
-        expanded.clear();
+        // In-memory only — keep the persisted set so the user's open folders
+        // come back when the tree is re-mounted with a valid root.
+        expanded = new Set();
         dirCache.clear();
         statusByPath = new Map();
         folderStatusByPath = new Map();
