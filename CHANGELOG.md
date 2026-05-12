@@ -2,6 +2,11 @@
 
 All notable changes to cmux are documented here.
 
+## [0.67.3] - 2026-05-12
+
+### Fixed
+- ProSidebar file tree no longer resets its expanded/collapsed folders when switching workspaces in the left sidebar. The expansion set was kept in-memory and wiped on every root change; it's now persisted per workspace (via the existing `cmuxProSidebar.${workspaceId}.*` localStorage namespace) and reloaded on every workspace switch, so each workspace remembers its own open folders across switches and app restarts.
+
 ## [0.67.2] - 2026-05-12
 
 ### Fixed
