@@ -125,9 +125,12 @@
     });
   }
   if (refreshBtn) {
-    refreshBtn.addEventListener("click", async () => {
-      await reload();
-      tree.refresh();
+    // `reload()` already triggers a full tree re-render via `tree.setRoot`
+    // (which always re-runs `setRootAsync` and re-fetches git status). An
+    // explicit `tree.refresh()` here would race that render and duplicate
+    // entries.
+    refreshBtn.addEventListener("click", () => {
+      reload();
     });
   }
   if (treeRefreshBtn) {

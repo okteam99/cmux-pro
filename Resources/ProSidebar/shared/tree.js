@@ -27,6 +27,11 @@
     let currentRoot = "";
     let expanded = new Set();
     const dirCache = new Map();
+    // Bumped on every render() call. In-flight renders bail out if a newer
+    // one started after them, so concurrent refresh + setRoot + workspace
+    // switch sequences can never interleave appendChild loops (which would
+    // duplicate entries).
+    let renderGen = 0;
 
     // Per-workspace persistence for the expanded-folder set. Keyed via
     // `cmuxProSidebarWorkspace` so each workspace keeps its own state and
@@ -109,6 +114,7 @@
     }
 
     async function render() {
+      const myGen = ++renderGen;
       rootEl.innerHTML = "";
       if (!currentRoot) {
         setStatus("no root selected");
@@ -119,16 +125,20 @@
       try {
         entries = await loadDir(currentRoot);
       } catch (err) {
+        if (myGen !== renderGen) return;
         setStatus(`error: ${err && err.message}`);
         return;
       }
+      if (myGen !== renderGen) return;
       if (!entries.length) {
         setStatus("empty directory");
         return;
       }
       setStatus(`${entries.length} entries`);
       for (const entry of entries) {
+        if (myGen !== renderGen) return;
         const li = await makeRowAndExpand(entry, currentRoot, 0);
+        if (myGen !== renderGen) return;
         rootEl.appendChild(li);
       }
     }
