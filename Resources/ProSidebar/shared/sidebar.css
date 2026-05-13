@@ -69,3 +69,22 @@ html, body {
   font-size: 11px;
   line-height: 1;
 }
+
+/* Per-row "Reveal in Finder" affordance. Hidden until the row is hovered. */
+.tree-reveal {
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 0 3px;
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--secondary);
+  cursor: pointer;
+  border-radius: 3px;
+  display: none;
+  align-items: center;
+  line-height: 0;
+}
+.tree-row:hover .tree-reveal { display: inline-flex; }
+.tree-reveal:hover { background: var(--hover-bg); color: var(--fg); }
+.tree-reveal:focus-visible { outline: 1px solid var(--accent); outline-offset: 1px; }

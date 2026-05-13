@@ -68,6 +68,9 @@
     openFile(path) {
       return call("openFile", { path });
     },
+    revealInFinder(path) {
+      return call("revealInFinder", { path });
+    },
     getGitStatus(rootPath) {
       return call("getGitStatus", { rootPath });
     },

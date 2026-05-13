@@ -194,6 +194,20 @@
       name.title = fullPath;
       row.appendChild(name);
 
+      const reveal = document.createElement("button");
+      reveal.type = "button";
+      reveal.className = "tree-reveal";
+      reveal.title = "Reveal in Finder";
+      reveal.setAttribute("aria-label", "Reveal in Finder");
+      reveal.innerHTML = '<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h4v4"/><path d="M13.5 2.5L7.5 8.5"/><path d="M13.5 9.5V12a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 12V4A1.5 1.5 0 0 1 4 2.5h2.5"/></svg>';
+      reveal.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        try {
+          await window.cmuxProSidebar.revealInFinder(fullPath);
+        } catch (_) {}
+      });
+      row.appendChild(reveal);
+
       row.addEventListener("click", async (e) => {
         e.stopPropagation();
         if (entry.isDir) {

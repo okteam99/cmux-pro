@@ -12,6 +12,7 @@ enum ProSidebarBridgeMessage {
     case listGitWorktrees(rootPath: String, replyId: String)
     case listDir(path: String, includeHidden: Bool, replyId: String)
     case openFile(path: String, replyId: String)
+    case revealInFinder(path: String, replyId: String)
     case getGitStatus(rootPath: String, replyId: String)
     case unknown(kind: String)
 }
@@ -128,6 +129,11 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
             send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
                 "ok": true,
             ]))
+        case let .revealInFinder(path, replyId):
+            Self.revealInFinder(at: path)
+            send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
+                "ok": true,
+            ]))
         case let .getGitStatus(rootPath, replyId):
             let statuses = Self.fetchGitStatus(at: rootPath)
             send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
@@ -189,6 +195,11 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
             )
         case "openFile":
             return .openFile(
+                path: (dict["path"] as? String) ?? "",
+                replyId: (dict["replyId"] as? String) ?? ""
+            )
+        case "revealInFinder":
+            return .revealInFinder(
                 path: (dict["path"] as? String) ?? "",
                 replyId: (dict["replyId"] as? String) ?? ""
             )
@@ -400,5 +411,13 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
         } else {
             NSWorkspace.shared.open(URL(fileURLWithPath: path))
         }
+    }
+
+    /// Reveal a file or folder in Finder with it pre-selected. Works for both
+    /// files and directories.
+    @MainActor
+    static func revealInFinder(at path: String) {
+        guard !path.isEmpty else { return }
+        NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path)])
     }
 }
