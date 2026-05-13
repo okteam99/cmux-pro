@@ -2,6 +2,15 @@
 
 All notable changes to cmux are documented here.
 
+## [0.67.4] - 2026-05-13
+
+### Added
+- ProSidebar file tree: per-row "Reveal in Finder" button that appears when you hover a file or folder. Clicking opens the path in Finder with it pre-selected. Works in both **File Root** and **File WorkTree** tabs.
+
+### Fixed
+- ProSidebar tab selection (File Root / File WorkTree) is now remembered per workspace. Previously the choice was global, so selecting "File WorkTree" in workspace A and then visiting workspace B would overwrite A's selection back to "File Root" on return. The selection is now keyed by workspace UUID in user defaults and re-syncs on workspace switches.
+- File WorkTree refresh button no longer duplicates the tree entries on repositories with multiple worktrees. The button used to call both `reload()` (which already triggers a full tree re-render after 0.67.3) and `tree.refresh()`, racing two concurrent renders that interleaved their append loops. The redundant refresh is dropped, and a render-generation guard now aborts in-flight renders the moment a newer one starts.
+
 ## [0.67.3] - 2026-05-12
 
 ### Fixed
