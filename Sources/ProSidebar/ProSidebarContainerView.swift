@@ -13,6 +13,7 @@ struct ProSidebarContainerView: View {
     let currentWorkspaceIdProvider: () -> String?
 
     @State private var selectedMode: ProSidebarMode = .fileRoot
+    @State private var activeWorkspaceUuid: String = ""
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,6 +23,10 @@ struct ProSidebarContainerView: View {
             content
         }
         .background(Color(nsColor: .windowBackgroundColor))
+        .onAppear { syncFromCurrentWorkspace() }
+        .onReceive(NotificationCenter.default.publisher(for: .proSidebarWorkspaceDidChange)) { _ in
+            syncFromCurrentWorkspace()
+        }
     }
 
     private var tabStrip: some View {
@@ -29,6 +34,7 @@ struct ProSidebarContainerView: View {
             ForEach(ProSidebarMode.allCases) { mode in
                 Button {
                     selectedMode = mode
+                    persistSelectedMode(mode)
                 } label: {
                     HStack(spacing: 3) {
                         Image(systemName: mode.symbolName)
@@ -67,5 +73,40 @@ struct ProSidebarContainerView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    // The `currentWorkspaceIdProvider` returns a composite `workspaceUuid` or
+    // `workspaceUuid:panelUuid`. The tab choice is intentionally workspace-
+    // scoped (not panel-scoped) so splitting/refocusing panels inside the same
+    // workspace keeps the user's tab selection.
+    private func currentWorkspaceUuid() -> String {
+        let composite = currentWorkspaceIdProvider() ?? ""
+        return composite.split(separator: ":").first.map(String.init) ?? composite
+    }
+
+    private func storageKey(for workspaceUuid: String) -> String {
+        "ProSidebar.selectedMode.\(workspaceUuid)"
+    }
+
+    private func loadSelectedMode(for workspaceUuid: String) -> ProSidebarMode {
+        guard !workspaceUuid.isEmpty,
+              let raw = UserDefaults.standard.string(forKey: storageKey(for: workspaceUuid)),
+              let mode = ProSidebarMode(rawValue: raw) else {
+            return .fileRoot
+        }
+        return mode
+    }
+
+    private func persistSelectedMode(_ mode: ProSidebarMode) {
+        let uuid = currentWorkspaceUuid()
+        guard !uuid.isEmpty else { return }
+        UserDefaults.standard.set(mode.rawValue, forKey: storageKey(for: uuid))
+    }
+
+    private func syncFromCurrentWorkspace() {
+        let uuid = currentWorkspaceUuid()
+        guard uuid != activeWorkspaceUuid else { return }
+        activeWorkspaceUuid = uuid
+        selectedMode = loadSelectedMode(for: uuid)
     }
 }
