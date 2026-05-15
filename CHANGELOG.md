@@ -2,6 +2,11 @@
 
 All notable changes to cmux are documented here.
 
+## [0.67.5] - 2026-05-15
+
+### Changed
+- ProSidebar file tree now shows dotfiles (entries starting with `.`) such as `.gitignore`, `.env`, `.claude/`, `.git/`. The Swift side already accepted an `includeHidden` flag; only the JS caller was hard-coded to skip them. Sort order is unchanged (directories first, then alphabetical), so dotfiles land at the top of each group.
+
 ## [0.67.4] - 2026-05-13
 
 ### Added
