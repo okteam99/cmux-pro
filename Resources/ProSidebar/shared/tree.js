@@ -107,7 +107,7 @@
 
     async function loadDir(path) {
       if (dirCache.has(path)) return dirCache.get(path);
-      const reply = await window.cmuxProSidebar.listDir(path);
+      const reply = await window.cmuxProSidebar.listDir(path, { includeHidden: true });
       const entries = (reply && reply.entries) || [];
       dirCache.set(path, entries);
       return entries;
