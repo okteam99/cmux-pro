@@ -2,6 +2,11 @@
 
 All notable changes to cmux are documented here.
 
+## [0.67.6] - 2026-05-16
+
+### Added
+- ProSidebar file tree now colors gitignored files and directories in dark yellow, distinct from blue (tracked changes) and red (untracked). `git status` runs with `--ignored`, so entries like `node_modules/`, `dist/`, and `.DS_Store` are shown but visually dimmed. Children of an expanded ignored directory inherit the color.
+
 ## [0.67.5] - 2026-05-15
 
 ### Changed
