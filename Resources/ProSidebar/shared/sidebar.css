@@ -9,6 +9,7 @@
   --hover-bg: rgba(127, 127, 127, 0.12);
   --git-modified: #1d6fff;
   --git-untracked: #d8302a;
+  --git-ignored: #a67c00;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,6 +21,7 @@
     --hover-bg: rgba(255, 255, 255, 0.1);
     --git-modified: #4ea1ff;
     --git-untracked: #ff6b6f;
+    --git-ignored: #d4a72c;
   }
 }
 

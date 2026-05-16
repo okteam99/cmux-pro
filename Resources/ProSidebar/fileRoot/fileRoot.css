@@ -113,3 +113,4 @@
 }
 .tree-name.git-modified { color: var(--git-modified); }
 .tree-name.git-untracked { color: var(--git-untracked); }
+.tree-name.git-ignored { color: var(--git-ignored); }

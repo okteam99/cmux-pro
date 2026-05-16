@@ -351,7 +351,12 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
             // such paths in double quotes with octal escapes and folder
             // colors stop propagating below the first non-ASCII segment.
             "-c", "core.quotePath=false",
-            "status", "--porcelain", "--untracked-files=all",
+            // `--ignored` adds `!! <path>` lines for ignored files/dirs so
+            // the file tree can dim them (gitignore'd entries are shown but
+            // colored differently). Uses `traditional` mode by default so
+            // an ignored directory is reported as one line, not one line
+            // per file inside it.
+            "status", "--porcelain", "--ignored", "--untracked-files=all",
         ]
         let pipe = Pipe()
         process.standardOutput = pipe
@@ -377,7 +382,11 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
                 let path = stripQuotedPath(pathPart)
                 result[path] = "untracked"
             } else if prefix == "!!" {
-                continue
+                var path = stripQuotedPath(pathPart)
+                // Ignored directories come back with a trailing `/`; normalize
+                // so the JS side can key them by absolute path.
+                if path.hasSuffix("/") { path = String(path.dropLast()) }
+                result[path] = "ignored"
             } else {
                 if let arrowRange = pathPart.range(of: " -> ") {
                     let newPath = stripQuotedPath(String(pathPart[arrowRange.upperBound...]))

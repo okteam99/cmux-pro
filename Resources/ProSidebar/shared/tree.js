@@ -81,6 +81,10 @@
         const code = map[relPath];
         const abs = rootSlash + relPath;
         statusByPath.set(abs, code);
+        // Ignored entries (gitignored files/dirs) are leaves: git reports the
+        // ignored directory once, not its contents, so there's nothing useful
+        // to propagate up. Descendants inherit "ignored" via statusForPath().
+        if (code === "ignored") continue;
         // Walk ancestors up to (but not including) currentRoot.
         let parent = abs;
         while (true) {
@@ -97,8 +101,23 @@
     }
 
     function statusForPath(fullPath, isDir) {
-      if (isDir) return folderStatusByPath.get(fullPath);
-      return statusByPath.get(fullPath);
+      if (isDir) {
+        const folder = folderStatusByPath.get(fullPath);
+        if (folder) return folder;
+      }
+      const direct = statusByPath.get(fullPath);
+      if (direct) return direct;
+      // Inherit "ignored" from any ancestor folder. Lets children of an
+      // expanded ignored directory still render as ignored.
+      let parent = fullPath;
+      while (parent.length > currentRoot.length) {
+        const slash = parent.lastIndexOf("/");
+        if (slash <= 0) break;
+        parent = parent.slice(0, slash);
+        if (parent.length < currentRoot.length) break;
+        if (statusByPath.get(parent) === "ignored") return "ignored";
+      }
+      return undefined;
     }
 
     function setStatus(text) {
@@ -200,6 +219,7 @@
       const status = statusForPath(fullPath, entry.isDir);
       if (status === "modified") name.classList.add("git-modified");
       else if (status === "untracked") name.classList.add("git-untracked");
+      else if (status === "ignored") name.classList.add("git-ignored");
       name.textContent = entry.name;
       name.title = fullPath;
       row.appendChild(name);
