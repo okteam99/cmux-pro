@@ -2,6 +2,11 @@
 
 All notable changes to cmux are documented here.
 
+## [0.67.7] - 2026-05-17
+
+### Fixed
+- Fix app freezing on startup (regression in 0.67.6). The new gitignore coloring ran `git status --ignored`, which in its default mode lists every individual file inside ignored directories when combined with the existing `--untracked-files=all` — so in any repo with `node_modules` git produced hundreds of thousands of paths and blocked the main thread. The file tree now uses `--ignored=matching`, which reports an ignored directory as a single entry without recursing into it.
+
 ## [0.67.6] - 2026-05-16
 
 ### Added
