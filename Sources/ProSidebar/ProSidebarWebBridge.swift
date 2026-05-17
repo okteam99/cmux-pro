@@ -351,12 +351,16 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
             // such paths in double quotes with octal escapes and folder
             // colors stop propagating below the first non-ASCII segment.
             "-c", "core.quotePath=false",
-            // `--ignored` adds `!! <path>` lines for ignored files/dirs so
-            // the file tree can dim them (gitignore'd entries are shown but
-            // colored differently). Uses `traditional` mode by default so
-            // an ignored directory is reported as one line, not one line
-            // per file inside it.
-            "status", "--porcelain", "--ignored", "--untracked-files=all",
+            // `--ignored=matching` adds `!! <path>` lines for ignored
+            // files/dirs so the file tree can dim them. `matching` mode is
+            // mandatory here: the default `traditional` mode, when combined
+            // with `--untracked-files=all` (below), lists every individual
+            // file inside ignored directories — so a repo with `node_modules`
+            // produces hundreds of thousands of paths and this synchronous
+            // git call freezes the app on startup. `matching` reports an
+            // ignored directory that matches a gitignore pattern as a single
+            // entry without recursing into it.
+            "status", "--porcelain", "--ignored=matching", "--untracked-files=all",
         ]
         let pipe = Pipe()
         process.standardOutput = pipe
