@@ -13,6 +13,7 @@ enum ProSidebarBridgeMessage {
     case listDir(path: String, includeHidden: Bool, replyId: String)
     case openFile(path: String, replyId: String)
     case revealInFinder(path: String, replyId: String)
+    case openInBrowser(filePath: String, rootPath: String, replyId: String)
     case getGitStatus(rootPath: String, replyId: String)
     case unknown(kind: String)
 }
@@ -134,6 +135,11 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
             send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
                 "ok": true,
             ]))
+        case let .openInBrowser(filePath, rootPath, replyId):
+            LocalFileServer.shared.openInBrowser(filePath: filePath, rootPath: rootPath)
+            send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
+                "ok": true,
+            ]))
         case let .getGitStatus(rootPath, replyId):
             let statuses = Self.fetchGitStatus(at: rootPath)
             send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
@@ -201,6 +207,12 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
         case "revealInFinder":
             return .revealInFinder(
                 path: (dict["path"] as? String) ?? "",
+                replyId: (dict["replyId"] as? String) ?? ""
+            )
+        case "openInBrowser":
+            return .openInBrowser(
+                filePath: (dict["filePath"] as? String) ?? "",
+                rootPath: (dict["rootPath"] as? String) ?? "",
                 replyId: (dict["replyId"] as? String) ?? ""
             )
         case "getGitStatus":

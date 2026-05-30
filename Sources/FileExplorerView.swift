@@ -251,6 +251,13 @@ struct FileExplorerPanelView: NSViewRepresentable {
                 guard let self, let node else { return }
                 self.performOpen(for: node)
             }
+            cellView.onBrowserClicked = { [weak self, weak node] in
+                guard let self, let node else { return }
+                LocalFileServer.shared.openInBrowser(
+                    filePath: node.path,
+                    rootPath: self.store.rootPath
+                )
+            }
 
             return cellView
         }
@@ -573,6 +580,18 @@ struct FileExplorerPanelView: NSViewRepresentable {
                 openItem.target = self
                 openItem.representedObject = node
                 menu.addItem(openItem)
+
+                let ext = (node.name as NSString).pathExtension.lowercased()
+                if ext == "html" || ext == "htm" {
+                    let browserItem = NSMenuItem(
+                        title: String(localized: "fileExplorer.contextMenu.openInBrowser", defaultValue: "Open in Browser"),
+                        action: #selector(contextMenuOpenInBrowser(_:)),
+                        keyEquivalent: ""
+                    )
+                    browserItem.target = self
+                    browserItem.representedObject = node
+                    menu.addItem(browserItem)
+                }
             }
 
             if isLocal {
@@ -610,6 +629,14 @@ struct FileExplorerPanelView: NSViewRepresentable {
         @objc private func contextMenuOpenInDefaultEditor(_ sender: NSMenuItem) {
             guard let node = sender.representedObject as? FileExplorerNode else { return }
             NSWorkspace.shared.open(URL(fileURLWithPath: node.path))
+        }
+
+        @objc private func contextMenuOpenInBrowser(_ sender: NSMenuItem) {
+            guard let node = sender.representedObject as? FileExplorerNode else { return }
+            LocalFileServer.shared.openInBrowser(
+                filePath: node.path,
+                rootPath: store.rootPath
+            )
         }
 
         @objc private func contextMenuRevealInFinder(_ sender: NSMenuItem) {
@@ -1569,11 +1596,14 @@ final class FileExplorerCellView: NSTableCellView {
     private let nameLabel = NSTextField(labelWithString: "")
     private let loadingIndicator = NSProgressIndicator()
     private let openButton = NSButton()
+    private let browserButton = NSButton()
     private var trackingArea: NSTrackingArea?
+    private var isHTMLFile = false
     var onHover: ((Bool) -> Void)?
     private var nameLabelTrailingToLoadingConstraint: NSLayoutConstraint!
     private var nameLabelTrailingToContainerConstraint: NSLayoutConstraint!
     var onOpenClicked: (() -> Void)?
+    var onBrowserClicked: (() -> Void)?
 
     init(identifier: NSUserInterfaceItemIdentifier) {
         super.init(frame: .zero)
@@ -1625,10 +1655,31 @@ final class FileExplorerCellView: NSTableCellView {
         )
         openButton.setAccessibilityIdentifier("FileExplorerRowOpenButton")
 
+        browserButton.translatesAutoresizingMaskIntoConstraints = false
+        browserButton.isBordered = false
+        browserButton.bezelStyle = .recessed
+        browserButton.imagePosition = .imageOnly
+        browserButton.image = NSImage(
+            systemSymbolName: "globe",
+            accessibilityDescription: String(
+                localized: "fileExplorer.cell.openInBrowser",
+                defaultValue: "Open in Browser"
+            )
+        )?.withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 11, weight: .regular))
+        browserButton.contentTintColor = .secondaryLabelColor
+        browserButton.isHidden = true
+        browserButton.target = self
+        browserButton.action = #selector(handleBrowserClick(_:))
+        browserButton.setAccessibilityLabel(
+            String(localized: "fileExplorer.cell.openInBrowser", defaultValue: "Open in Browser")
+        )
+        browserButton.setAccessibilityIdentifier("FileExplorerRowBrowserButton")
+
         addSubview(iconView)
         addSubview(nameLabel)
         addSubview(loadingIndicator)
         addSubview(openButton)
+        addSubview(browserButton)
 
         iconWidthConstraint = iconView.widthAnchor.constraint(equalToConstant: 16)
         iconHeightConstraint = iconView.heightAnchor.constraint(equalToConstant: 16)
@@ -1643,6 +1694,10 @@ final class FileExplorerCellView: NSTableCellView {
 
             iconToTextConstraint,
             nameLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            browserButton.trailingAnchor.constraint(equalTo: openButton.leadingAnchor, constant: -2),
+            browserButton.centerYAnchor.constraint(equalTo: centerYAnchor),
+            browserButton.widthAnchor.constraint(equalToConstant: 16),
+            browserButton.heightAnchor.constraint(equalToConstant: 16),
             openButton.trailingAnchor.constraint(equalTo: loadingIndicator.leadingAnchor, constant: -4),
             openButton.centerYAnchor.constraint(equalTo: centerYAnchor),
             openButton.widthAnchor.constraint(equalToConstant: 16),
@@ -1673,6 +1728,10 @@ final class FileExplorerCellView: NSTableCellView {
         onOpenClicked?()
     }
 
+    @objc private func handleBrowserClick(_ sender: NSButton) {
+        onBrowserClicked?()
+    }
+
     override var backgroundStyle: NSView.BackgroundStyle {
         didSet {
             let selected = backgroundStyle != .normal
@@ -1682,6 +1741,10 @@ final class FileExplorerCellView: NSTableCellView {
     }
 
     func configure(with node: FileExplorerNode, gitStatus: GitFileStatus? = nil) {
+        let ext = (node.name as NSString).pathExtension.lowercased()
+        isHTMLFile = !node.isDirectory && (ext == "html" || ext == "htm")
+        browserButton.isHidden = true
+
         let style = FileExplorerStyle.current
 
         nameLabel.stringValue = node.name
@@ -1759,10 +1822,14 @@ final class FileExplorerCellView: NSTableCellView {
 
     override func mouseEntered(with event: NSEvent) {
         onHover?(true)
+        if isHTMLFile {
+            browserButton.isHidden = false
+        }
     }
 
     override func mouseExited(with event: NSEvent) {
         onHover?(false)
+        browserButton.isHidden = true
     }
 }
 

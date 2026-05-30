@@ -224,6 +224,25 @@
       name.title = fullPath;
       row.appendChild(name);
 
+      if (!entry.isDir) {
+        const lower = entry.name.toLowerCase();
+        if (lower.endsWith(".html") || lower.endsWith(".htm")) {
+          const browserBtn = document.createElement("button");
+          browserBtn.type = "button";
+          browserBtn.className = "tree-browser";
+          browserBtn.title = "Open in Browser";
+          browserBtn.setAttribute("aria-label", "Open in Browser");
+          browserBtn.innerHTML = '<svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M2 8h12"/><ellipse cx="8" cy="8" rx="3" ry="6"/></svg>';
+          browserBtn.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            try {
+              await window.cmuxProSidebar.openInBrowser(fullPath, currentRoot);
+            } catch (_) {}
+          });
+          row.appendChild(browserBtn);
+        }
+      }
+
       const reveal = document.createElement("button");
       reveal.type = "button";
       reveal.className = "tree-reveal";

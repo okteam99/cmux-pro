@@ -71,6 +71,9 @@
     revealInFinder(path) {
       return call("revealInFinder", { path });
     },
+    openInBrowser(filePath, rootPath) {
+      return call("openInBrowser", { filePath, rootPath });
+    },
     getGitStatus(rootPath) {
       return call("getGitStatus", { rootPath });
     },

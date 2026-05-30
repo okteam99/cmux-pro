@@ -358,6 +358,7 @@
 		FA100000A1B2C3D4E5F60718 /* BrowserImportMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA100001A1B2C3D4E5F60718 /* BrowserImportMappingTests.swift */; };
 		FB100000A1B2C3D4E5F60718 /* BrowserImportProfilesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB100001A1B2C3D4E5F60718 /* BrowserImportProfilesUITests.swift */; };
 		FE001101 /* FileExplorerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE001001 /* FileExplorerStore.swift */; };
+		FE001104 /* LocalFileServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE001004 /* LocalFileServer.swift */; };
 		B37A00000000000000000009 /* FileExplorerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B37A0000000000000000000A /* FileExplorerState.swift */; };
 		FE001102 /* FileExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE001002 /* FileExplorerView.swift */; };
 		FE001103 /* FileExplorerSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE001003 /* FileExplorerSearchController.swift */; };
@@ -803,6 +804,7 @@
 		FA100001A1B2C3D4E5F60718 /* BrowserImportMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserImportMappingTests.swift; sourceTree = "<group>"; };
 		FB100001A1B2C3D4E5F60718 /* BrowserImportProfilesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserImportProfilesUITests.swift; sourceTree = "<group>"; };
 		FE001001 /* FileExplorerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExplorerStore.swift; sourceTree = "<group>"; };
+		FE001004 /* LocalFileServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileServer.swift; sourceTree = "<group>"; };
 		B37A0000000000000000000A /* FileExplorerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExplorerState.swift; sourceTree = "<group>"; };
 		FE001002 /* FileExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExplorerView.swift; sourceTree = "<group>"; };
 		FE001003 /* FileExplorerSearchController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileExplorerSearchController.swift; sourceTree = "<group>"; };
@@ -1169,6 +1171,7 @@
 				B37A0000000000000000000A /* FileExplorerState.swift */,
 				FE001003 /* FileExplorerSearchController.swift */,
 				FE001002 /* FileExplorerView.swift */,
+				FE001004 /* LocalFileServer.swift */,
 				CB5000000000000000000011 /* MarkdownViewerFileSource.swift */,
 				CB5000000000000000000013 /* MarkdownViewerWebBridge.swift */,
 				CB5000000000000000000015 /* MarkdownViewerWindowController.swift */,
@@ -1759,6 +1762,7 @@
 				B37A00000000000000000009 /* FileExplorerState.swift in Sources */,
 				FE001103 /* FileExplorerSearchController.swift in Sources */,
 				FE001102 /* FileExplorerView.swift in Sources */,
+				FE001104 /* LocalFileServer.swift in Sources */,
 				CB5000000000000000000010 /* MarkdownViewerFileSource.swift in Sources */,
 				CB5000000000000000000012 /* MarkdownViewerWebBridge.swift in Sources */,
 				CB5000000000000000000014 /* MarkdownViewerWindowController.swift in Sources */,
