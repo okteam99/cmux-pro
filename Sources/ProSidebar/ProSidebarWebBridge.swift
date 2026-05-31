@@ -114,17 +114,21 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
                 "path": chosen ?? NSNull(),
             ]))
         case let .listGitWorktrees(rootPath, replyId):
-            let worktrees = Self.fetchGitWorktrees(at: rootPath)
-            send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
-                "ok": true,
-                "worktrees": worktrees,
-            ]))
+            Task.detached {
+                let worktrees = Self.fetchGitWorktrees(at: rootPath)
+                await self.send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
+                    "ok": true,
+                    "worktrees": worktrees,
+                ]))
+            }
         case let .listDir(path, includeHidden, replyId):
-            let entries = Self.listDirectory(at: path, includeHidden: includeHidden)
-            send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
-                "ok": true,
-                "entries": entries,
-            ]))
+            Task.detached {
+                let entries = Self.listDirectory(at: path, includeHidden: includeHidden)
+                await self.send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
+                    "ok": true,
+                    "entries": entries,
+                ]))
+            }
         case let .openFile(path, replyId):
             Self.openFile(at: path)
             send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
@@ -141,11 +145,13 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
                 "ok": true,
             ]))
         case let .getGitStatus(rootPath, replyId):
-            let statuses = Self.fetchGitStatus(at: rootPath)
-            send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
-                "ok": true,
-                "statuses": statuses,
-            ]))
+            Task.detached {
+                let statuses = Self.fetchGitStatus(at: rootPath)
+                await self.send(reply: ProSidebarBridgeReply(replyId: replyId, body: [
+                    "ok": true,
+                    "statuses": statuses,
+                ]))
+            }
         default:
             break
         }
@@ -253,6 +259,8 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
     /// Run `git worktree list --porcelain` in the given directory. Returns a
     /// flat array of `[{path, branch, head}]`. Empty array when the directory
     /// is not a git repository.
+    private static let gitTimeoutSeconds: Double = 10
+
     nonisolated static func fetchGitWorktrees(at rootPath: String) -> [[String: String]] {
         guard !rootPath.isEmpty else { return [] }
         let process = Process()
@@ -266,7 +274,7 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
         } catch {
             return []
         }
-        process.waitUntilExit()
+        guard Self.waitForProcess(process) else { return [] }
         guard process.terminationStatus == 0 else { return [] }
 
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
@@ -382,7 +390,7 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
         } catch {
             return [:]
         }
-        process.waitUntilExit()
+        guard Self.waitForProcess(process) else { return [:] }
         guard process.terminationStatus == 0 else { return [:] }
 
         let data = pipe.fileHandleForReading.readDataToEndOfFile()
@@ -414,6 +422,19 @@ final class ProSidebarWebBridge: NSObject, WKScriptMessageHandler {
             }
         }
         return result
+    }
+
+    /// Wait for a Process to exit, killing it if it exceeds `gitTimeoutSeconds`.
+    /// Returns `true` if the process exited normally, `false` if it was killed.
+    nonisolated private static func waitForProcess(_ process: Process) -> Bool {
+        let sema = DispatchSemaphore(value: 0)
+        process.terminationHandler = { _ in sema.signal() }
+        let result = sema.wait(timeout: .now() + gitTimeoutSeconds)
+        if result == .timedOut {
+            process.terminate()
+            return false
+        }
+        return true
     }
 
     /// porcelain v1 quotes paths containing special chars with C-style escapes

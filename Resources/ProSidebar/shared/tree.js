@@ -314,8 +314,8 @@
       // up that workspace's open folders instead of clearing them.
       expanded = loadExpanded();
       dirCache.clear();
-      await loadGitStatus();
       await render();
+      loadGitStatus().then(() => render());
     }
 
     return {
